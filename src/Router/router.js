@@ -10,6 +10,7 @@ import Register from '../Pages/Registration';
 import Update from '../Pages/UserUpdate';
 
 import { isLoggedIn } from '../Auth/PrivateRoute';
+import ItemList from '../Pages/ItemList';
 
 
 
@@ -17,6 +18,7 @@ import { isLoggedIn } from '../Auth/PrivateRoute';
 function MyRoute() {
     return (
         <Routes>
+            <Route path="/table" element={<ItemList />} />
             <Route path="/" element={<Home />} />
             <Route path="/signup" element={<Register />} />
             <Route path="/login" element={<UserLogin />} />
