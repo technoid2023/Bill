@@ -157,7 +157,7 @@ const ItemList = () => {
       }
 
       try {
-        const response = await axios.get('http://192.168.0.104:8111/v1/item', {
+        const response = await axios.get('https://edu-tech-bwe5.onrender.com/v1/item', {
           headers: {
             'token': Token
           }
