@@ -82,12 +82,12 @@ const menuItems = [
                     <Link> <FontAwesomeIcon icon={faBars} size='1x' style={{ color: 'white' }} /> </Link>
                     </div>
                     <main className="main" style={{
-                        backgroundColor: 'papayawhip',
+                        backgroundColor: 'white',
                         // backgroundImage: `url(${background})`,
                         borderRadius: '10px',
                         boxShadow: 'rgba(0, 0, 0, 0.6) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px, rgba(0, 0, 0, 0.4) 0px -2px 6px 0px inset',
-                        padding: '5px',
-                        margin: '25px',
+                        padding: '1px',
+                        margin: '1px',
                         maxHeight:'45rem'
                     }}><Outlet />
                     </main>

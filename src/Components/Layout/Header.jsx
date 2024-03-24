@@ -46,7 +46,7 @@ const Header = () => {
         <div className="container-fluid">
         {logincheck==='Logout'?(<div style={{ display: 'flex', alignItems: 'center',marginLeft:'3rem' }}>
   <img src={wheel} alt="P O M S Logo" className="me-2" style={{ width: '2rem', height: '2rem' }} />
-  <Link className="navbar-brand" to="/dashboard" >P O M S</Link>
+  <Link className="navbar-brand" to="/dashboard" >BillBuddy</Link>
 </div>):<></>}
 
 
