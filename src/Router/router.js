@@ -26,6 +26,7 @@ function MyRoute() {
             <Route path="/dashboard" element={isLoggedIn() ? <Sidebarmenu /> : <Navigate to="/error" />}>
                 <Route path='profile'  element={isLoggedIn() ? <Profile /> : <Navigate to="/error" />}/>
                 <Route path='update-user'  element={isLoggedIn() ? <Update /> : <Navigate to="/error" />}/>
+                <Route path="item" element={isLoggedIn() ? <ItemList /> : <Navigate to="/error" />} />
                 <Route path="*" element={<Navigate to="/error" />} />
             </Route>
             <Route path="/error" element={<Error />} />
