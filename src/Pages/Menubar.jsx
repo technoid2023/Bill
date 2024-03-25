@@ -54,11 +54,13 @@ const menuItems = [
                         <Sidebar className="sidebar" collapsed={sidebarCollapsed}>
                         <Menu>
                         {menuItems.map((item, index) => (
-                            <MenuItem key={index} icon={<FontAwesomeIcon icon={item.icon} size='1x' style={{ color: 'saddlebrown', marginRight: '10px' }} />}>
-                                <Link to={item.link} >
+                            <Link to={item.link}>
+                                <MenuItem key={index} icon={<FontAwesomeIcon icon={item.icon} size='1x' style={{ color: 'saddlebrown', marginRight: '10px' }} />}>
+                                
                                     {item.name}
-                                </Link>
+                                
                             </MenuItem>
+                            </Link>
                         ))}
                     </Menu>
 
