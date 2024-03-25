@@ -19,7 +19,7 @@ import BillList from '../Pages/BillList';
 function MyRoute() {
     return (
         <Routes>
-            <Route path="/table" element={<ItemList />} />
+         
             <Route path="/" element={<Home />} />
             <Route path="/signup" element={<Register />} />
             <Route path="/login" element={<UserLogin />} />

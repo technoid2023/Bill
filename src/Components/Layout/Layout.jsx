@@ -24,10 +24,10 @@ const Layout = ({ children, title, description, keywords, author }) => {
 };
 
 Layout.defaultProps = {
-  title: "POMS",
-  description: "POMS",
+  title: "BillBuddy",
+  description: "BillBuddy",
   keywords: "react",
-  author: "NIC",
+  author: "Technoid",
 };
 
 export default Layout;

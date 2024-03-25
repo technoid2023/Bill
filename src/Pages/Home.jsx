@@ -40,7 +40,7 @@ const Home=()=> {
   
 
   return (
-    <Layout title={'POMS'}>
+    <Layout title={'BillBuddy'}>
       <div style={{
         display: 'flex',
         flexDirection: 'column',

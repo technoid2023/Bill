@@ -19,7 +19,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash, faRotate } from "@fortawesome/free-solid-svg-icons";
 
 import image from "../Assests/login2.jpg";
-import wheel from "../Assests/wheel.gif";
+import wheel from "../Assests/bill.gif";
 
 const generateRandomCode = () => {
   let code = "";
@@ -170,7 +170,7 @@ function UserLogin() {
                     className="h1 fw-bold mb-0"
                     style={{ color: "wheat", fontFamily: "monospace" }}
                   >
-                    P O M S
+                    BillBuddy
                   </span>
                 </div>
 
@@ -246,7 +246,7 @@ function UserLogin() {
                           value={captchaCode}
                           style={{
                             backgroundColor: "white",
-                            color: "black",
+                            color: "grey",
                             width: "80px",
                             border: "none",
                             fontSize: "24px",
@@ -307,7 +307,7 @@ function UserLogin() {
                         <FontAwesomeIcon
                           icon={faRotate}
                           size="2x"
-                          style={{ color: "black", marginLeft: "8px" }}
+                          style={{ color: "green", marginLeft: "8px" }}
                         />
                       </button>
                       <form style={{ marginTop: "5px" }}>
@@ -319,7 +319,7 @@ function UserLogin() {
                           size="lg"
                           contrast
                           onChange={handleCaptchaSubmit}
-                          style={{ color: "black", fontWeight: "bolder" }}
+                          style={{ color: "white", fontWeight: "bolder" }}
                           onPaste={(e) => {
                             e.preventDefault();
                             toast.error("Pasting is disabled.");
