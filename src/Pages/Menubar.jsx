@@ -39,7 +39,7 @@ const handleLogout = () => {
 const menuItems = [
     { name: 'Profile', icon: faUserTie, link: 'profile' },
     { name: 'Inventory', icon: faPeopleGroup, link: 'item' },
-    { name: 'Billing', icon: faLandmark, link: '/finance' },
+    { name: 'Billing', icon: faLandmark, link: 'bill' },
     { name: 'Orders', icon: faStore, link: '/marketing' },
     { name: 'Help Desk', icon: faCubesStacked, link: '/material-management' },
     { name: 'Notifiation', icon: faIndustry, link: '/production-development' },
