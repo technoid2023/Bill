@@ -123,7 +123,7 @@ const BillList = () => {
     <div className='container mt-2'>
       <div className='row mb-2'>
         <div className='col-md-6'>
-          <MDBInput label='Search Item' size='lg' onChange={handleFilter} type='text' />
+          <MDBInput label='Search Bill' size='lg' onChange={handleFilter} type='text' />
         </div>
         <div className='col-md-6 d-flex justify-content-end'>
           <MDBBtn color='primary'>Add <FontAwesomeIcon icon={faPlus} /></MDBBtn>

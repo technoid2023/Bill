@@ -3,6 +3,7 @@ import CryptoJS from "crypto-js";
 
 
 
+
 function encrypt(text ) {
   return CryptoJS.AES.encrypt(text, "poms-nic").toString();
 }
@@ -15,7 +16,9 @@ function decrypt(ciphertext, key = "poms-nic") {
 
 const isLoggedIn = () => {
   const encryptUserTK = Cookies.get('_TK');
+
   const encryptUserUR = Cookies.get('_UR');
+  console.log(encryptUserTK,encryptUserUR);
   return encryptUserTK || encryptUserUR ? true : false;
 };
 
