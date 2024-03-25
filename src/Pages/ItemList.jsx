@@ -6,7 +6,7 @@ import { decrypt } from '../Auth/PrivateRoute';
 import toast from 'react-hot-toast';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEdit, faTrash, faEye, faPlus } from '@fortawesome/free-solid-svg-icons';
-import { MDBInput, MDBBtn } from 'mdb-react-ui-kit';  // Assuming MDBBtn is the button component from MDBReactUiKit
+import { MDBInput, MDBBtn, MDBModal, MDBModalDialog, MDBModalContent, MDBModalHeader, MDBModalTitle, MDBModalBody, MDBModalFooter } from 'mdb-react-ui-kit';
 
 const ItemList = () => {
   const columns = [
@@ -38,12 +38,11 @@ const ItemList = () => {
       sortable: true
     },
     {
-      
       cell: row => (
         <div>
-          <FontAwesomeIcon icon={faEye} onClick={() => handleEdit(row)} style={{ cursor: 'pointer', marginRight: '10px' }} />
-          <FontAwesomeIcon icon={faEdit} onClick={() => handleDelete(row)} style={{ cursor: 'pointer',marginRight: '10px' }} />
-        <FontAwesomeIcon icon={faTrash} onClick={() => handleDelete(row)} style={{ cursor: 'pointer' }} />
+          <FontAwesomeIcon icon={faEye} onClick={() => handleView(row)} style={{ cursor: 'pointer', marginRight: '10px' }} />
+          <FontAwesomeIcon icon={faEdit} onClick={() => handleEdit(row)} style={{ cursor: 'pointer', marginRight: '10px' }} />
+          <FontAwesomeIcon icon={faTrash} onClick={() => handleDelete(row)} style={{ cursor: 'pointer' }} />
         </div>
       ),
       ignoreRowClick: true,
@@ -51,82 +50,11 @@ const ItemList = () => {
       button: true,
     }
   ];
-// let api=[
-//   {
-//       "_id": "65f973b1367950e6e32f6e49",
-//       "name": "Emami Mustard Oi",
-//       "category": "Oil",
-//       "subcategory": "Mustard Oil",
-//       "CP": 150,
-//       "SP": 120,
-//       "item_cd": "EM01",
-//       "source": "Emami",
-//       "item_des": "Oil",
-//       "qty": 18
-//   },
-//   {
-//       "_id": "65fab8fbd548a8fe7586aea4",
-//       "name": "Basmati Rice",
-//       "category": "Grocery",
-//       "subcategory": "Rice",
-//       "CP": 230,
-//       "SP": 200,
-//       "item_cd": "BR01",
-//       "source": "AK Rice",
-//       "item_des": "Rice",
-//       "qty": 20
-//   },
-//   {
-//       "_id": "65fab901d548a8fe7586aea7",
-//       "name": "Basmati Rice",
-//       "category": "Grocery",
-//       "subcategory": "Rice",
-//       "CP": 250,
-//       "SP": 220,
-//       "item_cd": "BR02",
-//       "source": "BR Rice",
-//       "item_des": "RIce",
-//       "qty": 15
-//   },
-//   {
-//       "_id": "65fab906d548a8fe7586aeaa",
-//       "name": "Masoor Dal",
-//       "category": "Grocery",
-//       "subcategory": "Dal",
-//       "CP": 150,
-//       "SP": 110,
-//       "item_cd": "MD01",
-//       "source": "Nabaratna",
-//       "item_des": "Dal",
-//       "qty": 45
-//   },
-//   {
-//       "_id": "65fab90cd548a8fe7586aead",
-//       "name": "Maida",
-//       "category": "Grocery",
-//       "subcategory": "Maida",
-//       "CP": 45,
-//       "SP": 35,
-//       "item_cd": "MD02",
-//       "source": "Fortune",
-//       "item_des": "Maida",
-//       "qty": 28
-//   },
-//   {
-//       "_id": "65fab911d548a8fe7586aeb0",
-//       "name": "Chakki Ata",
-//       "category": "Grocery",
-//       "subcategory": "Ata",
-//       "CP": 45,
-//       "SP": 35,
-//       "item_cd": "CA01",
-//       "source": "Ganesh",
-//       "item_des": "Ata",
-//       "qty": 39
-//   }
-// ]
+
   const [data, setData] = useState([]);
   const [records, setRecords] = useState(data);
+  const [openView, setOpenView] = useState(false);
+  const [itemDetails, setItemDetails] = useState(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -182,9 +110,14 @@ const ItemList = () => {
     console.log('Delete row:', row);
   }
 
+  const handleView = (row) => {
+    setItemDetails(row);
+    setOpenView(true);
+  };
+
   return (
     <div className='container mt-2'>
-     <div className='row mb-2'>
+      <div className='row mb-2'>
         <div className='col-md-6'>
           <MDBInput label='Search Item' size='lg' onChange={handleFilter} type='text' />
         </div>
@@ -192,7 +125,60 @@ const ItemList = () => {
           <MDBBtn color='primary'>Add <FontAwesomeIcon icon={faPlus} /></MDBBtn>
         </div>
       </div>
-      
+      <MDBModal open={openView} setOpen={setOpenView} tabIndex='-1'>
+        <MDBModalDialog>
+          <MDBModalContent>
+            <MDBModalHeader>
+              <MDBModalTitle>Item Details</MDBModalTitle>
+              <MDBBtn className='btn-close' color='none' onClick={() => setOpenView(false)}></MDBBtn>
+            </MDBModalHeader>
+            <MDBModalBody>
+              {itemDetails && (
+                <table className="table">
+                  <tbody>
+                    <tr>
+                      <td><strong>Item Code:</strong></td>
+                      <td>{itemDetails.item_cd}</td>
+                    </tr>
+                    <tr>
+                      <td><strong>Item Title:</strong></td>
+                      <td>{itemDetails.name}</td>
+                    </tr>
+                    <tr>
+                      <td><strong>Category:</strong></td>
+                      <td>{itemDetails.category}</td>
+                    </tr>
+                    <tr>
+                      <td><strong>Sub Category:</strong></td>
+                      <td>{itemDetails.subcategory}</td>
+                    </tr>
+                    <tr>
+                      <td><strong>Cost Price:</strong></td>
+                      <td>{itemDetails.CP}</td>
+                    </tr>
+                    <tr>
+                      <td><strong>Selling Price:</strong></td>
+                      <td>{itemDetails.SP}</td>
+                    </tr>
+                    <tr>
+                      <td><strong>Source:</strong></td>
+                      <td>{itemDetails.source}</td>
+                    </tr>
+                    <tr>
+                      <td><strong>Description:</strong></td>
+                      <td>{itemDetails.item_des}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              )}
+            </MDBModalBody>
+            <MDBModalFooter>
+              <MDBBtn color='secondary' onClick={() => setOpenView(false)}>Close</MDBBtn>
+              <MDBBtn>Save changes</MDBBtn>
+            </MDBModalFooter>
+          </MDBModalContent>
+        </MDBModalDialog>
+      </MDBModal>
       {data.length > 0 ? (
         <DataTable
           columns={columns}
