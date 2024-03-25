@@ -157,20 +157,20 @@ export default function Profile() {
                 <hr />
                 <MDBRow>
                   <MDBCol sm="3">
-                    <MDBCardText>College</MDBCardText>
+                    <MDBCardText>Company</MDBCardText>
                   </MDBCol>
                   <MDBCol sm="9">
-                    <MDBCardText className="text-muted">{User.college}</MDBCardText>
+                    <MDBCardText className="text-muted">{User.company}</MDBCardText>
                   </MDBCol>
                 </MDBRow>
                 <hr />
                 
                 <MDBRow>
                   <MDBCol sm="3">
-                    <MDBCardText>Course</MDBCardText>
+                    <MDBCardText>Designation</MDBCardText>
                   </MDBCol>
                   <MDBCol sm="9">
-                    <MDBCardText className="text-muted">{User.course}</MDBCardText>
+                    <MDBCardText className="text-muted">{User.designation}</MDBCardText>
                   </MDBCol>
                 </MDBRow>
                 <hr/>
