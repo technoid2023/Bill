@@ -16,7 +16,6 @@ function decrypt(ciphertext, key = "poms-nic") {
 const isLoggedIn = async () => {
   let encryptUser;
   while (!encryptUser) {
-      encryptUser = Cookies.get('_UR');
       await new Promise(resolve => setTimeout(resolve, 1000)); // Wait for 1 second before checking again
   }
   return encryptUser ? true : false;

@@ -174,7 +174,7 @@ const ItemList = () => {
             </MDBModalBody>
             <MDBModalFooter>
               <MDBBtn color='secondary' onClick={() => setOpenView(false)}>Close</MDBBtn>
-              <MDBBtn>Save changes</MDBBtn>
+            
             </MDBModalFooter>
           </MDBModalContent>
         </MDBModalDialog>
