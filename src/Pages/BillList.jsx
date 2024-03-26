@@ -7,6 +7,7 @@ import toast from 'react-hot-toast';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEdit, faTrash, faEye, faPlus } from '@fortawesome/free-solid-svg-icons';
 import { MDBInput, MDBBtn, MDBModal, MDBModalDialog, MDBModalContent, MDBModalHeader, MDBModalTitle, MDBModalBody, MDBModalFooter } from 'mdb-react-ui-kit';
+import Load from './Load';
 
 const BillList = () => {
   const columns = [
@@ -231,7 +232,7 @@ const BillList = () => {
           }}
         />
       ) : (
-        <p>Loading...</p>
+        <Load type='spinningBubbles' color='grey'/>
       )}
     </div>
   );

@@ -41,7 +41,7 @@ function UserLogin() {
   // const [userInput, setUserInput] = useState("");
   const [isCorrect, setIsCorrect] = useState(false);
   const [isFormValid, setIsFormValid] = useState(false);
-
+  const [isLoading, setIsLoading] = useState(false); 
   // Update form data when inputs change
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -87,7 +87,7 @@ function UserLogin() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
+    setIsLoading(true);
     if (isCorrect) {
       if (formData.userId !== "" && formData.password !== "") {
         axios
@@ -96,6 +96,7 @@ function UserLogin() {
             password: formData.password,
           })
           .then((response) => {
+            setIsLoading(false);
             console.log("tested");
             let data = response.data;
             console.log(data);
@@ -121,6 +122,7 @@ function UserLogin() {
             }
           })
           .catch((error) => {
+            setIsLoading(false);
             toast.error("Bad Credentials !");
             console.error("Error fetching data:", error);
             if (error.response) {
@@ -133,9 +135,11 @@ function UserLogin() {
           });
       } else {
         toast.error("Give Login Credentials ");
+        setIsLoading(false);
       }
     } else {
       toast.error("Wrong Captcha !!");
+      setIsLoading(false);
       regenerateCaptcha();
     }
   };
@@ -309,16 +313,16 @@ function UserLogin() {
                   <div>
                     <div style={{ display: "flex", alignItems: "center" }}>
                       <span>
-                        <MDBBtn
-                          className="mb-1 px-5"
-                          color="success"
-                          size="lg"
-                          type="submit"
-                          disabled={!isFormValid}
-                          style={{ marginRight: "5rem", marginTop: "1rem" }}
-                        >
-                          Login
-                        </MDBBtn>
+                      <MDBBtn
+              className="mb-1 px-5"
+              color="success"
+              size="lg"
+              type="submit"
+              disabled={!isFormValid || isLoading} // Disable button when loading
+              style={{ marginRight: "5rem", marginTop: "1rem" }}
+            >
+              {isLoading ? <div className="spinner-border" role="status"><span className="visually-hidden">Loading...</span></div> : "Login"}
+            </MDBBtn>
                       </span>
                       <span style={{ marginLeft: "1px", color: "white" }}>
                         <Link

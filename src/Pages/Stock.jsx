@@ -7,6 +7,7 @@ import toast from 'react-hot-toast';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEdit, faTrash, faPlus } from '@fortawesome/free-solid-svg-icons';
 import { MDBInput, MDBBtn} from 'mdb-react-ui-kit';
+import Load from './Load';
 
 const Stock = () => {
   const columns = [
@@ -138,7 +139,7 @@ const Stock = () => {
           }}
         />
       ) : (
-        <p>Loading...</p>
+        <Load type='spinningBubbles' color='black'/>
       )}
     </div>
   );
