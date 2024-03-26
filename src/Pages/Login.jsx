@@ -18,8 +18,8 @@ import { encrypt } from "../Auth/PrivateRoute";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash, faRotate } from "@fortawesome/free-solid-svg-icons";
 
-import image from "../Assests/login2.jpg";
-import wheel from "../Assests/bill.gif";
+import image from "../Assests/login2.png";
+
 
 const generateRandomCode = () => {
   let code = "";
@@ -153,39 +153,17 @@ function UserLogin() {
               "rgba(0, 0, 0, 0.6) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px, rgba(0, 0, 0, 0.4) 0px -2px 6px 0px inset",
             backgroundImage: `url(${image})`,
             backgroundSize: "cover",
-            height: "35rem",
+            height: "30rem",
           }}
         >
           <MDBRow className="g-0">
             <MDBCol md="6">
               <MDBCardBody className="d-flex flex-column justify-content-center align-items-center">
-                <div className="d-flex flex-row mt-2">
-                  <img
-                    src={wheel}
-                    alt="P O M S Logo"
-                    className="me-5"
-                    style={{ width: "4rem", height: "4rem" }}
-                  />
-                  <span
-                    className="h1 fw-bold mb-0"
-                    style={{ color: "wheat", fontFamily: "monospace" }}
-                  >
-                    BillBuddy
-                  </span>
-                </div>
+                
 
-                <h5
-                  className="fw-normal my-4 pb-3"
-                  style={{
-                    letterSpacing: "1px",
-                    color: "sienna",
-                    fontWeight: "bolder",
-                  }}
-                >
-                  Sign Into Your Account
-                </h5>
+                
 
-                <form onSubmit={handleSubmit}>
+                <form onSubmit={handleSubmit} style={{marginTop:'10rem'}}>
                   <MDBInput
                     wrapperClass="mb-4"
                     label="Email ID"
@@ -193,7 +171,6 @@ function UserLogin() {
                     type="text"
                     size="lg"
                     name="userId"
-                    contrast
                     onChange={handleInputChange}
                     value={formData.userId}
                     style={{ color: "goldenrod" }}
@@ -207,13 +184,13 @@ function UserLogin() {
                       wrapperClass="mb-4"
                       label="Password"
                       id="password"
-                      contrast
+                    
                       type={formData.showPassword ? "text" : "password"}
                       size="lg"
                       name="password"
                       onChange={handleInputChange}
                       value={formData.password}
-                      style={{ color: "silver" }}
+                      style={{ color: "black" }}
                       onPaste={(e) => {
                         e.preventDefault();
                         toast.error("Pasting is disabled.");
@@ -317,9 +294,9 @@ function UserLogin() {
                           id="captcha"
                           type="text"
                           size="lg"
-                          contrast
+                          
                           onChange={handleCaptchaSubmit}
-                          style={{ color: "white", fontWeight: "bolder" }}
+                          style={{ color: "black", fontWeight: "bolder" }}
                           onPaste={(e) => {
                             e.preventDefault();
                             toast.error("Pasting is disabled.");
@@ -347,7 +324,7 @@ function UserLogin() {
                           className="small mb-1"
                           to="/signup"
                           style={{
-                            color: "lightblue",
+                            color: "red",
                             fontWeight: "bold",
                             marginTop: "2px",
                           }}
@@ -367,7 +344,7 @@ function UserLogin() {
                   style={{
                     color: "sandybrown",
                     fontWeight: "bold",
-                    marginRight: "12rem",
+                    marginRight: "12rem"
                   }}
                 >
                   Forgot password?

@@ -12,6 +12,8 @@ import Update from '../Pages/UserUpdate';
 import { isLoggedIn } from '../Auth/PrivateRoute';
 import ItemList from '../Pages/ItemList';
 import BillList from '../Pages/BillList';
+import Stock from '../Pages/Stock';
+
 
 
 
@@ -19,6 +21,7 @@ import BillList from '../Pages/BillList';
 function MyRoute() {
     return (
         <Routes>
+           
          
             <Route path="/" element={<Home />} />
             <Route path="/signup" element={<Register />} />
@@ -29,6 +32,7 @@ function MyRoute() {
                 <Route path='update-user'  element={isLoggedIn ? <Update /> : <Navigate to="/error" />}/>
                 <Route path="item" element={isLoggedIn ? <ItemList /> : <Navigate to="/error" />} />
                 <Route path="bill" element={isLoggedIn ? <BillList /> : <Navigate to="/error" />} />
+                <Route path="stock" element={isLoggedIn ? <Stock /> : <Navigate to="/error" />} />
                 <Route path="*" element={<Navigate to="/error" />} />
             </Route>
             <Route path="/error" element={<Error />} />

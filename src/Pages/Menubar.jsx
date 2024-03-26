@@ -41,7 +41,7 @@ const menuItems = [
     { name: 'Inventory', icon: faPeopleGroup, link: 'item' },
     { name: 'Billing', icon: faLandmark, link: 'bill' },
     { name: 'Orders', icon: faStore, link: '/marketing' },
-    { name: 'Help Desk', icon: faCubesStacked, link: '/material-management' },
+    { name: 'Stocks', icon: faCubesStacked, link: 'stock' },
     { name: 'Notifiation', icon: faIndustry, link: '/production-development' },
 ];
 
