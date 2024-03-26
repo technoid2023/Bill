@@ -18,6 +18,7 @@ import toast, { Toaster } from 'react-hot-toast';
 function Update() {
   const navigate = useNavigate();
   const [user, setUser] = useState({
+    _id:'',
     name: '',
     email: '',
     mobile: '',
@@ -40,6 +41,7 @@ function Update() {
       setUserData(JSON.parse(decryptedUser));
       setToken(JSON.parse(decryptedToken));
       setUser({
+        _id:userd._id||'',
         name: userd.name || '',
         email: userd.email || '',
         mobile: userd.mobile || '',
@@ -63,19 +65,22 @@ function Update() {
     if (user.email === "" || user.mobile === "" || user.pin_code === "" || user.name === "") {
       toast.error("Email, Mobile, and Pin Code are needed to keep you active!");
     } else {
+      console.log("user ",user);
       axios.put('https://edu-tech-bwe5.onrender.com/v1/user/update/' + userData._id, user, {
         headers: {
           'token': token
         }
       }).then(res => {
         if (res.data.Success === true) {
-          const updatedUser = { ...user, _id: userData._id };
-          Cookies.remove('_UR');
-          const encryptedUser = encrypt(updatedUser);
-          Cookies.set('_UR', JSON.stringify(encryptedUser));
+
+          const updatedUser = { ...user };
+          console.log("new",updatedUser);
+          // Cookies.remove('_UR');
+          const encryptedUser = encrypt(JSON.stringify(updatedUser));
+          Cookies.set('_UR', encryptedUser,{ expires: 1 });
           toast.success(res.data.Message);
           setTimeout(() => {
-            navigate('/profile');
+            navigate('/dashboard/profile');
           }, 1000);
         } else {
           toast.error(res.data.Message);
@@ -99,7 +104,7 @@ function Update() {
                 <MDBInput wrapperClass='mb-4' label='Name' size='lg' value={user.name} onChange={handleInput} name='name' type='text' />
               </MDBCol>
               <MDBCol md='9'>
-                <MDBInput wrapperClass='mb-4' label='Company' size='lg' value={user.company} onChange={handleInput} name='college' type='text' />
+                <MDBInput wrapperClass='mb-4' label='Company' size='lg' value={user.company} onChange={handleInput} name='company' type='text' />
               </MDBCol>
               
             </MDBRow>
@@ -111,7 +116,7 @@ function Update() {
                 <MDBInput wrapperClass='mb-4' label='Mobile' size='lg' value={user.mobile} onChange={handleInput} name='mobile' type='number' />
               </MDBCol>
               <MDBCol md='4'>
-                <MDBInput wrapperClass='mb-4' label='Designation' size='lg' value={user.designation} onChange={handleInput} name='course' type='text' />
+                <MDBInput wrapperClass='mb-4' label='Designation' size='lg' value={user.designation} onChange={handleInput} name='designation' type='text' />
               </MDBCol>
             </MDBRow>
             <MDBRow>
