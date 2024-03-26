@@ -8,8 +8,11 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEdit, faTrash, faEye, faPlus } from '@fortawesome/free-solid-svg-icons';
 import { MDBInput, MDBBtn, MDBModal, MDBModalDialog, MDBModalContent, MDBModalHeader, MDBModalTitle, MDBModalBody, MDBModalFooter } from 'mdb-react-ui-kit';
 import Load from './Load';
+import { useNavigate } from 'react-router-dom';
+
 
 const ItemList = () => {
+  const navigate=useNavigate()
   const columns = [
     {
       name: 'Item Code',
@@ -105,6 +108,10 @@ const ItemList = () => {
 
   function handleEdit(row) {
     console.log('Edit row:', row);
+    Cookies.set('item',JSON.stringify(row))
+    navigate('/dashboard/update-item')
+
+ // Set the selected row when edit button is clicked
   }
 
   function handleDelete(row) {
@@ -118,6 +125,7 @@ const ItemList = () => {
 
   return (
     <div className='container mt-2'>
+
       <div className='row mb-2'>
         <div className='col-md-6'>
           <MDBInput label='Search Item' size='lg' onChange={handleFilter} type='text' />
@@ -179,7 +187,9 @@ const ItemList = () => {
             </MDBModalFooter>
           </MDBModalContent>
         </MDBModalDialog>
+       
       </MDBModal>
+      
       {data.length > 0 ? (
         <DataTable
           columns={columns}

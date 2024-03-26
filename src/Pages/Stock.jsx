@@ -139,7 +139,10 @@ const Stock = () => {
           }}
         />
       ) : (
-        <Load type='spinningBubbles' color='black'/>
+       
+       <Load type='spinningBubbles' color='black' />
+    
+       
       )}
     </div>
   );
