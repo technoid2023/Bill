@@ -50,8 +50,10 @@ const menuItems = [
             <Layout>
                 <div className="sidebar-menu-container">
                   
-                    <div className={`sidebar-container ${sidebarCollapsed ? 'collapsed' : ''}`}>
-                        <Sidebar className="sidebar" collapsed={sidebarCollapsed}>
+                    <div className={`sidebar-container ${sidebarCollapsed ? 'collapsed' : ''}`}  >
+                        <Sidebar className="sidebar" collapsed={sidebarCollapsed}
+                     
+                        >
                         <Menu>
                         {menuItems.map((item, index) => (
                             <Link to={item.link}>

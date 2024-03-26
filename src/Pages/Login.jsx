@@ -18,7 +18,7 @@ import { encrypt } from "../Auth/PrivateRoute";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash, faRotate } from "@fortawesome/free-solid-svg-icons";
 
-import image from "../Assests/login2.png";
+import image from "../Assests/bill_login.jpg";
 
 
 const generateRandomCode = () => {
@@ -153,7 +153,8 @@ function UserLogin() {
               "rgba(0, 0, 0, 0.6) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px, rgba(0, 0, 0, 0.4) 0px -2px 6px 0px inset",
             backgroundImage: `url(${image})`,
             backgroundSize: "cover",
-            height: "30rem",
+            
+            
           }}
         >
           <MDBRow className="g-0">
@@ -163,7 +164,7 @@ function UserLogin() {
 
                 
 
-                <form onSubmit={handleSubmit} style={{marginTop:'10rem'}}>
+                <form onSubmit={handleSubmit} style={{marginTop:'10rem', marginRight:'8rem'}}>
                   <MDBInput
                     wrapperClass="mb-4"
                     label="Email ID"

@@ -5,8 +5,8 @@ import DataTable from 'react-data-table-component';
 import { decrypt } from '../Auth/PrivateRoute';
 import toast from 'react-hot-toast';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEdit, faTrash, faEye, faPlus } from '@fortawesome/free-solid-svg-icons';
-import { MDBInput, MDBBtn, MDBModal, MDBModalDialog, MDBModalContent, MDBModalHeader, MDBModalTitle, MDBModalBody, MDBModalFooter } from 'mdb-react-ui-kit';
+import { faEdit, faTrash, faPlus } from '@fortawesome/free-solid-svg-icons';
+import { MDBInput, MDBBtn} from 'mdb-react-ui-kit';
 
 const Stock = () => {
   const columns = [
@@ -124,7 +124,7 @@ const Stock = () => {
       {data.length > 0 ? (
         <DataTable
           columns={columns}
-          data={data}
+          data={records}
           pagination
           highlightOnHover
           customStyles={{

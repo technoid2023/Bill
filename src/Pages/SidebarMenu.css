@@ -5,8 +5,7 @@
 }
 
 .sidebar {
-    background-color: rgb(0, 0, 0);
-    /* background-color: darkseagreen; */
+    background-color: black !important;
     font-weight: bolder;
     overflow-y: auto;
     position: relative;
