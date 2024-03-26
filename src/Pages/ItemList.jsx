@@ -125,7 +125,7 @@ const ItemList = () => {
 
   return (
     <div className='container mt-2'>
-
+      <h3 style={{textAlign:'center', fontFamily:'sans-serif', color:'blue', fontWeight:'bolder'}}>Item List</h3>
       <div className='row mb-2'>
         <div className='col-md-6'>
           <MDBInput label='Search Item' size='lg' onChange={handleFilter} type='text' />
