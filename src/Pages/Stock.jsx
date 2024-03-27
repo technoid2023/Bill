@@ -8,8 +8,10 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEdit, faTrash, faPlus } from '@fortawesome/free-solid-svg-icons';
 import { MDBInput, MDBBtn} from 'mdb-react-ui-kit';
 import Load from './Load';
+import { useNavigate } from 'react-router-dom';
 
 const Stock = () => {
+  const navigate=useNavigate()
   const columns = [
     {
       name: 'Item Code',
@@ -104,6 +106,8 @@ const Stock = () => {
 
   function handleEdit(row) {
     console.log('Edit row:', row);
+    Cookies.set('item',JSON.stringify(row))
+    navigate('/dashboard/update-stock')
   }
 
   function handleDelete(row) {

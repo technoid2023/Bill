@@ -14,6 +14,7 @@ import ItemList from '../Pages/ItemList';
 import BillList from '../Pages/BillList';
 import Stock from '../Pages/Stock';
 import ItemUpdate from '../Pages/ItemUpdate';
+import StockUpdate from '../Pages/StockUpdate';
 
 
 
@@ -34,6 +35,7 @@ function MyRoute() {
                 <Route path="item" element={isLoggedIn ? <ItemList /> : <Navigate to="/error" />} />
                 <Route path="bill" element={isLoggedIn ? <BillList /> : <Navigate to="/error" />} />
                 <Route path='update-item'  element={isLoggedIn ? <ItemUpdate /> : <Navigate to="/error" />}/>
+                <Route path='update-stock'  element={isLoggedIn ? <StockUpdate /> : <Navigate to="/error" />}/>
                 <Route path="stock" element={isLoggedIn ? <Stock /> : <Navigate to="/error" />} />
                 <Route path="*" element={<Navigate to="/error" />} />
             </Route>

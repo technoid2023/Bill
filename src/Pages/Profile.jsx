@@ -70,12 +70,12 @@ export default function Profile() {
         }
     }
   return (
-    <section style={{ backgroundColor: '#eee' }}>
+    <section style={{ backgroundColor: 'white' }}>
          <Toaster
                 position="top-center"
                 reverseOrder={false}
             />
-      <MDBContainer className="py-5">
+      <MDBContainer className="py-3">
         
 
         <MDBRow>
