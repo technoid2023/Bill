@@ -128,7 +128,7 @@ const BillList = () => {
           <MDBInput label='Search Bill' size='lg' onChange={handleFilter} type='text' />
         </div>
         <div className='col-md-6 d-flex justify-content-end'>
-          <MDBBtn color='primary'>Add <FontAwesomeIcon icon={faPlus} /></MDBBtn>
+        <MDBBtn href='bill-entry' color='primary'>Add <FontAwesomeIcon  icon={faPlus} /></MDBBtn>
         </div>
       </div>
       <MDBModal open={openView} setOpen={setOpenView} tabIndex='-1'>
