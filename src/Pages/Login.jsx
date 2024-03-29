@@ -157,7 +157,7 @@ function UserLogin() {
               "rgba(0, 0, 0, 0.6) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px, rgba(0, 0, 0, 0.4) 0px -2px 6px 0px inset",
             backgroundImage: `url(${image})`,
             backgroundSize: "cover",
-            
+            minHeight:'42rem'
             
           }}
         >
