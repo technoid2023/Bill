@@ -1,0 +1,51 @@
+.card-view{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    padding: 15px;
+}
+.Icon-style{
+    display: flex;
+  opacity: 0.2;
+  padding: 20px;
+}
+.text{
+    color: #6814FB;
+    font-weight: bold;
+}
+.Dropdown{
+    background-color: #fff;
+}
+.container{
+    margin-bottom: 10px;
+    padding-top: 10px;
+}
+.second_container{
+    margin-top: 20px;
+}
+.view1 {
+    background-color: #A5F1E9;
+    
+}
+.view2 {
+    background-color: #F7E6AD;
+}
+.view3 {
+    background-color: #CEE5D0;
+}
+.view4 {
+    background-color: #F4BFBF;
+}
+.view5 {
+    background-color: #AEE2FF;
+}
+.view6 {
+    background-color: #DFCCFB;
+}
+.view7 {
+    background-color: #DDDDDD;
+}
+.view8 {
+    background-color: #b7f3c9;
+}

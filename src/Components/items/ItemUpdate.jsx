@@ -9,7 +9,7 @@ import {
     MDBInput,
   } from 'mdb-react-ui-kit';
 import Cookies from 'js-cookie';
-import { decrypt} from '../Auth/PrivateRoute';
+import { decrypt} from '../../Auth/PrivateRoute';
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import toast, { Toaster } from 'react-hot-toast';
@@ -73,6 +73,9 @@ function ItemUpdate() {
             navigate('/dashboard/item');
           }, 1000);
         } else {
+          if(res.data.Message==="Session Time Out, Login Again !"){
+            navigate("/");
+          }
           toast.error(res.data.Message);
         }
       });

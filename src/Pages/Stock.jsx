@@ -80,6 +80,9 @@ const Stock = () => {
           setData(response.data.Data);
           setRecords(response.data.Data); // Ensure records are initialized with data
         } else {
+          if(response.data.Message==="Session Time Out, Login Again !"){
+            navigate("/");
+          }
           toast.error(response.data.Message);
         }
       } catch (error) {

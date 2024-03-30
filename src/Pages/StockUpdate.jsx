@@ -73,6 +73,9 @@ function StockUpdate() {
             navigate('/dashboard/stock');
           }, 1000);
         } else {
+          if(res.data.Message==="Session Time Out, Login Again !"){
+            navigate("/");
+          }
           toast.error(res.data.Message);
         }
       });
