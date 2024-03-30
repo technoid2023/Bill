@@ -16,6 +16,7 @@ import Stock from '../Pages/Stock';
 import ItemUpdate from '../Pages/ItemUpdate';
 import StockUpdate from '../Pages/StockUpdate';
 import BillForm from '../Pages/BillForm';
+import Dashboard from '../Components/Dashboard/Dashboard';
 
 
 
@@ -30,6 +31,7 @@ function MyRoute() {
             <Route path="/login" element={<UserLogin />} />
             <Route path='/reset'  element={<Reset/>}/>
             <Route path="/dashboard" element={isLoggedIn ? <Sidebarmenu /> : <Navigate to="/reset" />}>
+                <Route path=''  element={isLoggedIn? <Dashboard /> : <Navigate to="/error" />}/>
                 <Route path='profile'  element={isLoggedIn? <Profile /> : <Navigate to="/error" />}/>
                 <Route path='update-user'  element={isLoggedIn ? <Update /> : <Navigate to="/error" />}/>
                 <Route path="item" element={isLoggedIn ? <ItemList /> : <Navigate to="/error" />} />
