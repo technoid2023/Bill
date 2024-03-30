@@ -1,11 +1,14 @@
+
 import React, { useEffect, useState } from 'react';
 import toast from "react-hot-toast";
 import Cookies from 'js-cookie';
 import { decrypt } from '../Auth/PrivateRoute';
 import axios from 'axios';
 import { MDBContainer, MDBRow, MDBCol, MDBInput, MDBBtn, MDBTable, MDBTableBody, MDBTableHead, MDBDropdown, MDBDropdownToggle, MDBDropdownMenu, MDBDropdownItem, MDBCheckbox } from 'mdb-react-ui-kit';
+import { useNavigate } from 'react-router-dom';
 
 const BillForm = () => {
+  const navigate=useNavigate();
   const [itemList, setItemList] = useState();
   const [selectedItem, setSelectedItem] = useState();
   const [quantity, setQuantity] = useState();
@@ -18,6 +21,7 @@ const BillForm = () => {
   const [cusAddress, setCusAddress] = useState();
   const [isPaid, setIsPaid] = useState(false);
   const [billItems, setBillItems] = useState([]);
+  const [filteredItems, setFilteredItems] = useState([]);
 
   useEffect(() => {
     const encryptToken = Cookies.get('_TK');
@@ -42,10 +46,9 @@ const BillForm = () => {
         amount:(itemRate*quantity)
       };
       setBillItems([...billItems, newItem]);
-      setQuantity();
-      setSelectedItem();
-      setItemRate();
-     
+      setQuantity('');
+      setSelectedItem('');
+      setItemRate('');
     }
   };
 
@@ -55,7 +58,7 @@ const BillForm = () => {
     setBillItems(updatedItems);
   };
 
-const handleGenerateBill = () => {
+  const handleGenerateBill = () => {
     const formData = {
       cus_name: cusName,
       cus_email: cusEmail,
@@ -64,16 +67,19 @@ const handleGenerateBill = () => {
       items: billItems,
       pay: isPaid 
     };
-  if (formData.cus_name && formData.cus_email && formData.cus_mobile && formData.cus_address && formData.items) {
-    axios.post('https://edu-tech-bwe5.onrender.com/v1/bill', formData, {
-      headers: {
-        'token': token
-      }
-    })
+    if (formData.cus_name && formData.cus_email && formData.cus_mobile && formData.cus_address && formData.items) {
+      axios.post('https://edu-tech-bwe5.onrender.com/v1/bill', formData, {
+        headers: {
+          'token': token
+        }
+      })
       .then(response => {
-        if (response.status === 200) {
-          toast.success('Bill generated successfully!');
+        console.log(response);
+        if (response.data.Success === true) {
+          toast.success(`Bill generated, Bill No:${response.data.Bill_no}`);
+
           clearForm();
+          navigate('/dashboard/bill')
         } else {
           toast.error('Failed to generate bill.');
         }
@@ -81,14 +87,12 @@ const handleGenerateBill = () => {
       .catch(error => {
         console.error('An error occurred while generating the bill:', error);
       });
-    console.log(formData);
-  }
-  else{
-    toast.error("Fill the form")
-  }
-  
-};
-   const clearForm = () => {
+    } else {
+      toast.error("Fill the form")
+    }
+  };
+
+  const clearForm = () => {
     setSelectedItem('');
     setQuantity('');
     setItemRate('');
@@ -99,6 +103,7 @@ const handleGenerateBill = () => {
     setIsPaid(false);
     setBillItems([]);
   };
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -109,13 +114,12 @@ const handleGenerateBill = () => {
         });
         if (response.data.Success === true) {
           setItemList(response.data.Data);
+          setFilteredItems(response.data.Data);
         } else if (response.data.Data === undefined) {
           setItemList(['Loading']);
         } else {
           console.log('Data not found');
         }
-        console.log("res", response.data.Data);
-        console.log("jjjjuhu", itemList);
       } catch (error) {
         console.error('An error occurred:', error);
       }
@@ -123,13 +127,29 @@ const handleGenerateBill = () => {
 
     fetchData();
   }, [token]);
-  
 
-    
-  if(itemList!==undefined){
-      
+  const handleSearch = (searchTerm) => {
+    if (!searchTerm) {
+      setFilteredItems(itemList);
+      return;
+    }
+
+    const filtered = itemList.filter(
+      (item) =>
+        item.item_cd.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        item.name.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+    setFilteredItems(filtered);
+  };
+
+  const handleItemSelected = (item) => {
+    setSelectedItem(item.item_cd);
+    setItemRate(item.SP);
+    setChkQty(item.qty);
+  };
+
   return (
-    <MDBContainer style={{ backgroundColor: 'azure', padding: '20px', borderRadius: '10px', boxShadow: '0px 0px 10px 0px rgba(0,0,0,0.1)', overflowX: 'auto' }}>
+    <MDBContainer style={{ backgroundColor: 'white', padding: '20px', borderRadius: '10px', boxShadow: '0px 0px 10px 0px rgba(0,0,0,0.1)', overflowX: 'auto' }}>
       <MDBRow>
         <MDBCol>
           <h2 style={{textAlign:'center', fontFamily:'sans-serif', color:'blue', fontWeight:'bolder'}}>Bill Entry Form</h2>
@@ -177,22 +197,25 @@ const handleGenerateBill = () => {
       </MDBRow>
 
       {/* Item Section */}
-      <MDBRow className="mb-4">
-        <MDBCol>
-          <MDBDropdown>
-            <MDBDropdownToggle style={{ width: '13rem' }}>
+      <MDBRow className="mb-2">
+        {/* Item Dropdown and Input Fields */}
+        <MDBCol md='2'>
+          <MDBDropdown style={{ width: '6rem' }}>
+            <MDBDropdownToggle style={{ width: '8rem' }}>
               {selectedItem ? selectedItem : 'Select Item'}
             </MDBDropdownToggle >
             <MDBDropdownMenu>
-              <MDBInput type="text" label="Search" />
-              {itemList.map((item,index) => (
-                <MDBDropdownItem key={index} onClick={() => {setSelectedItem(item.item_cd)
-                                  setItemRate(item.SP);setChkQty(item.qty)}}>{item.name}</MDBDropdownItem>
+              <MDBInput type="text" label="Search" onChange={(e) => handleSearch(e.target.value)} />
+              {filteredItems.map((item, index) => (
+                <MDBDropdownItem key={index} onClick={() => handleItemSelected(item)}>
+                  {item.item_cd} - {item.name}
+                </MDBDropdownItem>
               ))}
             </MDBDropdownMenu>
           </MDBDropdown>
         </MDBCol>
-        <MDBCol className="mb-4">
+        {/* Other Input Fields */}
+        <MDBCol md='2'>
           <MDBInput
             type="number"
             label="Quantity"
@@ -201,7 +224,7 @@ const handleGenerateBill = () => {
             style={{ width: '100%' }}
           />
         </MDBCol>
-        <MDBCol>
+        <MDBCol md='2'>
           
           <MDBInput
             type="number"
@@ -270,9 +293,6 @@ const handleGenerateBill = () => {
       </MDBRow>
     </MDBContainer>
   );
-  
-
-  }
 };
 
 export default BillForm;
