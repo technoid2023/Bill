@@ -63,7 +63,10 @@ export default function Profile() {
                     }, 1000);
 
                 }
-                else {
+                else {       
+                    if(res.data.Message==="Session Time Out, Login Again !"){
+                      navigate("/");
+                    }
                     toast.error(res.data.Message)
                 }
             })

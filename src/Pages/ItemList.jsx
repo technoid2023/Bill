@@ -97,40 +97,42 @@ const ItemList = () => {
     item_des: "",
   });
 
-  
-  useEffect(() => {
-    const fetchData = async () => {
-      let encryptToken = Cookies.get("_TK");
-      let Token;
-      if (encryptToken === undefined) {
-        return;
-      } else {
-        Token = decrypt(encryptToken);
-        Token = JSON.parse(Token);
-      }
+  const fetchData = async () => {
+    let encryptToken = Cookies.get("_TK");
+    let Token;
+    if (encryptToken === undefined) {
+      return;
+    } else {
+      Token = decrypt(encryptToken);
+      Token = JSON.parse(Token);
+    }
 
-      try {
-        console.log("token",Token);
-        const response = await axios.get(
-          "https://edu-tech-bwe5.onrender.com/v1/item",
-          {
-            headers: {
-              token: Token,
-            },
-          }
-        );
-
-        if (response.data.Success === true) {
-          setData(response.data.Data);
-          setRecords(response.data.Data); 
-        } else {
-          toast.error(response.data.Message);
+    try {
+      console.log("token",Token);
+      const response = await axios.get(
+        "https://edu-tech-bwe5.onrender.com/v1/item",
+        {
+          headers: {
+            token: Token,
+          },
         }
-      } catch (error) {
-        console.error("Error fetching data:", error);
-        toast.error("Failed to fetch data");
+      );
+
+      if (response.data.Success === true) {
+        setData(response.data.Data);
+        setRecords(response.data.Data); 
+      } else {
+        if(response.data.Message==="Session Time Out, Login Again !"){
+          navigate("/");
+        }
+        toast.error(response.data.Message);
       }
-    };
+    } catch (error) {
+      console.error("Error fetching data:", error);
+      toast.error("Failed to fetch data");
+    }
+  };
+  useEffect(() => {
 
     fetchData();
   }, []);
@@ -201,7 +203,33 @@ const ItemList = () => {
   }
 
   function handleDelete(row) {
-    console.log("Delete row:", row);
+    console.log("Delete row:", row._id);
+    const encryptToken = Cookies.get("_TK");
+    if (!encryptToken) {
+      console.error("Token not found.");
+      return;
+    }
+    const decryptedToken = decrypt(encryptToken);
+    const Token = JSON.parse(decryptedToken);
+    axios.delete(`https://edu-tech-bwe5.onrender.com/v1/item/${row._id}`,  {
+      headers: {
+        'token': Token
+      }
+    })
+    .then(response => {
+      console.log(response);
+      if (response.data.Success === true) {
+        toast.success(`Item deleted successfully`);
+        fetchData();
+      } else {
+        toast.error('Failed to add item.');
+      }
+    })
+    .catch(error => {
+      console.error('An error occurred while adding the item:', error);
+      toast.error("Failed to add item. Please try again later.");
+    });
+
   }
 
   const handleView = (row) => {

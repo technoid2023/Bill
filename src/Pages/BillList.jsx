@@ -1,6 +1,7 @@
 import axios from 'axios';
 import Cookies from 'js-cookie';
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import DataTable from 'react-data-table-component';
 import { decrypt } from '../Auth/PrivateRoute';
 import toast from 'react-hot-toast';
@@ -59,6 +60,7 @@ const BillList = () => {
   const [records, setRecords] = useState(data);
   const [openView, setOpenView] = useState(false);
   const [itemDetails, setItemDetails] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -81,7 +83,10 @@ const BillList = () => {
         if (response.data.Success === true) {
           setData(response.data.Data);
           setRecords(response.data.Data); // Ensure records are initialized with data
-        } else {
+        } else { 
+          if(response.data.Message==="Session Time Out, Login Again !"){
+            navigate("/");
+          }
           toast.error(response.data.Message);
         }
       } catch (error) {

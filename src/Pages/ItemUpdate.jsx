@@ -73,6 +73,9 @@ function ItemUpdate() {
             navigate('/dashboard/item');
           }, 1000);
         } else {
+          if(res.data.Message==="Session Time Out, Login Again !"){
+            navigate("/");
+          }
           toast.error(res.data.Message);
         }
       });
