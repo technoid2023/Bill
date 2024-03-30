@@ -2,7 +2,7 @@ import axios from "axios";
 import Cookies from "js-cookie";
 import React, { useEffect, useState } from "react";
 import DataTable from "react-data-table-component";
-import { decrypt } from "../Auth/PrivateRoute";
+import { decrypt } from "../../Auth/PrivateRoute";
 import toast from "react-hot-toast";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -22,7 +22,7 @@ import {
   MDBModalBody,
   MDBModalFooter,
 } from "mdb-react-ui-kit";
-import Load from "./Load";
+import Load from "../../Pages/Load";
 import { useNavigate } from "react-router-dom";
 
 const ItemList = () => {
@@ -248,6 +248,7 @@ const ItemList = () => {
     setOpenAdd(false);
   };
   return (
+    
     <div className="container mt-2">
       <h3
         style={{

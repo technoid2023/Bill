@@ -10,10 +10,10 @@ import Register from '../Pages/Registration';
 import Update from '../Pages/UserUpdate';
 
 import { isLoggedIn } from '../Auth/PrivateRoute';
-import ItemList from '../Pages/ItemList';
+import ItemList from '../Components/items/ItemList';
 import BillList from '../Pages/BillList';
 import Stock from '../Pages/Stock';
-import ItemUpdate from '../Pages/ItemUpdate';
+import ItemUpdate from '../Components/items/ItemUpdate';
 import StockUpdate from '../Pages/StockUpdate';
 import BillForm from '../Pages/BillForm';
 import Dashboard from '../Components/Dashboard/Dashboard';
