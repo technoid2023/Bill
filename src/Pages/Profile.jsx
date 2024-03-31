@@ -72,6 +72,42 @@ export default function Profile() {
             })
         }
     }
+    const handleStore=async()=>{ 
+      console.log(Token);
+      const response = await axios.post('https://edu-tech-bwe5.onrender.com/v1/store', {},{
+        headers: {
+          'token': Token
+        }
+      });
+      // console.log(response);
+      if (response.data.Success === true) {
+        toast.success('Store Updated !')
+        Cookies.remove('_ST')
+        const response2 = await axios.get('https://edu-tech-bwe5.onrender.com/v1/store',{
+        headers: {
+          'token': Token
+        }
+      });
+      console.log(response2);
+      if (response2.data.Success === true) {
+        const backgroundData = response2.data.Data[0];
+        Cookies.set("_ST", JSON.stringify(backgroundData));
+      }
+        setTimeout(() => {
+          navigate("/dashboard");
+        }, 100);
+      } else { 
+        if(response.data.Message==="Session Time Out, Login Again !"){
+          navigate("/");
+          Cookies.remove('_UR')
+          Cookies.remove('_TK')
+        }
+        toast.error(response.data.Message);
+      }
+    
+  };
+
+    
   return (
     <section style={{ backgroundColor: 'white' }}>
          <Toaster
@@ -102,29 +138,8 @@ export default function Profile() {
 
             <MDBCard className="mb-4 mb-lg-0">
               <MDBCardBody className="p-0">
-                <MDBListGroup flush className="rounded-3">
-                  <MDBListGroupItem className="d-flex justify-content-between align-items-center p-3">
-                    <MDBIcon fas icon="globe fa-lg text-warning" />
-                    <MDBCardText>https://mdbootstrap.com</MDBCardText>
-                  </MDBListGroupItem>
-                  <MDBListGroupItem className="d-flex justify-content-between align-items-center p-3">
-                    <MDBIcon fab icon="github fa-lg" style={{ color: '#333333' }} />
-                    <MDBCardText>mdbootstrap</MDBCardText>
-                  </MDBListGroupItem>
-                  <MDBListGroupItem className="d-flex justify-content-between align-items-center p-3">
-                    <MDBIcon fab icon="twitter fa-lg" style={{ color: '#55acee' }} />
-                    <MDBCardText>@mdbootstrap</MDBCardText>
-                  </MDBListGroupItem>
-                  <MDBListGroupItem className="d-flex justify-content-between align-items-center p-3">
-                    <MDBIcon fab icon="instagram fa-lg" style={{ color: '#ac2bac' }} />
-                    <MDBCardText>mdbootstrap</MDBCardText>
-                  </MDBListGroupItem>
-                  <MDBListGroupItem className="d-flex justify-content-between align-items-center p-3">
-                    <MDBIcon fab icon="facebook fa-lg" style={{ color: '#3b5998' }} />
-                    <MDBCardText>mdbootstrap</MDBCardText>
-                  </MDBListGroupItem>
-                </MDBListGroup>
-              </MDBCardBody>
+                <MDBBtn onClick={() => handleStore()}>Update Store</MDBBtn>
+               </MDBCardBody>
             </MDBCard>
           </MDBCol>
           <MDBCol lg="8">

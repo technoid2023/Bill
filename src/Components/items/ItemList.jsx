@@ -124,6 +124,8 @@ const ItemList = () => {
       } else {
         if(response.data.Message==="Session Time Out, Login Again !"){
           navigate("/");
+          Cookies.remove('_UR')
+          Cookies.remove('_TK')
         }
         toast.error(response.data.Message);
       }

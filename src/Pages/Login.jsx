@@ -96,26 +96,39 @@ function UserLogin() {
             password: formData.password,
           })
           .then((response) => {
-            setIsLoading(false);
+            
             console.log("tested");
             let data = response.data;
             console.log(data);
             if (data.Success === true) {
               let rawToken = data.Token;
-
               let encryptToken = encrypt(JSON.stringify(rawToken));
               Cookies.set("_TK", encryptToken);
-
               let userData = data.Data[0];
-
               let encryptUser = encrypt(JSON.stringify(userData));
-
               Cookies.set("_UR", encryptUser, { expires: 1 });
-              setTimeout(() => {
-                navigate("/dashboard");
-              }, 100);
-              toast.success(`Welcome Back ${userData.name}`);
+              // toast.success(`Welcome Back ${userData.name}`);
               regenerateCaptcha();
+              
+              // Call the background API
+              
+              const backgroundAPICall = axios.get("https://edu-tech-bwe5.onrender.com/v1/store", {headers: {
+                'token': rawToken}
+              });
+  
+              // Redirect to dashboard after both API calls are completed
+              Promise.all([backgroundAPICall]).then((responses) => {
+                // Save background API result to cookies\
+                console.log(responses[0].data);
+                const backgroundData = responses[0].data.Data[0];
+                Cookies.set("_ST", JSON.stringify(backgroundData));
+                setIsLoading(false);
+                toast.success(`Welcome Back ${userData.name}`);
+                // Redirect to dashboard
+                setTimeout(() => {
+                  navigate("/dashboard");
+                }, 100);
+              });
             } else {
               toast.error("Invalid User Credentials !");
               regenerateCaptcha();
@@ -143,6 +156,8 @@ function UserLogin() {
       regenerateCaptcha();
     }
   };
+  
+  
 
   return (
     <Layout>

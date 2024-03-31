@@ -1,8 +1,13 @@
 import React from "react";
 import "./Dashboard.css";
 import { isLoggedIn } from "../../Auth/PrivateRoute";
+import Cookies from "js-cookie";
 
 function Dashboard(props) {
+  let statData=Cookies.get('_ST')
+  statData=JSON.parse(statData)
+  let stats=statData;
+  console.log(statData);
   console.log("isLoggedIn", isLoggedIn());
   return (
     <div>
@@ -59,9 +64,9 @@ function Dashboard(props) {
             <div class="card h-100 card-view view1" style={{ backgroundColor: "#A5F1E9" }}>
               <div>
                 <p class="fs-6 text">GROSS SALES</p>
-                <h5 class="card-title">₹0.00</h5>
+                <h5 class="card-title">₹{stats.gross_sale}.00</h5>
                 <p class="card-text">
-                  <small class="text-muted">₹0.00 Charges</small>
+                  <small class="text-muted">₹{stats.gross_sale}.00 Charges</small>
                 </p>
               </div>
 
@@ -86,11 +91,11 @@ function Dashboard(props) {
           <a href="/showSales">
             <div class="card h-100 card-view view2" style={{backgroundColor: '#F7E6AD'}}>
               <div>
-                <p class="fs-6 text">DISCOUNTS</p>
+                <p class="fs-6 text">DUE AMOUNTS</p>
                 {/* <h5 class="card-title text">DISCOUNTS</h5> */}
-                <h5 class="card-title">₹0.00</h5>
+                <h5 class="card-title">₹{stats.due_amount}.00</h5>
                 <p class="card-text">
-                  <small class="text-muted">₹0.00 Discounted Amount,</small>
+                  <small class="text-muted">₹{stats.due_amount}.00 Amount Unpaid</small>
                 </p>
               </div>
               <div className="Icon-style">
@@ -157,10 +162,10 @@ function Dashboard(props) {
           <a href="/showSales">
             <div class="card h-100 card-view view4" style={{backgroundColor: '#F4BFBF'}}>
               <div>
-                <h5 class="card-title text">NET SALES</h5>
-                <h5 class="card-title">₹0.00</h5>
+                <h5 class="card-title text">PROFITS</h5>
+                <h5 class="card-title">₹{stats.net_profit}</h5>
                 <p class="card-text">
-                  <small class="text-muted">0 Transactions</small>
+                  <small class="text-muted">{stats.customer_count} Transactions</small>
                 </p>
               </div>
               <div className="Icon-style">
@@ -270,10 +275,10 @@ function Dashboard(props) {
           <a href="/showSales">
             <div class="card h-100 card-view view6" style={{backgroundColor: '#DFCCFB'}}>
               <div>
-                <h5 class="card-title text">NET TOTAL</h5>
-                <h5 class="card-title">₹0.00</h5>
+                <h5 class="card-title text">Unpaid Bills</h5>
+                <h5 class="card-title">No : {stats.unpaid_bill}</h5>
                 <p class="card-text">
-                  <small class="text-muted">₹0.00 Round Off Amount</small>
+                  <small class="text-muted">₹{stats.due_amount}.00 </small>
                 </p>
               </div>
               <div className="Icon-style">
@@ -297,10 +302,10 @@ function Dashboard(props) {
           <a href="/showSales">
             <div class="card h-100 card-view view7" style={{backgroundColor: '#DDDDDD'}}>
               <div>
-                <h5 class="card-title text">SUPPLIER CREDIT</h5>
-                <h5 class="card-title">₹0.00</h5>
+                <h5 class="card-title text">PAID BILLS</h5>
+                <h5 class="card-title">No: {stats.paid_bill}</h5>
                 <p class="card-text">
-                  <small class="text-muted">₹0.00 Supplier Debit</small>
+                  <small class="text-muted">₹{stats.gross_sale-stats.due_amount}.00 </small>
                 </p>
               </div>
               <div className="Icon-style">
@@ -328,9 +333,9 @@ function Dashboard(props) {
             <div class="card h-100 card-view view8" style={{backgroundColor: '#b7f3c9'}}>
               <div>
                 <h5 class="card-title text">TOTAL CUSTOMERS</h5>
-                <h5 class="card-title">0</h5>
+                <h5 class="card-title">{stats.customer_count}</h5>
                 <p class="card-text">
-                  <small class="text-muted">0 Credit Customers</small>
+                  <small class="text-muted">{stats.customer_count} Customers</small>
                 </p>
               </div>
               <div className="Icon-style">

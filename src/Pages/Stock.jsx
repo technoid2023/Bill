@@ -81,9 +81,12 @@ const Stock = () => {
           setRecords(response.data.Data); // Ensure records are initialized with data
         } else {
           if(response.data.Message==="Session Time Out, Login Again !"){
+            toast.error(response.data.Message);
             navigate("/");
+            Cookies.remove('_UR')
+          Cookies.remove('_TK')
           }
-          toast.error(response.data.Message);
+          
         }
       } catch (error) {
         console.error('Error fetching data:', error);
