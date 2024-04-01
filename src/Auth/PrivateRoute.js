@@ -27,6 +27,7 @@
 
 import Cookies from "js-cookie";
 import CryptoJS from "crypto-js";
+import Error from "../Pages/Error";
 
 const secretKey = "poms-nic";
 
@@ -38,21 +39,28 @@ function decrypt(ciphertext, key = secretKey) {
   let bytes = CryptoJS.AES.decrypt(ciphertext, key);
   return bytes.toString(CryptoJS.enc.Utf8);
 }
-
-const isLoggedIn = () => {
-  const encryptUserTK = Cookies.get('_TK');
-  const encryptUserUR = Cookies.get('_UR');
-
-  if (encryptUserTK || encryptUserUR) {
-    const decryptedTK = encryptUserTK ? decrypt(encryptUserTK) : null;
-    const decryptedUR = encryptUserUR ? decrypt(encryptUserUR) : null;
-
-    if (isValidToken(decryptedTK) || isValidToken(decryptedUR)) {
-      return true;
+const accessCheck=()=>{
+  const ur=Cookies.get('_UR')
+    const st=Cookies.get('_ST')
+    const tk=Cookies.get('_TK')
+    if(!ur || !st || !tk){
+    return <Error/>
     }
-  }
-  
-  return false;
+}
+const isLoggedIn = () => {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      const encryptUserTK = Cookies.get('_TK');
+      const encryptUserUR = Cookies.get('_UR');
+      const encryptUserST = Cookies.get('_ST');
+      
+      if (encryptUserTK && encryptUserUR && encryptUserST) {
+        resolve(true);
+      } else {
+        resolve(false);
+      }
+    }, 2000); // Wait for 2 seconds before resolving the promise
+  });
 };
 
 const isValidToken = (token) => {
@@ -63,4 +71,4 @@ const isValidToken = (token) => {
   return tokenData.expiry > Date.now();
 };
 
-export { encrypt, decrypt, isLoggedIn };
+export { encrypt, decrypt, isLoggedIn ,accessCheck};

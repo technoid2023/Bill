@@ -30,17 +30,17 @@ function MyRoute() {
             <Route path="/signup" element={<Register />} />
             <Route path="/login" element={<UserLogin />} />
             <Route path='/reset'  element={<Reset/>}/>
-            <Route path="/dashboard" element={isLoggedIn ? <Sidebarmenu /> : <Navigate to="/reset" />}>
-                <Route path=''  element={isLoggedIn? <Dashboard /> : <Navigate to="/error" />}/>
-                <Route path='profile'  element={isLoggedIn? <Profile /> : <Navigate to="/error" />}/>
-                <Route path='update-user'  element={isLoggedIn ? <Update /> : <Navigate to="/error" />}/>
-                <Route path="item" element={isLoggedIn ? <ItemList /> : <Navigate to="/error" />} />
-                <Route path="bill" element={isLoggedIn ? <BillList /> : <Navigate to="/error" />} />
-                <Route path='update-item'  element={isLoggedIn ? <ItemUpdate /> : <Navigate to="/error" />}/>
-                <Route path="bill-entry" element={isLoggedIn ? <BillForm /> : <Navigate to="/error" />} />
-                <Route path='update-stock'  element={isLoggedIn ? <StockUpdate /> : <Navigate to="/error" />}/>
-                <Route path="stock" element={isLoggedIn ? <Stock /> : <Navigate to="/error" />} />
-                <Route path="*" element={<Navigate to="/error" />} />
+            <Route path="/dashboard" element={isLoggedIn()? <Sidebarmenu />:<Error/>}>
+                <Route path=''  element={isLoggedIn()? <Dashboard /> : <Error/>}/>
+                <Route path='profile'  element={isLoggedIn()? <Profile /> : <Error/>}/>
+                <Route path='update-user'  element={isLoggedIn() ? <Update /> : <Error/>}/>
+                <Route path="item" element={isLoggedIn() ? <ItemList /> : <Error/>} />
+                <Route path="bill" element={isLoggedIn() ? <BillList /> : <Error/>} />
+                <Route path='update-item'  element={isLoggedIn() ? <ItemUpdate /> : <Error/>}/>
+                <Route path="bill-entry" element={isLoggedIn() ? <BillForm /> : <Error/>} />
+                <Route path='update-stock'  element={isLoggedIn() ? <StockUpdate /> : <Error/>}/>
+                <Route path="stock" element={isLoggedIn() ? <Stock /> : <Error/>} />
+                <Route path="*" element={<Error/>} />
             </Route>
             <Route path="/error" element={<Error />} />
             <Route path="*" element={<Error />} />

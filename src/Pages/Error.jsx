@@ -11,19 +11,25 @@ const Error = () => {
   useEffect(() => {
     // Check if user is logged in
     const user = Cookies.get('_UR');
+    const tk = Cookies.get('_TK');
+    const st = Cookies.get('_ST');
     console.log(user);
-    if (user) {
+    if (user && tk && st) {
       setCheckuser(true)
       setMsg('Warning : PAGE RESTRICTED !!')
     } else {
       setCheckuser(false)
+      const allCookies = Cookies.get();
+    Object.keys(allCookies).forEach(cookieName => {
+      Cookies.remove(cookieName);
+    });
       setMsg('Error : PAGE NOT FOUND !')
     }
     
     
   }, [1]);
   return (
-    <Layout>
+    
       <div style={{
      backgroundColor: 'silver',
       borderRadius: '10px',
@@ -54,7 +60,7 @@ const Error = () => {
       </MDBRow>
     </MDBContainer>
     </div>
-    </Layout>
+    
 
   );
 };

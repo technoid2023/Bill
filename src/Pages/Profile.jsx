@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   MDBCol,
   MDBContainer,
@@ -16,14 +16,20 @@ import {
   MDBListGroupItem
 } from 'mdb-react-ui-kit';
 import Cookies from 'js-cookie';
-import { decrypt } from '../Auth/PrivateRoute';
+import { accessCheck, decrypt } from '../Auth/PrivateRoute';
 import { Link } from 'react-router-dom';
 import toast, { Toaster } from 'react-hot-toast';
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
+
 export default function Profile() {
-    const navigate = useNavigate();
+ 
+  const navigate = useNavigate();
+ 
+  accessCheck();
+    
+  
     let encryptUser = Cookies.get('_UR');
     let User;
     if (encryptUser === undefined) {
