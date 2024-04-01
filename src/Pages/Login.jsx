@@ -132,6 +132,7 @@ function UserLogin() {
             } else {
               toast.error("Invalid User Credentials !");
               regenerateCaptcha();
+              setIsLoading(false);
             }
           })
           .catch((error) => {
