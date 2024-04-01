@@ -24,6 +24,7 @@ import {
 } from "mdb-react-ui-kit";
 import Load from "../../Pages/Load";
 import { useNavigate } from "react-router-dom";
+import Error from "../../Pages/Error";
 
 const ItemList = () => {
   const navigate = useNavigate();
@@ -106,7 +107,12 @@ const ItemList = () => {
       Token = decrypt(encryptToken);
       Token = JSON.parse(Token);
     }
-
+    const ur=Cookies.get('_UR')
+    const st=Cookies.get('_ST')
+    const tk=Cookies.get('_TK')
+    if(!ur || !st || !tk){
+    return <Error/>
+    }
     try {
       console.log("token",Token);
       const response = await axios.get(

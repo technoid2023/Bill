@@ -9,9 +9,11 @@ import { faEdit, faTrash, faPlus } from '@fortawesome/free-solid-svg-icons';
 import { MDBInput, MDBBtn} from 'mdb-react-ui-kit';
 import Load from './Load';
 import { useNavigate } from 'react-router-dom';
+import Error from './Error';
 
 const Stock = () => {
   const navigate=useNavigate()
+ 
   const columns = [
     {
       name: 'Item Code',
@@ -57,7 +59,7 @@ const Stock = () => {
   const [data, setData] = useState([]);
   const [records, setRecords] = useState(data);
 
-
+ 
   useEffect(() => {
     const fetchData = async () => {
       let encryptToken = Cookies.get('_TK');
@@ -68,7 +70,12 @@ const Stock = () => {
         Token = decrypt(encryptToken);
         Token = JSON.parse(Token);
       }
-
+      const ur=Cookies.get('_UR')
+      const st=Cookies.get('_ST')
+      const tk=Cookies.get('_TK')
+      if(!ur || !st || !tk){
+      return <Error/>
+      }
       try {
         const response = await axios.get('https://edu-tech-bwe5.onrender.com/v1/item', {
           headers: {

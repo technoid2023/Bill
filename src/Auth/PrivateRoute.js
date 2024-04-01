@@ -40,12 +40,7 @@ function decrypt(ciphertext, key = secretKey) {
   return bytes.toString(CryptoJS.enc.Utf8);
 }
 const accessCheck=()=>{
-  const ur=Cookies.get('_UR')
-    const st=Cookies.get('_ST')
-    const tk=Cookies.get('_TK')
-    if(!ur || !st || !tk){
-    return <Error/>
-    }
+  
 }
 const isLoggedIn = () => {
   return new Promise((resolve, reject) => {

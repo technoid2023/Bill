@@ -21,13 +21,19 @@ import { Link } from 'react-router-dom';
 import toast, { Toaster } from 'react-hot-toast';
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import Error from './Error';
 
 
 export default function Profile() {
  
   const navigate = useNavigate();
  
-  accessCheck();
+  const ur=Cookies.get('_UR')
+  const st=Cookies.get('_ST')
+  const tk=Cookies.get('_TK')
+  if(!ur || !st || !tk){
+  return <Error/>
+  }
     
   
     let encryptUser = Cookies.get('_UR');

@@ -13,8 +13,10 @@ import { decrypt} from '../../Auth/PrivateRoute';
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import toast, { Toaster } from 'react-hot-toast';
+import Error from '../../Pages/Error';
 
 function ItemUpdate() {
+  
     let item=Cookies.get('item')
     item=JSON.parse(item)
   console.log("item: ", item._id);

@@ -2,8 +2,15 @@ import React from "react";
 import "./Dashboard.css";
 import { isLoggedIn } from "../../Auth/PrivateRoute";
 import Cookies from "js-cookie";
+import Error from "../../Pages/Error";
 
 function Dashboard(props) {
+  const ur=Cookies.get('_UR')
+    const st=Cookies.get('_ST')
+    const tk=Cookies.get('_TK')
+    if(!ur || !st || !tk){
+    return <Error/>
+    }
   let statData=Cookies.get('_ST')
   statData=JSON.parse(statData)
   let stats=statData;

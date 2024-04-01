@@ -9,6 +9,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEdit, faTrash, faEye, faPlus } from '@fortawesome/free-solid-svg-icons';
 import { MDBInput, MDBBtn, MDBModal, MDBModalDialog, MDBModalContent, MDBModalHeader, MDBModalTitle, MDBModalBody, MDBModalFooter } from 'mdb-react-ui-kit';
 import Load from './Load';
+import Error from './Error';
 
 const BillList = () => {
   const columns = [
@@ -61,7 +62,14 @@ const BillList = () => {
   const [openView, setOpenView] = useState(false);
   const [itemDetails, setItemDetails] = useState(null);
   const navigate = useNavigate();
-
+  useEffect(()=>{
+    const ur=Cookies.get('_UR')
+    const st=Cookies.get('_ST')
+    const tk=Cookies.get('_TK')
+    if(!ur || !st || !tk){
+    return <Error/>
+    }
+  },[])
   useEffect(() => {
     const fetchData = async () => {
       let encryptToken = Cookies.get('_TK');
@@ -72,7 +80,7 @@ const BillList = () => {
         Token = decrypt(encryptToken);
         Token = JSON.parse(Token);
       }
-
+      
       try {
         const response = await axios.get('https://edu-tech-bwe5.onrender.com/v1/bill', {
           headers: {
