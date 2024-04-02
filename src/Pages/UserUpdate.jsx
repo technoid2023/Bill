@@ -104,13 +104,13 @@ function Update() {
                 <MDBInput wrapperClass='mb-4' label='Name' size='lg' value={user.name} onChange={handleInput} name='name' type='text' />
               </MDBCol>
               <MDBCol md='9'>
-                <MDBInput wrapperClass='mb-4' label='Company' size='lg' value={user.company} onChange={handleInput} name='company' type='text' />
+                <MDBInput wrapperClass='mb-4' label='Company' size='lg' value={user.company} onChange={handleInput} name='company' type='text' readOnly/>
               </MDBCol>
               
             </MDBRow>
             <MDBRow>
             <MDBCol md='4'>
-                <MDBInput wrapperClass='mb-4' label='Email' size='lg' value={user.email} onChange={handleInput} name='email' type='email' />
+                <MDBInput wrapperClass='mb-4' label='Email' size='lg' value={user.email} onChange={handleInput} name='email' type='email' readOnly/>
               </MDBCol>
               <MDBCol md='4'>
                 <MDBInput wrapperClass='mb-4' label='Mobile' size='lg' value={user.mobile} onChange={handleInput} name='mobile' type='number' />
