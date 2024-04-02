@@ -21,7 +21,20 @@ import Dashboard from '../Components/Dashboard/Dashboard';
 
 
 
+
 function MyRoute() {
+    
+    const PrivateRoute=({element})=>{
+        let loggedIn=isLoggedIn();
+        console.log("lllo",isLoggedIn());
+        
+        console.log("log check",loggedIn);
+        
+        return isLoggedIn()?element:(<Navigate to='/error'/>)
+
+    }
+
+
     return (
         <Routes>
            
@@ -30,17 +43,17 @@ function MyRoute() {
             <Route path="/signup" element={<Register />} />
             <Route path="/login" element={<UserLogin />} />
             <Route path='/reset'  element={<Reset/>}/>
-            <Route path="/dashboard" element={isLoggedIn ? <Sidebarmenu /> : <Navigate to="/reset" />}>
-                <Route path=''  element={isLoggedIn? <Dashboard /> : <Navigate to="/error" />}/>
-                <Route path='profile'  element={isLoggedIn? <Profile /> : <Navigate to="/error" />}/>
-                <Route path='update-user'  element={isLoggedIn ? <Update /> : <Navigate to="/error" />}/>
-                <Route path="item" element={isLoggedIn ? <ItemList /> : <Navigate to="/error" />} />
-                <Route path="bill" element={isLoggedIn ? <BillList /> : <Navigate to="/error" />} />
-                <Route path='update-item'  element={isLoggedIn ? <ItemUpdate /> : <Navigate to="/error" />}/>
-                <Route path="bill-entry" element={isLoggedIn ? <BillForm /> : <Navigate to="/error" />} />
-                <Route path='update-stock'  element={isLoggedIn ? <StockUpdate /> : <Navigate to="/error" />}/>
-                <Route path="stock" element={isLoggedIn ? <Stock /> : <Navigate to="/error" />} />
-                <Route path="*" element={<Navigate to="/error" />} />
+            <Route path="/dashboard" element={<PrivateRoute element={<Sidebarmenu/>}/>}>
+                <Route path=''  element={<PrivateRoute element={<Dashboard/>}/>}/>
+                <Route path='profile'  element={<PrivateRoute element={<Profile/>}/>}/>
+                <Route path='update-user'  element={<PrivateRoute element={<Update/>}/>}/>
+                <Route path="item" element={<PrivateRoute element={<ItemList/>}/>} />
+                <Route path="bill" element={<PrivateRoute element={<BillList/>}/>} />
+                <Route path='update-item'  element={<PrivateRoute element={<ItemUpdate/>}/>}/>
+                <Route path="bill-entry" element={<PrivateRoute element={<BillForm/>}/>} />
+                <Route path='update-stock'  element={<PrivateRoute element={<StockUpdate/>}/>}/>
+                <Route path="stock" element={<PrivateRoute element={<Stock/>}/>} />
+                <Route path="*" element={<Error/>} />
             </Route>
             <Route path="/error" element={<Error />} />
             <Route path="*" element={<Error />} />
