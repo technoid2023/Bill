@@ -1,4 +1,4 @@
-import React from 'react';
+import React,{useState} from 'react';
 import {
   MDBCol,
   MDBContainer,
@@ -24,6 +24,7 @@ import { useNavigate } from "react-router-dom";
 
 export default function Profile() {
     const navigate = useNavigate();
+    const [loading, setLoading] = useState(false);
     let encryptUser = Cookies.get('_UR');
     let User;
     if (encryptUser === undefined) {
@@ -74,6 +75,7 @@ export default function Profile() {
     }
     const handleStore=async()=>{ 
       console.log(Token);
+      setLoading(true);
       const response = await axios.post('https://edu-tech-bwe5.onrender.com/v1/store', {},{
         headers: {
           'token': Token
@@ -104,7 +106,7 @@ export default function Profile() {
         }
         toast.error(response.data.Message);
       }
-    
+      setLoading(false);
   };
 
     
@@ -138,7 +140,17 @@ export default function Profile() {
 
             <MDBCard className="mb-4 mb-lg-0">
               <MDBCardBody className="p-0">
-                <MDBBtn onClick={() => handleStore()}>Update Store</MDBBtn>
+                {/* <MDBBtn onClick={() => handleStore()}>Update Store</MDBBtn> */}
+                <MDBBtn onClick={() => handleStore()}>
+                  {loading ? (
+                    <>
+                      <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                      Updating Store...
+                    </>
+                  ) : (
+                    "Update Store"
+                  )}
+                </MDBBtn>
                </MDBCardBody>
             </MDBCard>
           </MDBCol>
