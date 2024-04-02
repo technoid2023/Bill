@@ -1,29 +1,3 @@
-// import Cookies from "js-cookie";
-// import CryptoJS from "crypto-js";
-
-
-
-
-// function encrypt(text ) {
-//   return CryptoJS.AES.encrypt(text, "poms-nic").toString();
-// }
-
-
-// function decrypt(ciphertext, key = "poms-nic") {
-//   let bytes = CryptoJS.AES.decrypt(ciphertext, key);
-//   return bytes.toString(CryptoJS.enc.Utf8);
-// }
-
-// const isLoggedIn = () => {
-//   const encryptUserTK = Cookies.get('_TK');
-
-//   const encryptUserUR = Cookies.get('_UR');
-//   console.log(encryptUserTK,encryptUserUR);
-//   return encryptUserTK || encryptUserUR ? true : false;
-// };
-
-// export { encrypt,decrypt,isLoggedIn};
-
 
 import Cookies from "js-cookie";
 import CryptoJS from "crypto-js";
@@ -42,21 +16,24 @@ function decrypt(ciphertext, key = secretKey) {
 const isLoggedIn = () => {
   const encryptUserTK = Cookies.get('_TK');
   const encryptUserUR = Cookies.get('_UR');
+  const encryptUserST = Cookies.get('_ST');
 
-  if (encryptUserTK || encryptUserUR) {
+  if (encryptUserTK && encryptUserUR && encryptUserST) {
     const decryptedTK = encryptUserTK ? decrypt(encryptUserTK) : null;
-    const decryptedUR = encryptUserUR ? decrypt(encryptUserUR) : null;
-
-    if (isValidToken(decryptedTK) || isValidToken(decryptedUR)) {
-      return true;
-    }
+    console.log(isValidToken(decryptedTK));
+    return true
   }
-  
-  return false;
+  else{
+    const cookieKeys=Object.keys(Cookies.get());
+        cookieKeys.forEach(key=>{
+            Cookies.remove(key);
+        })
+    return false
+  }
 };
 
 const isValidToken = (token) => {
-  if (!token) {
+  if (!token) { 
     return false;
   }
   const tokenData = JSON.parse(token);
