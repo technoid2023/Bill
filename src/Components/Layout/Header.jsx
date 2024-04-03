@@ -34,6 +34,7 @@ const Header = () => {
         Cookies.remove('_UR');
         toast.success('Logged Out !');
         Cookies.remove('_TK')
+      Cookies.remove('_ST')
         setTimeout(() => {
             navigate('/login');
         }, 500);
