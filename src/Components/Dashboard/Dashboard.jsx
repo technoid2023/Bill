@@ -134,14 +134,13 @@ function Dashboard(props) {
         <div class="col main-card">
           <a href="/showSales">
             <div class="card h-100 card-view view3" style={{backgroundColor: '#CEE5D0'}}>
-              <div>
-                <p class="fs-6 text">REFUNDS</p>
-                {/* <h5 class="card-title text">REFUNDS</h5> */}
-                <h5 class="card-title">₹0.00</h5>
-                <p class="card-text">
-                  <small class="text-muted">₹0.00 Refunded Amount</small>
-                </p>
-              </div>
+             <div>
+                  <h5 class="card-title text">PROFITS</h5>
+                  <h5 class="card-title">₹{stats.net_profit}.00</h5>
+                  <p class="card-text">
+                    <small class="text-muted">{stats.customer_count} Transactions</small>
+                  </p>
+                </div>
               <div className="Icon-style">
                 <svg
                   width="60"
