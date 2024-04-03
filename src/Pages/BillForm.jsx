@@ -248,7 +248,7 @@ const BillForm = () => {
       {/* Table Section */}
       <MDBRow>
         <MDBCol>
-          <MDBTable>
+          <MDBTable style={{overflow:'auto'}}>
             <MDBTableHead style={{ backgroundColor: '#f8f9fa' }}>
               <tr>
                 <th>Item</th>
