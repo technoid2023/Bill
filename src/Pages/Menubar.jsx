@@ -4,7 +4,7 @@ import Layout from '../Components/Layout/Layout';
 
 
 import './SidebarMenu.css';
-import {faUserTie,faPeopleGroup,faLandmark,faStore ,faIndustry,faCubesStacked,faSignOut,faBars} from '@fortawesome/free-solid-svg-icons';
+import {faUserTie,faBell,faBoxOpen,faStore ,faSignOut,faBars,faWarehouse,faCashRegister} from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import { Outlet, useNavigate } from 'react-router-dom';
@@ -38,11 +38,11 @@ const handleLogout = () => {
 
 const menuItems = [
     { name: 'Profile', icon: faUserTie, link: 'profile' },
-    { name: 'Inventory', icon: faPeopleGroup, link: 'item' },
-    { name: 'Billing', icon: faLandmark, link: 'bill' },
+    { name: 'Inventory', icon: faWarehouse, link: 'item' },
+    { name: 'Billing', icon: faCashRegister, link: 'bill' },
     { name: 'Orders', icon: faStore, link: '/marketing' },
-    { name: 'Stocks', icon: faCubesStacked, link: 'stock' },
-    { name: 'Notifiation', icon: faIndustry, link: '/production-development' },
+    { name: 'Stocks', icon: faBoxOpen, link: 'stock' },
+    { name: 'Notifiation', icon: faBell, link: '/production-development' },
 ];
 
     
