@@ -1,7 +1,7 @@
 import axios from 'axios';
 import Cookies from 'js-cookie';
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link,useNavigate } from 'react-router-dom';
 import DataTable from 'react-data-table-component';
 import { decrypt } from '../Auth/PrivateRoute';
 import toast from 'react-hot-toast';
@@ -135,7 +135,7 @@ const BillList = () => {
           <MDBInput label='Search Bill' size='lg' onChange={handleFilter} type='text' />
         </div>
         <div className='col-md-6 d-flex justify-content-end'>
-        <MDBBtn href='bill-entry' color='primary'>Add <FontAwesomeIcon  icon={faPlus} /></MDBBtn>
+          <Link to='/dashboard/bill-entry'> <MDBBtn  color='primary'> Add<FontAwesomeIcon  icon={faPlus} /></MDBBtn></Link>
         </div>
       </div>
       <MDBModal open={openView} setOpen={setOpenView} tabIndex='-1'>
