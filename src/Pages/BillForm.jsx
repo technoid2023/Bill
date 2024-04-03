@@ -158,42 +158,46 @@ const BillForm = () => {
 
       {/* Customer Section */}
       <MDBRow className="mb-3">
-        <MDBCol>
+        <MDBCol md='3'>
           <MDBInput
             type="text"
-            label="Customer Name"
+            label="Name(Customer)"
             value={cusName}
             onChange={(e) => setCusName(e.target.value)}
             style={{ width: '100%' }}
-          />
+          /><br></br>
         </MDBCol>
-        <MDBCol>
+     
+        <MDBCol md='3'>
           <MDBInput
             type="email"
-            label="Customer Email"
+            label="Email(Customer)"
             value={cusEmail}
             onChange={(e) => setCusEmail(e.target.value)}
             style={{ width: '100%' }}
-          />
+          /><br></br>
         </MDBCol>
-        <MDBCol>
+       
+        <MDBCol md='2'>
           <MDBInput
             type="tel"
-            label="Customer Mobile"
+            label="Mobile(Customer)"
             value={cusMobile}
             onChange={(e) => setCusMobile(e.target.value)}
             style={{ width: '100%' }}
-          />
+          /><br></br>
         </MDBCol>
-        <MDBCol>
+       
+        <MDBCol md='4'>
           <MDBInput
             type="text"
-            label="Customer Address"
+            label="Address(Customer)"
             value={cusAddress}
             onChange={(e) => setCusAddress(e.target.value)}
             style={{ width: '100%' }}
-          />
+          /><br></br>
         </MDBCol>
+        
       </MDBRow>
 
       {/* Item Section */}
@@ -212,7 +216,7 @@ const BillForm = () => {
                 </MDBDropdownItem>
               ))}
             </MDBDropdownMenu>
-          </MDBDropdown>
+          </MDBDropdown><br></br>
         </MDBCol>
         {/* Other Input Fields */}
         <MDBCol md='2'>
@@ -222,8 +226,9 @@ const BillForm = () => {
             value={quantity}
             onChange={(e) => setQuantity(e.target.value)}
             style={{ width: '100%' }}
-          />
+          /><br></br>
         </MDBCol>
+       
         <MDBCol md='2'>
           
           <MDBInput
@@ -232,7 +237,7 @@ const BillForm = () => {
             value={itemRate}
             onChange={(e) => setItemRate(e.target.value)}
             style={{ width: '100%' }}
-          />
+          /><br></br>
           
         </MDBCol>
         <MDBCol>
@@ -282,15 +287,17 @@ const BillForm = () => {
         </MDBCol>
       </MDBRow>
 
-      {/* Generate Bill Button */}
-      <MDBRow className="mb-4">
-        <MDBCol>
-          <MDBBtn onClick={handleGenerateBill}>Generate Bill</MDBBtn>
-        </MDBCol>
-        <MDBCol>
-          <MDBBtn onClick={clearForm}>Clear</MDBBtn>
-        </MDBCol>
-      </MDBRow>
+      <MDBRow className="justify-content-center">
+  <MDBCol md="6">
+    <div className="text-center">
+      <MDBBtn onClick={handleGenerateBill} style={{marginRight:'1rem'}}>Generate Bill</MDBBtn>
+      <MDBBtn onClick={clearForm} >Clear</MDBBtn>
+    </div>
+  </MDBCol>
+</MDBRow>
+
+
+
     </MDBContainer>
   );
 };
