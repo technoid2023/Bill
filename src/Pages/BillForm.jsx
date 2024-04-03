@@ -5,8 +5,9 @@ import Cookies from 'js-cookie';
 import { decrypt } from '../Auth/PrivateRoute';
 import axios from 'axios';
 import { MDBContainer, MDBRow, MDBCol, MDBInput, MDBBtn, MDBTable, MDBTableBody, MDBTableHead, MDBDropdown, MDBDropdownToggle, MDBDropdownMenu, MDBDropdownItem, MDBCheckbox } from 'mdb-react-ui-kit';
-import { useNavigate } from 'react-router-dom';
-
+import { Link, useNavigate } from 'react-router-dom';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import {faTrash,faFileArrowDown,faPlus,faRecycle} from '@fortawesome/free-solid-svg-icons';
 const BillForm = () => {
   const navigate=useNavigate();
   const [itemList, setItemList] = useState();
@@ -149,7 +150,7 @@ const BillForm = () => {
   };
 
   return (
-    <MDBContainer style={{ backgroundColor: 'white', padding: '20px', borderRadius: '10px', boxShadow: '0px 0px 10px 0px rgba(0,0,0,0.1)', overflowX: 'auto' }}>
+    <MDBContainer style={{ backgroundColor: 'white', overflowX: 'auto' }}>
       <MDBRow>
         <MDBCol>
           <h2 style={{textAlign:'center', fontFamily:'sans-serif', color:'blue', fontWeight:'bolder'}}>Bill Entry Form</h2>
@@ -209,7 +210,7 @@ const BillForm = () => {
               {selectedItem ? selectedItem : 'Select Item'}
             </MDBDropdownToggle >
             <MDBDropdownMenu>
-              <MDBInput type="text" label="Search" onChange={(e) => handleSearch(e.target.value)} />
+              <MDBInput type="text" label="Search" onChange={(e) => handleSearch(e.target.value)}  />
               {filteredItems.map((item, index) => (
                 <MDBDropdownItem key={index} onClick={() => handleItemSelected(item)}>
                   {item.item_cd} - {item.name}
@@ -241,21 +242,21 @@ const BillForm = () => {
           
         </MDBCol>
         <MDBCol>
-          <MDBBtn onClick={handleAddItem}>Add</MDBBtn>
+          <MDBBtn onClick={handleAddItem} color='warning' style={{color:'black'}}><FontAwesomeIcon icon={faPlus}/> Add</MDBBtn>
         </MDBCol>
       </MDBRow>
 
       {/* Table Section */}
       <MDBRow>
-        <MDBCol>
+        <MDBCol style={{minWidth:'fit-content'}}>
           <MDBTable style={{overflow:'auto'}}>
-            <MDBTableHead style={{ backgroundColor: '#f8f9fa' }}>
+            <MDBTableHead style={{ backgroundColor: '#f8f9fa',fontSize:'large'}}>
               <tr>
                 <th>Item</th>
                 <th>Quantity</th>
                 <th>Item Rate</th>
                 <th>Amount</th>
-                <th>Action</th>
+               <th></th>
               </tr>
             </MDBTableHead>
             <MDBTableBody>
@@ -266,7 +267,7 @@ const BillForm = () => {
                   <td>{i.item_rate}</td>
                   <td>{i.amount}</td>
                   <td>
-                    <MDBBtn onClick={() => handleDeleteItem(index)}>Delete</MDBBtn>
+                   <Link><FontAwesomeIcon size='1x' style={{color:'red'}} icon={faTrash} onClick={() => handleDeleteItem(index)}/></Link> 
                   </td>
                 </tr>
               ))}
@@ -290,8 +291,8 @@ const BillForm = () => {
       <MDBRow className="justify-content-center">
   <MDBCol md="6">
     <div className="text-center">
-      <MDBBtn onClick={handleGenerateBill} style={{marginRight:'1rem'}}>Generate Bill</MDBBtn>
-      <MDBBtn onClick={clearForm} >Clear</MDBBtn>
+      <MDBBtn onClick={handleGenerateBill} style={{marginRight:'1rem'}} color='success'><FontAwesomeIcon icon={faFileArrowDown}/> Generate Bill</MDBBtn>
+      <MDBBtn onClick={clearForm} color='danger'><FontAwesomeIcon icon={faRecycle}/> Clear</MDBBtn>
     </div>
   </MDBCol>
 </MDBRow>
