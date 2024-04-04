@@ -4,7 +4,7 @@ import toast from "react-hot-toast";
 import Cookies from 'js-cookie';
 import { decrypt } from '../Auth/PrivateRoute';
 import axios from 'axios';
-import { MDBContainer, MDBRow, MDBCol, MDBInput, MDBBtn, MDBTable, MDBTableBody, MDBTableHead, MDBDropdown, MDBDropdownToggle, MDBDropdownMenu, MDBDropdownItem, MDBCheckbox } from 'mdb-react-ui-kit';
+import { MDBContainer, MDBRow, MDBCol, MDBInput, MDBBtn, MDBTable, MDBTableBody, MDBTableHead, MDBDropdown,MDBDropdownToggle, MDBDropdownMenu, MDBDropdownItem, MDBCheckbox } from 'mdb-react-ui-kit';
 import { Link, useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {faTrash,faFileArrowDown,faPlus,faRecycle} from '@fortawesome/free-solid-svg-icons';
@@ -23,7 +23,7 @@ const BillForm = () => {
   const [isPaid, setIsPaid] = useState(false);
   const [billItems, setBillItems] = useState([]);
   const [filteredItems, setFilteredItems] = useState([]);
-
+const [dueDate, setDueDate] = useState(); 
   useEffect(() => {
     const encryptToken = Cookies.get('_TK');
 
@@ -44,12 +44,14 @@ const BillForm = () => {
         item_cd: selectedItem,
         item_qty: quantity,
         item_rate: itemRate,
-        amount:(itemRate*quantity)
+        amount:(itemRate*quantity),
+       
       };
       setBillItems([...billItems, newItem]);
       setQuantity('');
       setSelectedItem('');
       setItemRate('');
+       setDueDate(''); 
     }
   };
 
@@ -66,7 +68,8 @@ const BillForm = () => {
       cus_mobile: cusMobile,
       cus_address: cusAddress,
       items: billItems,
-      pay: isPaid 
+      pay: isPaid ,
+      due_date: dueDate
     };
     if (formData.cus_name && formData.cus_email && formData.cus_mobile && formData.cus_address && formData.items) {
       axios.post('https://edu-tech-bwe5.onrender.com/v1/bill', formData, {
@@ -103,6 +106,7 @@ const BillForm = () => {
     setCusAddress('');
     setIsPaid(false);
     setBillItems([]);
+    setDueDate(''); 
   };
 
   useEffect(() => {
@@ -148,7 +152,11 @@ const BillForm = () => {
     setItemRate(item.SP);
     setChkQty(item.qty);
   };
-
+  const handleIsPaidChange = () => {
+    if (!isPaid) {
+      setDueDate(); // Reset dueDate to null if isPaid is unchecked
+    }
+  };
   return (
     <MDBContainer style={{ backgroundColor: 'white', overflowX: 'auto' }}>
       <MDBRow>
@@ -244,6 +252,19 @@ const BillForm = () => {
         <MDBCol>
           <MDBBtn onClick={handleAddItem} color='warning' style={{color:'black'}}><FontAwesomeIcon icon={faPlus}/> Add</MDBBtn>
         </MDBCol>
+        {isPaid ? null : (
+    <MDBCol md="4">
+      <div className="d-flex align-items-center">
+        <span className="me-4" style={{ minWidth: 'fit-content' }}>Due Date</span>
+        <input
+          type="date"
+          className="form-control"
+          value={dueDate}
+          onChange={(e) => setDueDate(e.target.value)}
+        />
+      </div>
+    </MDBCol>
+  )}
       </MDBRow>
 
       {/* Table Section */}
