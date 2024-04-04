@@ -49,7 +49,7 @@ const BillList = () => {
     },
     {
       name: 'Due Date',
-     selector: row =>row.due_date.toString().slice(0,10),
+    selector: row =>row.due_date?row.due_date.toString().slice(0,10):'',
       sortable: true
     },
     {
