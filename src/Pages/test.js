@@ -1,292 +1,775 @@
-import React, { useEffect, useState } from 'react';
-import toast from "react-hot-toast";
-import Cookies from 'js-cookie';
-import { decrypt } from '../Auth/PrivateRoute';
-import axios from 'axios';
-import { MDBContainer, MDBRow, MDBCol, MDBInput, MDBBtn, MDBTable, MDBTableBody, MDBTableHead, MDBDropdown, MDBDropdownToggle, MDBDropdownMenu, MDBDropdownItem, MDBCheckbox } from 'mdb-react-ui-kit';
+const jwt = require("jsonwebtoken");
+const env=require('dotenv');
+env.config();
+const nodemailer = require('nodemailer');
+const otpgenerator=require('otp-generator')
+const query=require('../DB_Config/Query');
 
-const BillForm = () => {
-  const [itemList, setItemList] = useState();
-  const [selectedItem, setSelectedItem] = useState();
-  const [quantity, setQuantity] = useState();
-  const [chkQty, setChkQty] = useState();
-  const [itemRate, setItemRate] = useState();
-  const [token, setToken] = useState(null);
-  const [cusName, setCusName] = useState();
-  const [cusEmail, setCusEmail] = useState();
-  const [cusMobile, setCusMobile] = useState();
-  const [cusAddress, setCusAddress] = useState();
-  const [isPaid, setIsPaid] = useState(false);
-  const [billItems, setBillItems] = useState([]);
-  const [filteredItems, setFilteredItems] = useState([]);
+let operation = {};
 
-  useEffect(() => {
-    const encryptToken = Cookies.get('_TK');
 
-    if ( encryptToken) {
-      const decryptedToken = decrypt(encryptToken);
-    
-      setToken(JSON.parse(decryptedToken));
-    } 
-  }, []);
-
-  const handleAddItem = () => {
-    if (selectedItem && quantity && itemRate) {
-      if (parseInt(quantity) > parseInt(chkQty)) {
-        toast.error(`Stock not available \n Available Stock ${chkQty}`);
-        return;
-      }
-      const newItem = {
-        item_cd: selectedItem,
-        item_qty: quantity,
-        item_rate: itemRate,
-        amount:(itemRate*quantity)
-      };
-      setBillItems([...billItems, newItem]);
-      setQuantity('');
-      setSelectedItem('');
-      setItemRate('');
+operation.ulogIn = async (data) => {
+    if(data.email=="" || data.password==""){
+     reject({ Success: false, Message: "Give Login Credetials !" })
     }
-  };
-
-  const handleDeleteItem = (index) => {
-    const updatedItems = [...billItems];
-    updatedItems.splice(index, 1);
-    setBillItems(updatedItems);
-  };
-
-  const handleGenerateBill = () => {
-    const formData = {
-      cus_name: cusName,
-      cus_email: cusEmail,
-      cus_mobile: cusMobile,
-      cus_address: cusAddress,
-      items: billItems,
-      pay: isPaid 
-    };
-    if (formData.cus_name && formData.cus_email && formData.cus_mobile && formData.cus_address && formData.items) {
-      axios.post('https://edu-tech-bwe5.onrender.com/v1/bill', formData, {
-        headers: {
-          'token': token
+    else{
+     return new Promise(async (resolve, reject) => {
+        data.active="Y"
+        
+       
+      let connection_details=[process.env.DATABASE,process.env.USER_SCHEMA]
+        let result=await(query.findOne(data,connection_details));
+        if (typeof result !="string") {
+            let jwtData = {
+                name: result[0].name,
+                pin : result[0].pin_code,
+                Built_Time: new Date()
+            }
+            let token =jwt.sign(jwtData, process.env.SECRET_KEY, { expiresIn: "1h" });          
+            let jwtdetails={
+                name:result[0].name,
+                token:token,
+                logout:false,
+                email:result[0].email              
+            }
+           let jwt_connection_details=[process.env.DATABASE,process.env.JWT_SCHEMA]
+             let jwtresult=   await(query.insertSingle(jwtdetails,jwt_connection_details));
+             if (typeof jwtresult !="string") {
+                resolve({ Success: true, Message: "Login Successfull",  Data: result ,Token:token})
+             }
+             else{
+                resolve({ Success: false, Message: result  })
+            }
         }
-      })
-      .then(response => {
-        if (response.status === 200) {
-          toast.success('Bill generated successfully!');
-          clearForm();
-        } else {
-          toast.error('Failed to generate bill.');
+        else{
+            resolve({ Success: false, Message: result  })
         }
-      })
-      .catch(error => {
-        console.error('An error occurred while generating the bill:', error);
-      });
-    } else {
-      toast.error("Fill the form")
+        reject({ Success: false, Message: "Connection Failed !" })
+    });
     }
-  };
-
-  const clearForm = () => {
-    setSelectedItem('');
-    setQuantity('');
-    setItemRate('');
-    setCusName('');
-    setCusEmail('');
-    setCusMobile('');
-    setCusAddress('');
-    setIsPaid(false);
-    setBillItems([]);
-  };
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.get('https://edu-tech-bwe5.onrender.com/v1/item', {
-          headers: {
-            'token': token
-          }
-        });
-        if (response.data.Success === true) {
-          setItemList(response.data.Data);
-          setFilteredItems(response.data.Data);
-        } else if (response.data.Data === undefined) {
-          setItemList(['Loading']);
-        } else {
-          console.log('Data not found');
-        }
-      } catch (error) {
-        console.error('An error occurred:', error);
-      }
-    };
-
-    fetchData();
-  }, [token]);
-
-  const handleSearch = (searchTerm) => {
-    if (!searchTerm) {
-      setFilteredItems(itemList);
-      return;
-    }
-
-    const filtered = itemList.filter(
-      (item) =>
-        item.item_cd.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        item.name.toLowerCase().includes(searchTerm.toLowerCase())
-    );
-    setFilteredItems(filtered);
-  };
-
-  const handleItemSelected = (item) => {
-    setSelectedItem(item.item_cd);
-    setItemRate(item.SP);
-    setChkQty(item.qty);
-  };
-
-  return (
-    <MDBContainer style={{ backgroundColor: 'azure', padding: '20px', borderRadius: '10px', boxShadow: '0px 0px 10px 0px rgba(0,0,0,0.1)', overflowX: 'auto' }}>
-      <MDBRow>
-        <MDBCol>
-          <h2 style={{textAlign:'center', fontFamily:'sans-serif', color:'blue', fontWeight:'bolder'}}>Bill Entry Form</h2>
-        </MDBCol>
-      </MDBRow>
-
-      {/* Customer Section */}
-      <MDBRow className="mb-3">
-        <MDBCol>
-          <MDBInput
-            type="text"
-            label="Customer Name"
-            value={cusName}
-            onChange={(e) => setCusName(e.target.value)}
-            style={{ width: '100%' }}
-          />
-        </MDBCol>
-        <MDBCol>
-          <MDBInput
-            type="email"
-            label="Customer Email"
-            value={cusEmail}
-            onChange={(e) => setCusEmail(e.target.value)}
-            style={{ width: '100%' }}
-          />
-        </MDBCol>
-        <MDBCol>
-          <MDBInput
-            type="tel"
-            label="Customer Mobile"
-            value={cusMobile}
-            onChange={(e) => setCusMobile(e.target.value)}
-            style={{ width: '100%' }}
-          />
-        </MDBCol>
-        <MDBCol>
-          <MDBInput
-            type="text"
-            label="Customer Address"
-            value={cusAddress}
-            onChange={(e) => setCusAddress(e.target.value)}
-            style={{ width: '100%' }}
-          />
-        </MDBCol>
-      </MDBRow>
-
-      {/* Item Section */}
-      <MDBRow className="mb-4">
-        {/* Item Dropdown and Input Fields */}
-        <MDBCol>
-          <MDBDropdown>
-            <MDBDropdownToggle style={{ width: '13rem' }}>
-              {selectedItem ? selectedItem : 'Select Item'}
-            </MDBDropdownToggle >
-            <MDBDropdownMenu>
-              <MDBInput type="text" label="Search" onChange={(e) => handleSearch(e.target.value)} />
-              {filteredItems.map((item, index) => (
-                <MDBDropdownItem key={index} onClick={() => handleItemSelected(item)}>
-                  {item.item_cd} - {item.name}
-                </MDBDropdownItem>
-              ))}
-            </MDBDropdownMenu>
-          </MDBDropdown>
-        </MDBCol>
-        {/* Other Input Fields */}
-        <MDBCol className="mb-4">
-          <MDBInput
-            type="number"
-            label="Quantity"
-            value={quantity}
-            onChange={(e) => setQuantity(e.target.value)}
-            style={{ width: '100%' }}
-          />
-        </MDBCol>
-        <MDBCol>
-          
-          <MDBInput
-            type="number"
-            label="Item Rate"
-            value={itemRate}
-            onChange={(e) => setItemRate(e.target.value)}
-            style={{ width: '100%' }}
-          />
-          
-        </MDBCol>
-        <MDBCol>
-          <MDBBtn onClick={handleAddItem}>Add</MDBBtn>
-        </MDBCol>
-      </MDBRow>
-
-      {/* Table Section */}
-      <MDBRow>
-        <MDBCol>
-          <MDBTable>
-            <MDBTableHead style={{ backgroundColor: '#f8f9fa' }}>
-              <tr>
-                <th>Item</th>
-                <th>Quantity</th>
-                <th>Item Rate</th>
-                <th>Amount</th>
-                <th>Action</th>
-              </tr>
-            </MDBTableHead>
-            <MDBTableBody>
-              {billItems.map((i, index) => (
-                <tr key={index}>
-                  <td>{i.item_cd}</td>
-                  <td>{i.item_qty}</td>
-                  <td>{i.item_rate}</td>
-                  <td>{i.amount}</td>
-                  <td>
-                    <MDBBtn onClick={() => handleDeleteItem(index)}>Delete</MDBBtn>
-                  </td>
-                </tr>
-              ))}
-            </MDBTableBody>
-          </MDBTable>
-        </MDBCol>
-      </MDBRow>
-
-      {/* Checkbox Section */}
-      <MDBRow className="mb-3">
-        <MDBCol>
-          <MDBCheckbox
-            id="isPaid"
-            label="Is Paid"
-            checked={isPaid}
-            onChange={() => setIsPaid(!isPaid)}
-          />
-        </MDBCol>
-      </MDBRow>
-
-      {/* Generate Bill Button */}
-      <MDBRow className="mb-4">
-        <MDBCol>
-          <MDBBtn onClick={handleGenerateBill}>Generate Bill</MDBBtn>
-        </MDBCol>
-        <MDBCol>
-          <MDBBtn onClick={clearForm}>Clear</MDBBtn>
-        </MDBCol>
-      </MDBRow>
-    </MDBContainer>
-  );
+   
 };
 
-export default BillForm;
+
+operation.userRegistration = async (data) => {
+    return new Promise(async (resolve, reject) => {
+        data.active='Y'
+      
+      let  connection_details=[process.env.DATABASE,process.env.USER_SCHEMA]
+        let check=await(query.findOne({email:data.email,mobile:data.mobile,active:"Y",name:data.name,pin_code:data.pin_code},connection_details))
+        if(typeof check!="string"){
+            resolve({ Success: true, Message: "User Already Registered" })
+        }
+        else{
+           
+              
+            
+        //    //console.log("here");
+            let result=await(query.insertSingle(data,connection_details));
+            if (typeof result !="string") {
+                
+                resolve({ Success: true, Message: "User Registered !",  Data: result })
+               
+                
+             }
+             else{
+                reject({ Success: false, Message: result  })
+            }
+        }})}
+    
+operation.otpVerify = async (data) => {
+    return new Promise(async (resolve, reject) => {
+    //console.log(data);
+   let connection_details=[process.env.DATABASE,process.env.OTP_SCHEMA]
+    let result=await(query.findOne(data,connection_details));
+//console.log(result)
+        if (typeof result=="string") {  
+           reject({ Success: false, Message: "Wrong OTP !" })
+        }
+        else{ 
+    let current=result[0]
+       if(Date.now()-current.timestamp>300000){
+        reject({ Success: false, Message: "Otp has Expired!" })
+       }
+       else{        
+            await query.deleteRecord({_id:current._id},connection_details)
+            resolve({ Success: true, Message: "Email Verified !"  })
+       
+
+       }
+
+        }
+
+    })
+}
+operation.sendOtp = async (data) => {
+    return new Promise(async (resolve, reject) => {
+        const Otp=otpgenerator.generate(6,{digits:true,lowerCaseAlphabets:false,upperCaseAlphabets:false,specialChars:false})
+       let connection_details2=[process.env.DATABASE,process.env.OTP_SCHEMA]
+        var transporter = nodemailer.createTransport({
+            service: 'gmail',
+            auth: {
+                user: process.env.MAIL_ID,
+                pass: process.env.MAIL_PASSWORD
+            }
+        });    
+        var mailOptions = {
+            from: process.env.MAIL_ID,
+            to: `${data.email}`,
+            subject: 'REGISTRATION OTP',
+            text: `OTP FOR VERIFICATION : ${Otp}`,
+           
+          };
+if(data.email==""){
+
+reject({ Success: false, Message: "Please Provide Email"  })
+    
+}
+else{ 
+
+transporter.sendMail(mailOptions, function(error, info){
+            if (error) {
+              //console.log(error);
+            } else {
+              //console.log('Email sent: ' + info.response);
+            }
+          });
+
+       let res= await(query.insertSingle({email:data.email,otp:Otp,timestamp:Date.now(),index:{expires:60}},connection_details2));
+       if(typeof res !="string"){
+        resolve({ Success: true, Message: "Otp Sent Succesfully  !" })
+       }
+       else{
+        reject({ Success: false, Message: res  })
+       }
+    
+}
+        
+          
+    
+    })
+}
+
+operation.ulogOut = async (token) => {
+  // //console.log(token);
+  return new Promise(async (resolve, reject) => {
+     
+
+     let connection_details=[process.env.DATABASE,process.env.JWT_SCHEMA]
+      let result=await(query.updateRecord({token:token},{logout:true},connection_details));
+      if (result==true) {
+          resolve({ Success: true, Message: "Logged Out Successfully" });
+      } else {
+          reject({ Success: false, Message: "Already Logged Out" });
+      }
+  });
+};
+
+
+operation.forgotPassword = async (data) => {
+  // //console.log(token);
+  return new Promise(async (resolve, reject) => {
+     if(data.email==""){
+      reject({ Success: false, Message: "Provide Email!" });
+     }
+     else{
+     let connection_details=[process.env.DATABASE,process.env.USER_SCHEMA]
+      let result=await(query.updateRecord({email:data.email},{password:data.new_password},connection_details));
+      if (result==true) {
+          resolve({ Success: true, Message: "Password Changed Successfully" });
+      }
+      else if(result=="true"){
+        resolve({ Success: true, Message: "New Password Can not be Same as Old One !" });
+      } else {
+          reject({ Success: false, Message: "User Details Not Matched !" });
+      }
+     }
+
+      
+  });
+};
+
+
+operation.userDataUpdate = async (data,id) => {
+  // //console.log(token);
+  return new Promise(async (resolve, reject) => {
+     if(!id){
+      reject({ Success: false, Message: "Nothing to Update" });
+     }
+     else{
+      let connection_details=[process.env.DATABASE,process.env.USER_SCHEMA]
+      let result=await(query.updateRecord({_id:id},data,connection_details));
+      if (result==true) {
+          resolve({ Success: true, Message: "User Details Updated" });
+      }
+      else if(result=="true"){
+        resolve({ Success: true, Message: "Nothing to Update !" });
+      }
+      else if(result==="false"){
+        reject({ Success: false, Message: "Mobile or Email Already Exists" });
+      } 
+      else {
+          reject({ Success: false, Message: "User Details Not Matched !" });
+      }
+     }
+
+      
+  });
+};
+
+operation.itemCreate = async (data) => {
+    return new Promise(async (resolve, reject) => {
+          
+        let connection_details=[process.env.DATABASE,process.env.ITEM_SCHEMA]
+        let check=await(query.findOne({item_cd:data.item_cd,source:data.source},connection_details))
+        //console.log(check);
+        if(typeof check!="string"){
+            data.qty=data.qty+check[0].qty
+           
+            let result=await(query.updateRecord({item_cd:data.item_cd},data,connection_details));
+            if (result==true) {
+             resolve({ Success: true, Message: "Item Details Updated" });
+            }
+            else if(result=="true"){
+            resolve({ Success: true, Message: "Item Details Not Updated" });
+            }
+            
+        }
+        else{
+            //console.log("here");
+            let result=await(query.insertSingle(data,connection_details));
+            if (typeof result !="string") {
+                
+                resolve({ Success: true, Message: "Item Added",  Data: result })
+             }
+             else{
+                reject({ Success: false, Message: result  })
+            }
+        }
+    }
+        )}
+
+operation.itemList = async (page,limit) => {
+            
+             return new Promise(async (resolve, reject) => {
+                
+                
+               
+               let connection_details=[process.env.DATABASE,process.env.ITEM_SCHEMA]
+                let result=await(query.findAll(page,limit,connection_details));
+                if (typeof result !="string") {
+                    resolve({
+                        Success: true, Data: result, pagination: {
+                            page: page != undefined ? page : 1, limit: limit != undefined ? limit : 500
+                        }
+                    })
+                }
+                else{
+                    resolve({ Success: false, Message: result  })
+                }
+                reject({ Success: false, Message: "Connection Failed !" })
+            });
+            
+           
+        };
+operation.itemView = async (item_cd) => {
+   
+        return new Promise(async (resolve, reject) => {
+        //console.log("code",item_cd);
+        if(!/^[A-Z]{2}\d{2}/.test(item_cd)){
+        
+            reject({ Success: false, Message: "Give proper id !" })
+        }
+        else{
+       let connection_details=[process.env.DATABASE,process.env.ITEM_SCHEMA]
+        let result=await(query.findOne({item_cd:item_cd},connection_details));
+        if (typeof result !="string") {
+            resolve({
+                Success: true, Data: result
+            })
+        }
+        else{
+            resolve({ Success: false, Message: result  })
+        }
+        reject({ Success: false, Message: "Connection Failed !" })
+    }
+    });
+    
+};
+operation.itemUpdate = async (data,id) => {
+    // //console.log(token);
+    return new Promise(async (resolve, reject) => {
+       if(!id){
+        reject({ Success: false, Message: "Nothing to Update" });
+       }
+       else{
+       let connection_details=[process.env.DATABASE,process.env.ITEM_SCHEMA]
+        let result=await(query.updateRecord({_id:id},data,connection_details));
+        if (result==true) {
+            resolve({ Success: true, Message: "Item Details Updated" });
+        }
+        else if(result=="true"){
+          resolve({ Success: true, Message: "Nothing to Update !" });
+        } else {
+            reject({ Success: false, Message: "Item Details Not Matched !" });
+        }
+       }
+  
+        
+    });
+  };
+operation.itemDelete = async (id) => {
+// //console.log(token);
+return new Promise(async (resolve, reject) => {
+    if(!id){
+    reject({ Success: false, Message: "Nothing to delete" });
+    }
+    else{
+   let connection_details=[process.env.DATABASE,process.env.ITEM_SCHEMA]
+    let result=await(query.deleteRecord({_id:id},connection_details));
+    if (result==true) {
+        resolve({ Success: true, Message: "Item Deleted Successfully" });
+    }
+     else {
+        reject({ Success: false, Message: "Id Not Matched !" });
+    }
+    }
+
+    
+});
+};
+
+
+operation.importCsvtoItem = async (items) => {
+    
+    return new Promise(async (resolve, reject) => {
+    //    //console.log("iems---",items);
+        let existingItem=[];
+        let newItem=[];
+       
+        for(i of items){
+            i.SP=+(i.SP)
+            i.CP=+(i.CP)
+            i.qty=+(i.qty)
+            
+        }
+
+       let connection_details=[process.env.DATABASE,process.env.ITEM_SCHEMA]
+        // //console.log(items);
+        for(i of items){
+            let check=await(query.findOne({item_cd:i.item_cd,source:i.source},connection_details))
+           
+            if(typeof check!="string"){
+                i.qty=i.qty+check[0].qty
+               existingItem.push(i)
+                //
+            }
+           else{
+            newItem.push(i)
+           }
+        //       
+            //   await itemModel.updateOne({ _id: previtem[0].id }, { $set: items })
+            
+        }
+
+        
+        for(i of newItem){
+            await(query.insertSingle(i,connection_details));
+        }
+        
+ 
+    
+    
+        
+        for(i of existingItem){
+            
+          await(query.updateRecord({item_cd:i.item_cd},i,connection_details));
+           
+        }
+        let f=1
+        if (f==1) {
+            resolve({ Success: true, Message: "Imported" })
+        }
+        else {
+            reject({ Success: false, Message: "Failed" })
+        }
+       
+    })
+}
+
+operation.billCreate = async (data,decode) => {
+    return new Promise(async (resolve, reject) => {
+          
+       let connection_details1=[process.env.DATABASE,process.env.BILL_SCHEMA]
+        let connection_details2=[process.env.DATABASE,process.env.BILL_DET_SCHEMA]
+        let bill_no=await operation.generateBillno();
+        let bill_amount=0
+        for(let i of data.items){
+            bill_amount+=i.amount
+        }
+        let bill_item={
+            bill_number:bill_no,
+            date:new Date(),
+            user:decode.name,
+            amount:bill_amount,
+            pay:data.pay,
+            due_date:data.due_date
+        }
+        let bill_det=[]
+        for(let i of data.items){
+            i.bill_number=bill_no,
+            i.cus_name=data.cus_name
+            i.cus_email=data.cus_email
+            i.cus_mobile=data.cus_mobile
+            i.cus_address=data.cus_address
+            i.date=new Date()
+            bill_det.push(i) 
+            await operation.profit_amount(i.item_cd,i.amount,bill_no,i.item_qty)
+           await operation.updateStocks(i.item_cd,i.item_qty)
+            
+            
+                     
+        }
+        console.log(connection_details1);
+       let bill_item_result=await(query.insertSingle(bill_item,connection_details1));
+       console.log(bill_item_result);
+       if(typeof bill_item_result!="string"){
+        let bill_det_result=await(query.insertSingle1(bill_det,connection_details2));
+        console.log(bill_det_result);
+        if(typeof bill_det_result!='string'){
+            resolve({Success:true,Message:'Bill Created',"Bill_no":bill_no})
+        }else{
+            reject({Success:false,Message:'Bill Entry Done Partially'})
+        }
+       }
+       else{
+        reject({Success:false,Message:'Bill Entry Failed'})
+       }
+        
+    }
+        )}
+operation.generateBillno=async()=>{
+    let bill_no=""
+    let connection_details=[process.env.DATABASE,process.env.BILL_SCHEMA]
+    let check=await(query.findOne({},connection_details))
+    if(typeof check!="string"){
+        
+        let bill_check=await(query.FindLast({date:-1},connection_details))
+        
+        lastBill=bill_check[0].bill_number
+      
+        lastdigit=lastBill.lastIndexOf("A")
+       
+        srl=(lastBill.slice(lastdigit+1))
+        srl=+(srl)
+        year=new Date().getFullYear()
+        month=new Date().getMonth()
+      
+        bill_no=`A${year}${month}A${srl+1}`
+        return bill_no
+    }
+    else{
+        
+        year=new Date().getFullYear()
+        month=new Date().getMonth()
+        bill_no=`A${year}${month}A1`
+        console.log(bill_no);
+        return bill_no
+    }
+    
+}
+operation.updateStocks=async(code,qty)=>{
+   
+   let connection_details=[process.env.DATABASE,process.env.ITEM_SCHEMA]
+    let check=await(query.findOne({item_cd:code},connection_details))
+    
+    let result=await(query.updateRecord({item_cd:code},{qty:(check[0].qty-qty)},connection_details));
+    
+    if(result==true){
+        return true
+    }
+    else{
+        false
+    }
+}
+
+operation.billList = async (page,limit) => {
+            
+    return new Promise(async (resolve, reject) => {
+      let connection_details1=[process.env.DATABASE,process.env.BILL_SCHEMA]
+      let connection_details2=process.env.BILL_DET_SCHEMA
+      let commonField='bill_number'
+      let label='detail'
+       let bill_result=await(query.join(page,limit,connection_details1,connection_details2,commonField,label));
+       if (typeof bill_result !="string") {
+      
+           resolve({
+               Success: true, Data: bill_result, pagination: {
+                   page: page != undefined ? page : 1, limit: limit != undefined ? limit : 500
+               }
+           })
+       }
+       else{
+           resolve({ Success: false, Message: bill_result  })
+       }
+       reject({ Success: false, Message: "Connection Failed !" })
+   });
+   
+  
+};
+
+operation.billUpdate = async (data,id) => {
+   
+    return new Promise(async (resolve, reject) => {
+       if(!id){
+        reject({ Success: false, Message: "Nothing to Update" });
+       }
+       else{
+        
+       let connection_details=[process.env.DATABASE,process.env.BILL_SCHEMA]
+        let result=await(query.updateRecord({_id:id},data,connection_details));
+        if (result==true) {
+            if(data.refund===true){
+                let connection_details=[process.env.DATABASE,process.env.BILL_SCHEMA]
+                let connection_details2=[process.env.DATABASE,process.env.BILL_DET_SCHEMA]
+                let connection_details3=[process.env.DATABASE,process.env.PROFIT_SCHEMA]
+                let check=await(query.findOne({_id:id},connection_details))
+                await(query.updateRecord({_id:id},{amount:0},connection_details));
+                await(query.updateAllRecords({bill_number:check[0].bill_number},{amount:0},connection_details2));
+                await(query.updateAllRecords({bill_number:check[0].bill_number},{profit:0},connection_details3));
+               
+            }
+           
+            resolve({ Success: true, Message: "Bill Details Updated ! Kindly Update Store " });
+        }
+        else if(result=="true"){
+          resolve({ Success: true, Message: "Nothing to Update !" });
+        } else {
+            reject({ Success: false, Message: "Bil Details Not Matched !" });
+        }
+       }
+  
+        
+    });
+  };
+operation.billDelete = async (id) => {
+// //console.log(token);
+return new Promise(async (resolve, reject) => {
+    if(!id){
+    reject({ Success: false, Message: "Nothing to delete" });
+    }
+    else{
+   let connection_details=[process.env.DATABASE,process.env.BILL_SCHEMA]
+    let result=await(query.deleteRecord({_id:id},connection_details));
+    if (result==true) {
+        resolve({ Success: true, Message: "Bill Deleted Successfully" });
+    }
+     else {
+        reject({ Success: false, Message: "Id Not Matched !" });
+    }
+    }
+
+    
+});
+};
+
+operation.total_sale_amount=async()=>{
+    let connection_details=[process.env.DATABASE,process.env.BILL_SCHEMA]
+    let total_amount=await query.count(connection_details,"amount")
+    if(typeof total_amount!="string"){
+        return total_amount[0].sum
+    }
+    else{
+        return 0
+    }
+}
+operation.total_due_amount=async()=>{
+    let connection_details=[process.env.DATABASE,process.env.BILL_SCHEMA]
+    let total_amount=await query.countbyCondition(connection_details,"amount",{pay:false})
+    console.log("due",total_amount);
+    if(typeof total_amount!="string"){
+        return total_amount[0].sum
+    }
+    else{
+        return 0
+    }
+}
+
+
+operation.total_refund_amount=async()=>{
+    let connection_details=[process.env.DATABASE,process.env.BILL_SCHEMA]
+    let total_amount=await query.countbyCondition(connection_details,"amount",{refund:true})
+    console.log("due",total_amount);
+    if(typeof total_amount!="string"){
+        return total_amount[0].sum
+    }
+    else{
+        return 0
+    }
+}
+operation.total_profit_amount=async()=>{
+    let connection_details=[process.env.DATABASE,process.env.PROFIT_SCHEMA]
+    let total_amount=await query.count(connection_details,"profit")
+    if(typeof total_amount!="string"){
+        return total_amount[0].sum
+    }
+    else{
+        return 0
+    }
+}
+operation.total_unpaidBill=async()=>{
+    let connection_details=[process.env.DATABASE,process.env.BILL_SCHEMA]
+    let total_amount=await query.countTotalbyCondition(connection_details,{pay:false})
+    console.log("unpaid",total_amount);
+
+    if(typeof total_amount!="string"){
+        return total_amount[0].count
+    }
+    else{
+        return 0
+    }
+}
+operation.total_paidBill=async()=>{
+    let connection_details=[process.env.DATABASE,process.env.BILL_SCHEMA]
+    let total_amount=await query.countTotalbyCondition(connection_details,{pay:true})
+    console.log("paid",total_amount);
+
+    if(typeof total_amount!="string"){
+        return total_amount[0].count
+    }
+    else{
+        return 0
+    }
+}
+
+operation.total_refundBill=async()=>{
+    let connection_details=[process.env.DATABASE,process.env.BILL_SCHEMA]
+    let total_amount=await query.countTotalbyCondition(connection_details,{refund:true})
+    console.log("paid",total_amount);
+
+    if(typeof total_amount!="string"){
+        return total_amount[0].count
+    }
+    else{
+        return 0
+    }
+}
+
+operation.total_Bill=async()=>{
+    let connection_details=[process.env.DATABASE,process.env.BILL_SCHEMA]
+    let total_amount=await query.countTotal(connection_details)
+    console.log("total..",total_amount);
+    if(typeof total_amount!="string"){
+        return total_amount[0].count
+    }
+    else{
+        return 0
+    }
+}
+operation.total_Bill_By_User=async(user)=>{
+    return new Promise(async (resolve, reject) => {
+    let connection_details=[process.env.DATABASE,process.env.BILL_SCHEMA]
+    let total_amount=await query.countTotalbyCondition(connection_details,{user:user})
+    console.log("paid",total_amount);
+
+    if(typeof total_amount!="string"){
+        
+        resolve({ Success: true, Data: total_amount[0].count  })
+    }
+    else{
+        reject({ Success: false, Message: "Error"  })
+    
+}
+})
+}
+operation.profit_amount=async(item_cd,rate,bill_no,qty)=>{
+    let connection_details=[process.env.DATABASE,process.env.ITEM_SCHEMA]
+    let item_rate=await query.findOne({item_cd:item_cd},connection_details)
+    
+    if(typeof item_price!="string"){
+
+       let data={
+        item_cd:item_cd,
+        item_rate:(item_rate[0].CP)*qty,
+        item_qty:qty,
+        sold_at:rate,
+        bill_number:bill_no,
+        profit:rate-((item_rate[0].CP)*qty),
+        date:new Date()
+       }
+
+       let connection_details1=[process.env.DATABASE,process.env.PROFIT_SCHEMA]
+       let result=await(query.insertSingle(data,connection_details1));      
+       if(typeof result !="string"){
+        return true
+       }
+    }
+    else{
+        return false
+    }
+}
+operation.updateStore = async () => {
+            
+    return new Promise(async (resolve, reject) => {
+       
+      let total_customer=await operation.total_Bill();
+      let gross_sale=await operation.total_sale_amount()
+      let due_amount=await operation.total_due_amount()
+      let net_profit=await operation.total_profit_amount()
+      let upaidBill_count=await operation.total_unpaidBill()
+      let paidBill_count=await operation.total_paidBill()
+      let refund_amount=await operation.total_refund_amount()
+         let refundBill_count=await operation.total_refundBill()
+      let data={
+        customer_count:total_customer,
+        gross_sale:gross_sale,
+        due_amount:due_amount,
+        net_profit:net_profit,
+        unpaid_bill:upaidBill_count,
+        paid_bill:paidBill_count,
+          refund_amount:refund_amount,
+          due_bill:refundBill_count
+      }
+    //   console.log("data",data);
+      let connection_details1=[process.env.DATABASE,process.env.STAT_SCHEMA]
+      let check=await query.findOne({},connection_details1)
+
+      if(typeof check!='string'){
+    
+        await query.updateRecord({_id:check[0]._id},data,connection_details1)
+        resolve({ Success: true, Message: 'Store Updated'  })
+      }
+      else{
+       
+        let check1=await query.insertSingle(data,connection_details1)
+        // console.log("....",check1);
+        resolve({ Success: true, Message: 'Store Updated'  })
+  
+      }
+     
+           reject({ Success: false, Message: "Error"  })
+    
+   });
+   
+  
+};
+operation.statDetail = async () => {
+   
+    return new Promise(async (resolve, reject) => {
+   
+   let connection_details=[process.env.DATABASE,process.env.STAT_SCHEMA]
+    let result=await(query.findOne({},connection_details));
+    if (typeof result !="string") {
+        resolve({
+            Success: true, Data: result
+        })
+    }
+    else{
+        resolve({ Success: false, Message: result  })
+    }
+    reject({ Success: false, Message: "Connection Failed !" })
+
+});
+
+};
+module.exports=operation;
