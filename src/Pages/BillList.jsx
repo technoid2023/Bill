@@ -49,7 +49,7 @@ const BillList = () => {
     },
     {
       name: 'Due Date',
-      selector: row => row.detail[0].cus_mobile,
+      selector: row => row.detail[0].due_date,
       sortable: true
     },
     {
