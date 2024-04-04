@@ -98,7 +98,7 @@ function Dashboard(props) {
                   {/* <h5 class="card-title text">REFUNDS</h5> */}
                   <h5 class="card-title">₹{stats.refund_amount}.00</h5>
                   <p class="card-text">
-                    <small class="text-muted">0 No of Refunded Bills</small>
+                    <small class="text-muted">{stats.due_bill} No of Refunded Bills</small>
                   </p>
                 </div>
                 <div className="Icon-style">
