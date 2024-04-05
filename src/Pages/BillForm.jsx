@@ -24,6 +24,7 @@ const BillForm = () => {
   const [billItems, setBillItems] = useState([]);
   const [filteredItems, setFilteredItems] = useState([]);
 const [dueDate, setDueDate] = useState(); 
+const [itemName, setItemName] = useState();
   useEffect(() => {
     const encryptToken = Cookies.get('_TK');
 
@@ -42,6 +43,7 @@ const [dueDate, setDueDate] = useState();
       }
       const newItem = {
         item_cd: selectedItem,
+        item_name: itemName,
         item_qty: quantity,
         item_rate: itemRate,
         amount:(itemRate*quantity),
@@ -49,6 +51,7 @@ const [dueDate, setDueDate] = useState();
       };
       setBillItems([...billItems, newItem]);
       setQuantity('');
+      setItemName('');
       setSelectedItem('');
       setItemRate('');
        setDueDate(''); 
@@ -107,6 +110,7 @@ const [dueDate, setDueDate] = useState();
     setIsPaid(false);
     setBillItems([]);
     setDueDate(''); 
+    setItemName('');
   };
 
   useEffect(() => {
@@ -149,6 +153,7 @@ const [dueDate, setDueDate] = useState();
 
   const handleItemSelected = (item) => {
     setSelectedItem(item.item_cd);
+    setItemName(item.name);
     setItemRate(item.SP);
     setChkQty(item.qty);
   };
@@ -274,6 +279,7 @@ const [dueDate, setDueDate] = useState();
             <MDBTableHead style={{ backgroundColor: '#f8f9fa',fontSize:'large'}}>
               <tr>
                 <th>Item</th>
+                <th>Item Name</th>
                 <th>Quantity</th>
                 <th>Item Rate</th>
                 <th>Amount</th>
@@ -284,6 +290,7 @@ const [dueDate, setDueDate] = useState();
               {billItems.map((i, index) => (
                 <tr key={index}>
                   <td>{i.item_cd}</td>
+                  <td>{i.item_name}</td> 
                   <td>{i.item_qty}</td>
                   <td>{i.item_rate}</td>
                   <td>{i.amount}</td>
