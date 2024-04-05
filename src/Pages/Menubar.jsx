@@ -40,9 +40,9 @@ const menuItems = [
     { name: 'Profile', icon: faUserTie, link: 'profile' },
     { name: 'Inventory', icon: faWarehouse, link: 'item' },
     { name: 'Billing', icon: faCashRegister, link: 'bill' },
-    { name: 'Orders', icon: faStore, link: '/marketing' },
+    { name: 'Orders', icon: faStore, link: 'marketing' },
     { name: 'Stocks', icon: faBoxOpen, link: 'stock' },
-    { name: 'Notifiation', icon: faBell, link: '/production-development' },
+    { name: 'Notifiation', icon: faBell, link: 'production-development' },
 ];
 
     

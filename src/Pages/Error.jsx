@@ -2,10 +2,10 @@ import React, { useState ,useEffect} from 'react';
 import { MDBContainer, MDBRow, MDBCol, MDBBtn } from 'mdb-react-ui-kit';
 import './Error.css'
 import Cookies from 'js-cookie';
-import Layout from '../Components/Layout/Layout';
+
 const Error = () => {
   const[checkuser,setCheckuser]=useState(false)
-  const[checkSession,setCheckSession]=useState(false)
+
   const [msg,setMsg]=useState('Error : PAGE NOT FOUND !')
 
   useEffect(() => {
@@ -17,13 +17,13 @@ const Error = () => {
       setMsg('Warning : PAGE RESTRICTED !!')
     } else {
       setCheckuser(false)
-      setMsg('Error : PAGE NOT FOUND !')
+      setMsg('PAGE NOT FOUND ! Please Login Again')
     }
     
     
   }, [1]);
   return (
-    <Layout>
+   
       <div style={{
      backgroundColor: 'silver',
       borderRadius: '10px',
@@ -44,7 +44,7 @@ const Error = () => {
             <h2 className="text-uppercase">{msg}</h2>
           </div>
           <div className="fadeInDown">
-            <p className="mt-4" style={{color:'red',fontWeight:'bolder'}}>The page you are looking for might have been removed or you don't have access to visit, had its name changed, or is temporarily unavailable.</p>
+          {checkuser===true?( <p className="mt-4" style={{color:'red',fontWeight:'bolder'}}>The page you are looking for might have been removed or you don't have access to visit, had its name changed, or is temporarily unavailable.</p>):(<p className="mt-4" style={{color:'red',fontWeight:'bolder'}}>Please Login Again to Continue</p>)}
           </div>
           <div className="fadeInDown">
            {checkuser===true?<MDBBtn href="/dashboard" color="primary" className="mt-4">Go to Dashboard</MDBBtn>:<MDBBtn href="/" color="primary" className="mt-4">Go to Home</MDBBtn>}
@@ -54,7 +54,7 @@ const Error = () => {
       </MDBRow>
     </MDBContainer>
     </div>
-    </Layout>
+    
 
   );
 };

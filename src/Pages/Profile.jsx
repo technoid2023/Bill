@@ -1,4 +1,4 @@
-import React,{useState} from 'react';
+import React, { useState } from 'react';
 import {
   MDBCol,
   MDBContainer,
@@ -8,10 +8,6 @@ import {
   MDBCardBody,
   MDBCardImage,
   MDBBtn,
- 
-  MDBProgress,
-  MDBProgressBar,
-  MDBIcon,
   MDBListGroup,
   MDBListGroupItem
 } from 'mdb-react-ui-kit';
@@ -25,6 +21,9 @@ import { useNavigate } from "react-router-dom";
 export default function Profile() {
     const navigate = useNavigate();
     const [loading, setLoading] = useState(false);
+    const [showList, setShowList] = useState(false); // State variable for list visibility
+    const [listData, setListData] = useState([]); // State variable to store the list items
+
     let encryptUser = Cookies.get('_UR');
     let User;
     if (encryptUser === undefined) {
@@ -109,16 +108,34 @@ export default function Profile() {
       setLoading(false);
   };
 
+  const toggleList = async () => {
+    setShowList(prevState => !prevState); // Toggle list visibility
+
+    if (!showList) {
+      try {
+        const response = await axios.get('https://edu-tech-bwe5.onrender.com/v1/due-bill', {
+          headers: {
+            'token': Token
+          }
+        });
+
+        if (response.data.Success === true) {
+          setListData(response.data.Data);
+        } else {
+          // Handle API error
+          toast.error(response.data.Message);
+        }
+      } catch (error) {
+        // Handle network error
+        console.error('Error fetching list data:', error);
+      }
+    }
+  };
     
   return (
     <section style={{ backgroundColor: 'white' }}>
-         <Toaster
-                position="top-center"
-                reverseOrder={false}
-            />
+      <Toaster position="top-center" reverseOrder={false} />
       <MDBContainer className="py-3">
-        
-
         <MDBRow>
           <MDBCol lg="4">
             <MDBCard className="mb-4">
@@ -128,19 +145,18 @@ export default function Profile() {
                   alt="avatar"
                   className="rounded-circle"
                   style={{ width: '150px' }}
-                  fluid />
+                  fluid
+                />
                 <p className="text-muted mb-1">{User.name}</p>
                 <p className="text-muted mb-4">{User.email}</p>
                 <div className="d-flex justify-content-center mb-2">
-                 <Link to='/dashboard/update-user'>{<MDBBtn>Edit</MDBBtn>}</Link> 
+                  <Link to='/dashboard/update-user'>{<MDBBtn>Edit</MDBBtn>}</Link>
                   <MDBBtn outline className="ms-1" onClick={logout}>Logout</MDBBtn>
                 </div>
               </MDBCardBody>
             </MDBCard>
-
             <MDBCard className="mb-4 mb-lg-0">
               <MDBCardBody className="p-0">
-                {/* <MDBBtn onClick={() => handleStore()}>Update Store</MDBBtn> */}
                 <MDBBtn onClick={() => handleStore()}>
                   {loading ? (
                     <>
@@ -151,12 +167,12 @@ export default function Profile() {
                     "Update Store"
                   )}
                 </MDBBtn>
-               </MDBCardBody>
+              </MDBCardBody>
             </MDBCard>
           </MDBCol>
           <MDBCol lg="8">
             <MDBCard className="mb-4">
-              <MDBCardBody>
+            <MDBCardBody>
                 <MDBRow>
                   <MDBCol sm="3">
                     <MDBCardText>Full Name</MDBCardText>
@@ -213,72 +229,16 @@ export default function Profile() {
                 </MDBRow>
               </MDBCardBody>
             </MDBCard>
-
-            <MDBRow>
-              <MDBCol md="6">
-                <MDBCard className="mb-4 mb-md-0">
-                  <MDBCardBody>
-                    <MDBCardText className="mb-4"><span className="text-primary font-italic me-1">assigment</span> Project Status</MDBCardText>
-                    <MDBCardText className="mb-1" style={{ fontSize: '.77rem' }}>Web Design</MDBCardText>
-                    <MDBProgress className="rounded">
-                      <MDBProgressBar width={80} valuemin={0} valuemax={100} />
-                    </MDBProgress>
-
-                    <MDBCardText className="mt-4 mb-1" style={{ fontSize: '.77rem' }}>Website Markup</MDBCardText>
-                    <MDBProgress className="rounded">
-                      <MDBProgressBar width={72} valuemin={0} valuemax={100} />
-                    </MDBProgress>
-
-                    <MDBCardText className="mt-4 mb-1" style={{ fontSize: '.77rem' }}>One Page</MDBCardText>
-                    <MDBProgress className="rounded">
-                      <MDBProgressBar width={89} valuemin={0} valuemax={100} />
-                    </MDBProgress>
-
-                    <MDBCardText className="mt-4 mb-1" style={{ fontSize: '.77rem' }}>Mobile Template</MDBCardText>
-                    <MDBProgress className="rounded">
-                      <MDBProgressBar width={55} valuemin={0} valuemax={100} />
-                    </MDBProgress>
-
-                    <MDBCardText className="mt-4 mb-1" style={{ fontSize: '.77rem' }}>Backend API</MDBCardText>
-                    <MDBProgress className="rounded">
-                      <MDBProgressBar width={66} valuemin={0} valuemax={100} />
-                    </MDBProgress>
-                  </MDBCardBody>
-                </MDBCard>
-              </MDBCol>
-
-              <MDBCol md="6">
-                <MDBCard className="mb-4 mb-md-0">
-                  <MDBCardBody>
-                    <MDBCardText className="mb-4"><span className="text-primary font-italic me-1">assigment</span> Project Status</MDBCardText>
-                    <MDBCardText className="mb-1" style={{ fontSize: '.77rem' }}>Web Design</MDBCardText>
-                    <MDBProgress className="rounded">
-                      <MDBProgressBar width={80} valuemin={0} valuemax={100} />
-                    </MDBProgress>
-
-                    <MDBCardText className="mt-4 mb-1" style={{ fontSize: '.77rem' }}>Website Markup</MDBCardText>
-                    <MDBProgress className="rounded">
-                      <MDBProgressBar width={72} valuemin={0} valuemax={100} />
-                    </MDBProgress>
-
-                    <MDBCardText className="mt-4 mb-1" style={{ fontSize: '.77rem' }}>One Page</MDBCardText>
-                    <MDBProgress className="rounded">
-                      <MDBProgressBar width={89} valuemin={0} valuemax={100} />
-                    </MDBProgress>
-
-                    <MDBCardText className="mt-4 mb-1" style={{ fontSize: '.77rem' }}>Mobile Template</MDBCardText>
-                    <MDBProgress className="rounded">
-                      <MDBProgressBar width={55} valuemin={0} valuemax={100} />
-                    </MDBProgress>
-
-                    <MDBCardText className="mt-4 mb-1" style={{ fontSize: '.77rem' }}>Backend API</MDBCardText>
-                    <MDBProgress className="rounded">
-                      <MDBProgressBar width={66} valuemin={0} valuemax={100} />
-                    </MDBProgress>
-                  </MDBCardBody>
-                </MDBCard>
-              </MDBCol>
-            </MDBRow>
+            <MDBBtn onClick={toggleList} className="mb-3">
+              {showList ? "Hide List" : "Show List"} <p> DUE BILLS FOR TODAY </p>
+            </MDBBtn>
+            {showList && (
+              <MDBListGroup>
+                {listData.map((item, index) => (
+                  <MDBListGroupItem key={index}>{item}</MDBListGroupItem>
+                ))}
+              </MDBListGroup>
+            )}
           </MDBCol>
         </MDBRow>
       </MDBContainer>

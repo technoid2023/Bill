@@ -19,7 +19,7 @@ function Dashboard(props) {
         </div>
         <div class="row row-cols-1 row-cols-md-3 g-4">
           <div class="col main-card">
-            <a href="/showSales">
+            <a href="#">
               <div class="card h-100 card-view view1" style={{ backgroundColor: "#A5F1E9" }}>
                 <div>
                   <p class="fs-6 text">GROSS SALES</p>
@@ -47,7 +47,7 @@ function Dashboard(props) {
             </a>
           </div>
           <div class="col main-card">
-            <a href="/showSales">
+            <a href="#">
               <div class="card h-100 card-view view2" style={{backgroundColor: '#F7E6AD'}}>
                 <div>
                   <p class="fs-6 text">DUE AMOUNTS</p>
@@ -91,7 +91,7 @@ function Dashboard(props) {
             </a>
           </div>
           <div class="col main-card">
-            <a href="/showSales">
+            <a href="#">
               <div class="card h-100 card-view view3" style={{backgroundColor: '#CEE5D0'}}>
                 <div>
                   <p class="fs-6 text">REFUNDS</p>
@@ -118,7 +118,7 @@ function Dashboard(props) {
             </a>
           </div>
           <div class="col main-card">
-            <a href="/showSales">
+            <a href="#">
               <div class="card h-100 card-view view4" style={{backgroundColor: '#F4BFBF'}}>
                 <div>
                   <h5 class="card-title text">PROFITS</h5>
@@ -207,11 +207,11 @@ function Dashboard(props) {
             </a>
           </div>
           <div class="col main-card">
-            <a href="/showSales">
+            <a href="#">
               <div class="card h-100 card-view view5" style={{backgroundColor: '#AEE2FF'}}>
                 <div>
                   <h5 class="card-title text">TAXES</h5>
-                  <h5 class="card-title">₹0.00</h5>
+                  <h5 class="card-title">₹{stats.tax_value}.00</h5>
                 </div>
                 <div className="Icon-style">
                   <svg
@@ -231,7 +231,7 @@ function Dashboard(props) {
             </a>
           </div>
           <div class="col main-card">
-            <a href="/showSales">
+            <a href="#">
               <div class="card h-100 card-view view6" style={{backgroundColor: '#DFCCFB'}}>
                 <div>
                   <h5 class="card-title text">Unpaid Bills</h5>
@@ -258,7 +258,7 @@ function Dashboard(props) {
             </a>
           </div>
           <div class="col main-card">
-            <a href="/showSales">
+            <a href="#">
               <div class="card h-100 card-view view7" style={{backgroundColor: '#DDDDDD'}}>
                 <div>
                   <h5 class="card-title text">PAID BILLS</h5>
@@ -288,7 +288,7 @@ function Dashboard(props) {
             </a>
           </div>
           <div class="col main-card">
-            <a href="/showSales">
+            <a href="#">
               <div class="card h-100 card-view view8" style={{backgroundColor: '#b7f3c9'}}>
                 <div>
                   <h5 class="card-title text">TOTAL CUSTOMERS</h5>
@@ -324,6 +324,7 @@ function Dashboard(props) {
               </div>
             </a>
           </div>
+          
         </div>
         <div className="row row-cols-1 row-cols-md-2 g-2 second_container">
           <div className="col main-card">
@@ -346,26 +347,7 @@ function Dashboard(props) {
               </div>
             </div>
           </div>
-          <div className="col main-card">
-            <div className="card text-dark bg-light mb-3">
-              <div className="card-header">
-                <h5 className="card-title">Payment Methods</h5>
-              </div>
-              <div className="card-body">
-                <p className="card-text">No Items</p>
-              </div>
-            </div>
-          </div>
-          <div className="col main-card">
-            <div className="card text-dark bg-light mb-3">
-              <div className="card-header">
-                <h5 className="card-title">Sales Trend</h5>
-              </div>
-              <div className="card-body">
-                <p className="card-text">No Items</p>
-              </div>
-            </div>
-          </div>
+          
         </div></div>
     
       

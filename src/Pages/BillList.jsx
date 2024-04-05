@@ -231,6 +231,14 @@ const BillList = () => {
             <td>{itemDetails.amount}</td>
           </tr>
           <tr>
+            <td><strong>Tax Amount:</strong></td>
+            <td>{itemDetails.tax_value}</td>
+          </tr>
+          <tr>
+            <td><strong>Due Date:</strong></td>
+            <td>{itemDetails.due_date?(itemDetails.due_date.toString().slice(0,10)):('')}</td>
+          </tr>
+          <tr>
             <td><strong>Paid:</strong></td>
             <td>{itemDetails.pay ? "Yes" : "No"}</td>
           </tr>
@@ -246,6 +254,10 @@ const BillList = () => {
                     <tr>
                       <td><strong>Item Code:</strong></td>
                       <td>{record.item_cd}</td>
+                    </tr>
+                    <tr>
+                      <td><strong>Item Name:</strong></td>
+                      <td>{record.item_name}</td>
                     </tr>
                     <tr>
                       <td><strong>Item Quantity:</strong></td>

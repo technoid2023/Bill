@@ -25,6 +25,9 @@ const BillForm = () => {
   const [filteredItems, setFilteredItems] = useState([]);
 const [dueDate, setDueDate] = useState(); 
 const [itemName, setItemName] = useState();
+
+const [cgst, setCgst] = useState(9); // State to hold CGST percentage value
+const [sgst, setSgst] = useState(9); 
   useEffect(() => {
     const encryptToken = Cookies.get('_TK');
 
@@ -72,7 +75,8 @@ const [itemName, setItemName] = useState();
       cus_address: cusAddress,
       items: billItems,
       pay: isPaid ,
-      due_date: dueDate
+      due_date: dueDate,
+      tax_value: cgstAmount + sgstAmount
     };
     if (formData.cus_name && formData.cus_email && formData.cus_mobile && formData.cus_address && formData.items) {
       axios.post('https://edu-tech-bwe5.onrender.com/v1/bill', formData, {
@@ -111,6 +115,7 @@ const [itemName, setItemName] = useState();
     setBillItems([]);
     setDueDate(''); 
     setItemName('');
+    
   };
 
   useEffect(() => {
@@ -162,6 +167,10 @@ const [itemName, setItemName] = useState();
       setDueDate(); // Reset dueDate to null if isPaid is unchecked
     }
   };
+  let totalamount=billItems.reduce((total, item) => total + parseFloat(item.amount), 0)
+  let cgstAmount = (totalamount * cgst) / 100;
+  let sgstAmount = (totalamount * sgst) / 100;
+  let grossamount=totalamount+cgstAmount+sgstAmount
   return (
     <MDBContainer style={{ backgroundColor: 'white', overflowX: 'auto' }}>
       <MDBRow>
@@ -304,12 +313,101 @@ const [itemName, setItemName] = useState();
         </MDBCol>
       </MDBRow>
 
+      <MDBRow className="justify-content-end">
+  <MDBCol md="2">
+    <label htmlFor="totalamount" className="form-label">
+      Total Amount:
+    </label>
+  </MDBCol>
+  <MDBCol md="3">
+    <input
+      type="text"
+      id="totalamount"
+      className="form-control"
+      value={totalamount.toFixed(2)}
+      disabled
+    />
+  </MDBCol>
+</MDBRow>
+<MDBRow className="justify-content-end">
+  <MDBCol md="2">
+    <label htmlFor="cgst" className="form-label">
+      CGST (%):
+    </label>
+  </MDBCol>
+  <MDBCol md="1">
+    <input
+      type="number"
+      id="cgst"
+      className="form-control"
+      value={cgst}
+      onChange={(e) => {
+        setCgst(parseFloat(e.target.value));
+      }}
+    />
+  </MDBCol>
+  <MDBCol md="2">
+    <input
+      type="text"
+      id="cgstAmount"
+      className="form-control"
+      value={cgstAmount}
+      disabled
+    />
+  </MDBCol>
+</MDBRow>
+<MDBRow className="justify-content-end">
+  <MDBCol md="2">
+    <label htmlFor="sgst" className="form-label">
+      SGST (%):
+    </label>
+  </MDBCol>
+  <MDBCol md="1">
+    <input
+      type="number"
+      id="sgst"
+      className="form-control"
+      value={sgst}
+      onChange={(e) => {
+        setSgst(parseFloat(e.target.value));
+      }}
+    />
+  </MDBCol>
+  <MDBCol md="2">
+    <input
+      type="text"
+      id="sgstAmount"
+      className="form-control"
+      value={sgstAmount}
+      disabled
+    />
+  </MDBCol>
+</MDBRow>
+<MDBRow className="justify-content-end">
+  <MDBCol md="2">
+    <label htmlFor="grossamount" className="form-label">
+      Gross Amount:
+    </label>
+  </MDBCol>
+  <MDBCol md="3">
+    <input
+      type="text"
+      id="grossamount"
+      className="form-control"
+      value={grossamount.toFixed(2)}
+      disabled
+    />
+  </MDBCol>
+</MDBRow>
+
+
+
       {/* Checkbox Section */}
       <MDBRow className="mb-3">
         <MDBCol>
           <MDBCheckbox
             id="isPaid"
-            label="Is Paid"
+            label="Paid"
             checked={isPaid}
             onChange={() => setIsPaid(!isPaid)}
           />
