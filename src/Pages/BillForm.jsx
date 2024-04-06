@@ -188,7 +188,7 @@ const [sgst, setSgst] = useState(9);
         <MDBCol md='3'>
           <MDBInput
             type="text"
-            label="Name(Customer)"
+            label="Customer Name"
             value={cusName}
             onChange={(e) => setCusName(e.target.value)}
             style={{ width: '100%' }}
@@ -198,7 +198,7 @@ const [sgst, setSgst] = useState(9);
         <MDBCol md='3'>
           <MDBInput
             type="email"
-            label="Email(Customer)"
+            label="Customer Email"
             value={cusEmail}
             onChange={(e) => setCusEmail(e.target.value)}
             style={{ width: '100%' }}
@@ -208,7 +208,7 @@ const [sgst, setSgst] = useState(9);
         <MDBCol md='2'>
           <MDBInput
             type="tel"
-            label="Mobile(Customer)"
+            label="Customer Mobile"
             value={cusMobile}
             onChange={(e) => setCusMobile(e.target.value)}
             style={{ width: '100%' }}
@@ -218,7 +218,7 @@ const [sgst, setSgst] = useState(9);
         <MDBCol md='4'>
           <MDBInput
             type="text"
-            label="Address(Customer)"
+            label="Customer Address"
             value={cusAddress}
             onChange={(e) => setCusAddress(e.target.value)}
             style={{ width: '100%' }}
