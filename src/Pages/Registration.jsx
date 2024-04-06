@@ -40,7 +40,7 @@ const Registration = () => {
         lastName: "",
         email: "",
         mobile: null,
-        code: "",
+        
         company: "",
         designation: "",
         city: "",
@@ -60,7 +60,7 @@ const Registration = () => {
             name: `${user.firstName} ${user.lastName}`,
             email: user.email,
             mobile: user.mobile,
-            code: user.code,
+            
             company: user.company,
             designation: user.designation,
             city: user.city,
@@ -281,7 +281,7 @@ toast.error('Fill All Details !!')
 
                         {/* Third row */}
                         <div className="row mb-4">
-                            <div className="col-md-6">
+                            <div className="col-md-8">
                                 <MDBIcon fas icon="university me-3" size="lg" />
                                 <MDBInput
                                     label="Your Company"
@@ -291,15 +291,7 @@ toast.error('Fill All Details !!')
                                     className="w-100"
                                 />
                             </div>
-                            <div className="col-md-2">
-                                <MDBIcon fas icon="user" size="lg" className="me-3" />
-                                <MDBInput
-                                    label="Code"
-                                    name="code"
-                                    onChange={handleInput}
-                                    type="text"
-                                />
-                            </div>
+                            
                             <div className="col-md-4">
                                 <MDBBtn onClick={GetOtp} type="button">
                                     {loading ? (
