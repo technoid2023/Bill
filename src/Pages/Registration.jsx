@@ -77,7 +77,7 @@ const Registration = () => {
                 setLoadingR(false);
                 toast.success(res.data.Message);
                 setTimeout(() => {
-                    navigate('/login');
+                    navigate('/');
                 }, 1000);
             }
             else {
