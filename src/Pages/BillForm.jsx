@@ -104,9 +104,11 @@ const [sgst, setSgst] = useState(9);
         }
       })
       .catch(error => {
+        setLoading(false);
         console.error('An error occurred while generating the bill:', error);
       });
     } else {
+      setLoading(false);
       toast.error("Fill the form")
     }
   };
@@ -123,6 +125,7 @@ const [sgst, setSgst] = useState(9);
     setBillItems([]);
     setDueDate(''); 
     setItemName('');
+  
     
   };
 

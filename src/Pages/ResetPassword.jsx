@@ -13,6 +13,7 @@ from 'mdb-react-ui-kit';
 import toast ,{Toaster} from "react-hot-toast";
 import axios from "axios";
 import {useNavigate} from "react-router-dom";
+import Layout from '../Components/Layout/Layout';
 
 function Reset() {
     const[femail,setFemail]=useState(false)
@@ -100,74 +101,76 @@ const resetPassword=()=>{
 }
 
   return (
-
-
-
-    <MDBContainer fluid className='p-4'>
+<Layout>
+<MDBContainer fluid className='p-4'>
         
-                <Toaster
-                position="top-center"
-                reverseOrder={false}
-                />
+        <Toaster
+        position="top-center"
+        reverseOrder={false}
+        />
+<MDBRow>
+
+<MDBCol md='6'>
+    <MDBCardImage src='https://img.freepik.com/free-vector/forgot-password-concept-illustration_114360-1095.jpg?w=740&t=st=1705078107~exp=1705078707~hmac=41bc8195db32f9e0dc0803cad28612da83fb81fb50c9a1cbb0d148f1bb1e2497' alt="login form" className='rounded-start w-100' height={500}/>
+  </MDBCol>
+
+<MDBCol md='6'>
+
+  <MDBCard className='my-5'>
+    <MDBCardBody className='p-5'>
+
       <MDBRow>
-      
-      <MDBCol md='6'>
-            <MDBCardImage src='https://img.freepik.com/free-vector/forgot-password-concept-illustration_114360-1095.jpg?w=740&t=st=1705078107~exp=1705078707~hmac=41bc8195db32f9e0dc0803cad28612da83fb81fb50c9a1cbb0d148f1bb1e2497' alt="login form" className='rounded-start w-100' height={500}/>
-          </MDBCol>
-   
-        <MDBCol md='6'>
-
-          <MDBCard className='my-5'>
-            <MDBCardBody className='p-5'>
-
-              <MDBRow>
-                <MDBCol col='6'>
-                  <MDBInput wrapperClass='mb-4' disabled={femail} label='Email Address' onChange={handleInput} name='email' type='email'/>
-                </MDBCol>
-
-                <MDBCol col='6'>
-                  <MDBInput wrapperClass='mb-4' disabled={fotp} label='OTP' name='otp' onChange={handleInput} type='number'/>
-                </MDBCol>
-              </MDBRow>
-
-              <MDBInput wrapperClass='mb-4' label='New Password' name='newpassword' onChange={handleInput} type='password'/>
-              <MDBInput wrapperClass='mb-4' label='Confirm Password' name='confirmpassword' onChange={handleInput} type='text'/>
-
-              <MDBBtn className='mb-4'  type="button" disabled={otpdisable} onClick={SendOtp} size='lg'>{loadingo ? (
-                                        <>
-                                            <span
-                                                className="spinner-border spinner-border-sm me-2"
-                                                role="status"
-                                                aria-hidden="true"
-                                            ></span>
-                                            Sending...
-                                        </>
-                                    ) : (
-                                        'Send OTP'
-                                    )}</MDBBtn>
-              <MDBBtn className='w-100 mb-4' type="button" color='success'disabled={resetdisable} onClick={resetPassword} size='lg'>{loading ? (
-                                        <>
-                                            <span
-                                                className="spinner-border spinner-border-sm me-2"
-                                                role="status"
-                                                aria-hidden="true"
-                                            ></span>
-                                            wait...
-                                        </>
-                                    ) : (
-                                        'RESET'
-                                    )}</MDBBtn>
-
-            
-
-            </MDBCardBody>
-          </MDBCard>
-
+        <MDBCol col='6'>
+          <MDBInput wrapperClass='mb-4' disabled={femail} label='Email Address' onChange={handleInput} name='email' type='email'/>
         </MDBCol>
-        
+
+        <MDBCol col='6'>
+          <MDBInput wrapperClass='mb-4' disabled={fotp} label='OTP' name='otp' onChange={handleInput} type='number'/>
+        </MDBCol>
       </MDBRow>
+
+      <MDBInput wrapperClass='mb-4' label='New Password' name='newpassword' onChange={handleInput} type='password'/>
+      <MDBInput wrapperClass='mb-4' label='Confirm Password' name='confirmpassword' onChange={handleInput} type='text'/>
+
+      <MDBBtn className='mb-4'  type="button" disabled={otpdisable} onClick={SendOtp} size='lg'>{loadingo ? (
+                                <>
+                                    <span
+                                        className="spinner-border spinner-border-sm me-2"
+                                        role="status"
+                                        aria-hidden="true"
+                                    ></span>
+                                    Sending...
+                                </>
+                            ) : (
+                                'Send OTP'
+                            )}</MDBBtn>
+      <MDBBtn className='w-100 mb-4' type="button" color='success'disabled={resetdisable} onClick={resetPassword} size='lg'>{loading ? (
+                                <>
+                                    <span
+                                        className="spinner-border spinner-border-sm me-2"
+                                        role="status"
+                                        aria-hidden="true"
+                                    ></span>
+                                    wait...
+                                </>
+                            ) : (
+                                'RESET'
+                            )}</MDBBtn>
+
     
-    </MDBContainer>
+
+    </MDBCardBody>
+  </MDBCard>
+
+</MDBCol>
+
+</MDBRow>
+
+</MDBContainer>
+</Layout>
+
+
+  
   );
 }
 

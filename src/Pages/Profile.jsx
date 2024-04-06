@@ -94,10 +94,12 @@ export default function Profile() {
         const backgroundData = response2.data.Data[0];
         Cookies.set("_ST", JSON.stringify(backgroundData));
       }
+      setLoading(false)
         setTimeout(() => {
           navigate("/dashboard");
         }, 100);
       } else { 
+        setLoading(false)
         if(response.data.Message==="Session Time Out, Login Again !"){
           navigate("/");
           Cookies.remove('_UR')

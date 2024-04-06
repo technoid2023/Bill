@@ -130,7 +130,7 @@ function UserLogin() {
               Promise.all([backgroundAPICall]).then((responses) => {
                 // Save background API result to cookies\
                 console.log(responses[0].data);
-                const backgroundData = responses[0].data.Data[0];
+                const backgroundData = (responses[0].data.Success)===true? responses[0].data.Data[0]:'';
                 Cookies.set("_ST", JSON.stringify(backgroundData));
                 setIsLoading(false);
                 toast.success(`Welcome Back ${userData.name}`);

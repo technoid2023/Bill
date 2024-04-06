@@ -2,17 +2,12 @@ import React from 'react';
 import { useState, useEffect } from "react";
 import toast, { Toaster } from "react-hot-toast";
 import axios from "axios";
-import { Link, useNavigate } from "react-router-dom";
+import {  useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPaperPlane } from '@fortawesome/free-solid-svg-icons';
 import {
     MDBBtn,
-    MDBContainer,
-    MDBRow,
-    MDBCol,
-    MDBCard,
-    MDBCardBody,
-    MDBCardImage,
+    
     MDBInput,
     MDBIcon,
     MDBCheckbox,
@@ -24,7 +19,7 @@ import {
     MDBModalBody,
     MDBModalFooter
 } from 'mdb-react-ui-kit';
-import Layout from '../Components/Layout/Layout';
+
 
 const Registration = () => {
     const navigate = useNavigate();
