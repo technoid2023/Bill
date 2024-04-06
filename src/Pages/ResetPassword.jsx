@@ -17,8 +17,8 @@ import {useNavigate} from "react-router-dom";
 function Reset() {
     const[femail,setFemail]=useState(false)
     const[fotp,setFotp]=useState(true)
-    
-    
+    const [loadingo, setLoadingO] = useState(false);
+    const [loading, setLoading] = useState(false);
     const[resetdisable,setResetdisable]=useState(true);
     const[otpdisable,setOtpdisable]=useState(false);
     const navigate=useNavigate();
@@ -35,6 +35,7 @@ function Reset() {
         setUser({...user,[e.target.name]:e.target.value})
     }
     const SendOtp=()=>{
+      setLoadingO(true);
         console.log(user.newpassword);
         let mail={email:user.email}
         if(user.email==="" ){
@@ -51,7 +52,7 @@ function Reset() {
            setResetdisable(false)
            setFemail(true)
            
-          
+           setLoadingO(false);
            setOtpdisable(true)
       
             toast.success(res.data.Message)
@@ -60,6 +61,7 @@ function Reset() {
             
           }
           else{
+            setLoadingO(false);
               toast.error(res.data.Message)
           }
         })
@@ -68,7 +70,9 @@ function Reset() {
       }
 
 const resetPassword=()=>{
+  setLoading(true);
     if(user.otp===null){
+      setLoading(false);
         toast.error('Enter OTP ')
     }
     else{
@@ -80,7 +84,7 @@ const resetPassword=()=>{
             console.log(res); 
           if(res.data.Success===true){
            
-      
+            setLoading(false);
             toast.success(res.data.Message)
             setTimeout(() => {
                 navigate('/login');
@@ -88,6 +92,7 @@ const resetPassword=()=>{
             
           }
           else{
+            setLoading(false);
               toast.error(res.data.Message)
           }
         })
@@ -128,8 +133,30 @@ const resetPassword=()=>{
               <MDBInput wrapperClass='mb-4' label='New Password' name='newpassword' onChange={handleInput} type='password'/>
               <MDBInput wrapperClass='mb-4' label='Confirm Password' name='confirmpassword' onChange={handleInput} type='text'/>
 
-              <MDBBtn className='mb-4'  type="button" disabled={otpdisable} onClick={SendOtp} size='lg'>Send OTP</MDBBtn>
-              <MDBBtn className='w-100 mb-4' type="button" color='success'disabled={resetdisable} onClick={resetPassword} size='lg'>Reset</MDBBtn>
+              <MDBBtn className='mb-4'  type="button" disabled={otpdisable} onClick={SendOtp} size='lg'>{loadingo ? (
+                                        <>
+                                            <span
+                                                className="spinner-border spinner-border-sm me-2"
+                                                role="status"
+                                                aria-hidden="true"
+                                            ></span>
+                                            Sending...
+                                        </>
+                                    ) : (
+                                        'Send OTP'
+                                    )}</MDBBtn>
+              <MDBBtn className='w-100 mb-4' type="button" color='success'disabled={resetdisable} onClick={resetPassword} size='lg'>{loading ? (
+                                        <>
+                                            <span
+                                                className="spinner-border spinner-border-sm me-2"
+                                                role="status"
+                                                aria-hidden="true"
+                                            ></span>
+                                            wait...
+                                        </>
+                                    ) : (
+                                        'RESET'
+                                    )}</MDBBtn>
 
             
 

@@ -1,3 +1,4 @@
+//aa
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import {
@@ -19,6 +20,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash, faRotate } from "@fortawesome/free-solid-svg-icons";
 
 import image from "../Assests/bill_login.jpg";
+import Registration from "./Registration";
 
 
 const generateRandomCode = () => {
@@ -30,8 +32,12 @@ const generateRandomCode = () => {
 };
 
 function UserLogin() {
+
+
+
   const navigate = useNavigate();
   // State to manage form inputs
+  const [showRegistrationModal, setShowRegistrationModal] = useState(false);
   const [formData, setFormData] = useState({
     userId: "",
     password: "",
@@ -43,6 +49,10 @@ function UserLogin() {
   const [isFormValid, setIsFormValid] = useState(false);
   const [isLoading, setIsLoading] = useState(false); 
   // Update form data when inputs change
+  const toggleRegistrationModal = () => {
+    setShowRegistrationModal(!showRegistrationModal);
+  };
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData({
@@ -164,6 +174,22 @@ function UserLogin() {
     <Layout>
       <MDBContainer className="my-3">
         <Toaster position="top-center" reverseOrder={false} />
+        {showRegistrationModal && (
+  <div className="modal" tabIndex="-1" role="dialog" style={{ display: "block", backgroundColor: "rgba(0, 0, 0, 0.5)" }}>
+    <div className="modal-dialog modal-dialog-centered modal-xl" role="document"> {/* Added modal-xl class for extra large modal */}
+      <div className="modal-content" style={{ width: "100%", height: "100%" }}> {/* Set width and height to 100% */}
+        <div className="modal-header">
+          <h5 className="modal-title">Register</h5>
+          <button type="button" className="btn-close" onClick={toggleRegistrationModal}></button>
+        </div>
+        <div className="modal-body">
+          <Registration /> {/* Render the Registration component inside the modal */}
+        </div>
+      </div>
+    </div>
+  </div>
+)}
+
 
         <MDBCard
           className="mt-1"
@@ -341,20 +367,20 @@ function UserLogin() {
             </MDBBtn>
                       </span>
                       <span style={{ marginLeft: "1px", color: "white" }}>
-                        <Link
-                          className="small mb-1"
-                          to="/signup"
-                          style={{
-                            color: "red",
-                            fontWeight: "bold",
-                            marginTop: "2px",
-                          }}
-                        >
-                          Don't Have Account
-                          <br />
-                          SignUp Here
-                        </Link>
-                      </span>
+        <span
+          className="small mb-1"
+          onClick={toggleRegistrationModal} // Open the registration modal when clicked
+          style={{
+            color: "red",
+            fontWeight: "bold",
+            marginTop: "2px",
+            cursor: "pointer", // Add cursor pointer to indicate it's clickable
+          }}
+        >
+        <MDBBtn type="button"> Sign UP</MDBBtn>
+          
+        </span>
+      </span>
                     </div>
                   </div>
                 </form>
