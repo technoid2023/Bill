@@ -323,7 +323,7 @@ toast.error('Fill All Details !!')
                             <div className="col-md-6">
                                 <MDBIcon fas icon="city me-3" size="lg" />
                                 <MDBInput
-                                    label="Your City"
+                                    label="Your Address"
                                     name="city"
                                     type="text"
                                     onChange={handleInput}
