@@ -26,7 +26,7 @@ const BillForm = () => {
   const [filteredItems, setFilteredItems] = useState([]);
   const [dueDate, setDueDate] = useState();
   const [itemName, setItemName] = useState();
-  const [igst, setIgst] = useState(18);
+  const [igst, setIgst] = useState(0);
   const [cgst, setCgst] = useState(9); // State to hold CGST percentage value
   const [sgst, setSgst] = useState(9);
   useEffect(() => {
