@@ -235,6 +235,31 @@ const BillList = () => {
             <td>{itemDetails.tax_value}</td>
           </tr>
           <tr>
+            <td><strong>CGST Amount:</strong></td>
+            <td>{itemDetails.cgst_amt}</td>
+          </tr>
+          <tr>
+            <td><strong>SGST Amount:</strong></td>
+            <td>{itemDetails.sgst_amt}</td>
+          </tr>
+          <tr>
+            <td><strong>IGST Amount:</strong></td>
+            <td>{itemDetails.igst_amt}</td>
+          </tr>
+          <tr>
+            <td><strong>CGST Value:</strong></td>
+            <td>{itemDetails.cgst_per}%</td>
+          </tr>
+          <tr>
+            <td><strong>SGST Value:</strong></td>
+            <td>{itemDetails.sgst_per}%</td>
+          </tr>
+          <tr>
+            <td><strong>IGST Value:</strong></td>
+            <td>{itemDetails.igst_per}%</td>
+          </tr>
+
+          <tr>
             <td><strong>Due Date:</strong></td>
             <td>{itemDetails.due_date?(itemDetails.due_date.toString().slice(0,10)):('')}</td>
           </tr>

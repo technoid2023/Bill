@@ -1,382 +1,482 @@
-import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import {
-  MDBBtn,
-  MDBContainer,
-  MDBCard,
-  MDBCardBody,
-  MDBRow,
-  MDBCol,
-  MDBInput,
-} from "mdb-react-ui-kit";
+import React, { useEffect, useState } from 'react';
+import toast from "react-hot-toast";
+import Cookies from 'js-cookie';
+import { decrypt } from '../Auth/PrivateRoute';
+import axios from 'axios';
+import { MDBContainer, MDBRow, MDBCol, MDBInput, MDBBtn, MDBTable, MDBTableBody, MDBTableHead, MDBDropdown, MDBDropdownToggle, MDBDropdownMenu, MDBDropdownItem, MDBCheckbox } from 'mdb-react-ui-kit';
+import { Link, useNavigate } from 'react-router-dom';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faTrash, faFileArrowDown, faPlus, faRecycle } from '@fortawesome/free-solid-svg-icons';
 
-import axios from "axios";
-import toast, { Toaster } from "react-hot-toast";
-import Layout from "../Components/Layout/Layout";
-import Cookies from "js-cookie";
-import { encrypt } from "../Auth/PrivateRoute";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEye, faEyeSlash, faRotate } from "@fortawesome/free-solid-svg-icons";
-
-import image from "../Assests/bill_login.jpg";
-
-
-const generateRandomCode = () => {
-  let code = "";
-  for (let i = 0; i < 4; i++) {
-    code += Math.floor(Math.random() * 10); // Generate random digit (0-9)
-  }
-  return code;
-};
-
-function UserLogin() {
+const BillForm = () => {
   const navigate = useNavigate();
-  // State to manage form inputs
-  const [formData, setFormData] = useState({
-    userId: "",
-    password: "",
-    showPassword: false, // state to manage password visibility
-  });
-  const [captchaCode, setCaptchaCode] = useState(generateRandomCode());
-  // const [userInput, setUserInput] = useState("");
-  const [isCorrect, setIsCorrect] = useState(false);
-  const [isFormValid, setIsFormValid] = useState(false);
-  const [isLoading, setIsLoading] = useState(false); 
-  // Update form data when inputs change
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value,
-    });
-    checkFormValidity(); // Check form validity on input change
-  };
+  const [itemList, setItemList] = useState();
+  const [selectedItem, setSelectedItem] = useState();
+  const [quantity, setQuantity] = useState();
+  const [chkQty, setChkQty] = useState();
+  const [loading, setLoading] = useState(false);
+  const [itemRate, setItemRate] = useState();
+  const [token, setToken] = useState(null);
+  const [cusName, setCusName] = useState();
+  const [cusEmail, setCusEmail] = useState();
+  const [cusMobile, setCusMobile] = useState();
+  const [cusAddress, setCusAddress] = useState();
+  const [isPaid, setIsPaid] = useState(false);
+  const [billItems, setBillItems] = useState([]);
+  const [filteredItems, setFilteredItems] = useState([]);
+  const [dueDate, setDueDate] = useState();
+  const [itemName, setItemName] = useState();
+  const [gstRate, setGstRate] = useState(18); // New state for GST rate
+  const [isIgstChecked, setIsIgstChecked] = useState(false); // Checkbox state for IGST
 
-  // Check form validity
-  const checkFormValidity = () => {
-    // Check if user ID, password, and captcha are filled
-    const isUserIdValid = formData.userId.trim() !== "";
-    const isPasswordValid = formData.password.trim() !== "";
+  useEffect(() => {
+    const encryptToken = Cookies.get('_TK');
 
-    setIsFormValid(isUserIdValid && isPasswordValid);
-  };
-
-  // Toggle password visibility
-  const togglePasswordVisibility = () => {
-    setFormData({
-      ...formData,
-      showPassword: !formData.showPassword,
-    });
-  };
-
-  const regenerateCaptcha = () => {
-    // setUserInput("");
-    setCaptchaCode(generateRandomCode());
-    setIsCorrect(false);
-  };
-
-  const handleCaptchaSubmit = (e) => {
-    const input = e.target.value;
-    // setUserInput(input);
-    if (input === captchaCode) {
-      setIsCorrect(true);
-    } else {
-      setIsCorrect(false);
+    if (encryptToken) {
+      const decryptedToken = decrypt(encryptToken);
+      setToken(JSON.parse(decryptedToken));
     }
-  };
+  }, []);
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    setIsLoading(true);
-    if (isCorrect) {
-      if (formData.userId !== "" && formData.password !== "") {
-        axios
-          .post("https://edu-tech-bwe5.onrender.com/v1/login", {
-            email: formData.userId,
-            password: formData.password,
-          })
-          .then((response) => {
-            
-            console.log("tested");
-            let data = response.data;
-            console.log(data);
-            if (data.Success === true) {
-              let rawToken = data.Token;
-              let encryptToken = encrypt(JSON.stringify(rawToken));
-              Cookies.set("_TK", encryptToken);
-              let userData = data.Data[0];
-              let encryptUser = encrypt(JSON.stringify(userData));
-              Cookies.set("_UR", encryptUser, { expires: 1 });
-              // toast.success(`Welcome Back ${userData.name}`);
-              regenerateCaptcha();
-              
-              // Call the background API
-              
-              const backgroundAPICall = axios.get("https://edu-tech-bwe5.onrender.com/v1/store", {headers: {
-                'token': rawToken}
-              });
-  
-              // Redirect to dashboard after both API calls are completed
-              Promise.all([backgroundAPICall]).then((responses) => {
-                // Save background API result to cookies\
-                console.log(responses[0].data);
-                const backgroundData = responses[0].data.Data[0];
-                Cookies.set("_ST", JSON.stringify(backgroundData));
-                setIsLoading(false);
-                toast.success(`Welcome Back ${userData.name}`);
-                // Redirect to dashboard
-                setTimeout(() => {
-                  navigate("/dashboard");
-                }, 100);
-              });
-            } else {
-              toast.error("Invalid User Credentials !");
-              regenerateCaptcha();
-              setIsLoading(false);
-            }
-          })
-          .catch((error) => {
-            setIsLoading(false);
-            toast.error("Bad Credentials !");
-            console.error("Error fetching data:", error);
-            if (error.response) {
-              console.error(
-                "Server responded with status:",
-                error.response.status
-              );
-              console.error("Response data:", error.response.data);
-            }
-          });
-      } else {
-        toast.error("Give Login Credentials ");
-        setIsLoading(false);
+  const handleAddItem = () => {
+    if (selectedItem && quantity && itemRate) {
+      if (parseInt(quantity) > parseInt(chkQty)) {
+        toast.error(`Stock not available \n Available Stock ${chkQty}`);
+        return;
       }
-    } else {
-      toast.error("Wrong Captcha !!");
-      setIsLoading(false);
-      regenerateCaptcha();
+      const newItem = {
+        item_cd: selectedItem,
+        item_name: itemName,
+        item_qty: quantity,
+        item_rate: itemRate,
+        amount: (itemRate * quantity),
+      };
+      setBillItems([...billItems, newItem]);
+      setQuantity('');
+      setItemName('');
+      setSelectedItem('');
+      setItemRate('');
+      setDueDate('');
     }
   };
-  
-  
+
+  const handleDeleteItem = (index) => {
+    const updatedItems = [...billItems];
+    updatedItems.splice(index, 1);
+    setBillItems(updatedItems);
+  };
+
+  const handleGenerateBill = () => {
+    setLoading(true);
+    const formData = {
+      cus_name: cusName,
+      cus_email: cusEmail,
+      cus_mobile: cusMobile,
+      cus_address: cusAddress,
+      items: billItems,
+      pay: isPaid,
+      due_date: dueDate,
+      tax_value: calculateTaxValue(),
+      cgst_per: isIgstChecked ? 0 : gstRate / 2, // CGST percentage
+      sgst_per: isIgstChecked ? 0 : gstRate / 2, // SGST percentage
+      cgst_amt: calculateCgstAmount(), // CGST amount
+      sgst_amt: calculateSgstAmount(), // SGST amount
+      igst_amt: calculateIgstAmount(), // IGST amount
+      igst_per: isIgstChecked ? gstRate : 0, // IGST percentage
+    };
+    if (formData.cus_name && formData.cus_email && formData.cus_mobile && formData.cus_address && formData.items) {
+      if (!isPaid && !dueDate) {
+        toast.error("Due date is required if the bill is not paid.");
+        setLoading(false);
+        return;
+      }
+      axios.post('http://127.0.0.1:8111/v1/bill', formData, {
+        headers: {
+          'token': token
+        }
+      })
+        .then(response => {
+          console.log(response);
+          if (response.data.Success === true) {
+            setLoading(false);
+            toast.success(`Bill generated, Bill No:${response.data.Bill_no}`);
+
+            clearForm();
+            navigate('/dashboard/bill')
+          } else {
+            toast.error('Failed to generate bill.');
+          }
+        })
+        .catch(error => {
+          setLoading(false);
+          console.error('An error occurred while generating the bill:', error);
+        });
+    } else {
+      setLoading(false);
+      toast.error("Fill the form")
+    }
+  };
+
+  const clearForm = () => {
+    setSelectedItem('');
+    setQuantity('');
+    setItemRate('');
+    setCusName('');
+    setCusEmail('');
+    setCusMobile('');
+    setCusAddress('');
+    setIsPaid(false);
+    setBillItems([]);
+    setDueDate('');
+    setItemName('');
+  };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get('https://edu-tech-bwe5.onrender.com/v1/item', {
+          headers: {
+            'token': token
+          }
+        });
+        if (response.data.Success === true) {
+          setItemList(response.data.Data);
+          setFilteredItems(response.data.Data);
+        } else if (response.data.Data === undefined) {
+          setItemList(['Loading']);
+        } else {
+          console.log('Data not found');
+        }
+      } catch (error) {
+        console.error('An error occurred:', error);
+      }
+    };
+
+    fetchData();
+  }, [token]);
+
+  const handleSearch = (searchTerm) => {
+    if (!searchTerm) {
+      setFilteredItems(itemList);
+      return;
+    }
+
+    const filtered = itemList.filter(
+      (item) =>
+        item.item_cd.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        item.name.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+    setFilteredItems(filtered);
+  };
+
+  const handleItemSelected = (item) => {
+    setSelectedItem(item.item_cd);
+    setItemName(item.name);
+    setItemRate(item.SP);
+    setChkQty(item.qty);
+  };
+
+  // Calculate total amount
+  let totalamount = billItems.reduce((total, item) => total + parseFloat(item.amount), 0);
+
+  // Calculate CGST amount based on GST rate
+  const calculateCgstAmount = () => {
+    return isIgstChecked ? 0 : (totalamount * gstRate) / 200;
+  };
+
+  // Calculate SGST amount based on GST rate
+  const calculateSgstAmount = () => {
+    return isIgstChecked ? 0 : (totalamount * gstRate) / 200;
+  };
+
+  // Calculate IGST amount based on GST rate
+  const calculateIgstAmount = () => {
+    return isIgstChecked ? (totalamount * gstRate) / 100 : 0;
+  };
+
+  // Calculate gross amount
+  let grossamount = totalamount + calculateCgstAmount() + calculateSgstAmount() + calculateIgstAmount();
+
+  // Calculate tax value
+  const calculateTaxValue = () => {
+    return calculateCgstAmount() + calculateSgstAmount() + calculateIgstAmount();
+  };
 
   return (
-    <Layout>
-      <MDBContainer className="my-3">
-        <Toaster position="top-center" reverseOrder={false} />
+    <MDBContainer style={{ backgroundColor: 'white', overflowX: 'auto' }}>
+      <MDBRow>
+        <MDBCol>
+          <h2 style={{ textAlign: 'center', fontFamily: 'sans-serif', color: 'blue', fontWeight: 'bolder' }}>Bill Entry Form</h2>
+        </MDBCol>
+      </MDBRow>
+  
+      {/* Customer Section */}
+      <MDBRow className="mb-3">
+        <MDBCol md='3'>
+          <MDBInput
+            type="text"
+            label="Customer Name"
+            value={cusName}
+            onChange={(e) => setCusName(e.target.value)}
+            style={{ width: '100%' }}
+          /><br></br>
+        </MDBCol>
 
-        <MDBCard
-          className="mt-1"
-          style={{
-            borderRadius: "10px",
-            boxShadow:
-              "rgba(0, 0, 0, 0.6) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px, rgba(0, 0, 0, 0.4) 0px -2px 6px 0px inset",
-            backgroundImage: `url(${image})`,
-            backgroundSize: "cover",
-            minHeight:'42rem'
-            
-          }}
-        >
-          <MDBRow className="g-0">
-            <MDBCol md="6">
-              <MDBCardBody className="d-flex flex-column justify-content-center align-items-center">
-                
+        <MDBCol md='3'>
+          <MDBInput
+            type="email"
+            label="Customer Email"
+            value={cusEmail}
+            onChange={(e) => setCusEmail(e.target.value)}
+            style={{ width: '100%' }}
+          /><br></br>
+        </MDBCol>
 
-                
+        <MDBCol md='2'>
+          <MDBInput
+            type="tel"
+            label="Customer Mobile"
+            value={cusMobile}
+            onChange={(e) => setCusMobile(e.target.value)}
+            style={{ width: '100%' }}
+          /><br></br>
+        </MDBCol>
 
-                <form onSubmit={handleSubmit} style={{marginTop:'10rem', marginRight:'8rem'}}>
-                  <MDBInput
-                    wrapperClass="mb-4"
-                    label="Email ID"
-                    id="userId"
-                    type="text"
-                    size="lg"
-                    name="userId"
-                    onChange={handleInputChange}
-                    value={formData.userId}
-                    style={{ color: "goldenrod" }}
-                    onPaste={(e) => {
-                      e.preventDefault();
-                      toast.error("Pasting is disabled.");
-                    }}
-                  />
-                  <div className="position-relative">
-                    <MDBInput
-                      wrapperClass="mb-4"
-                      label="Password"
-                      id="password"
-                    
-                      type={formData.showPassword ? "text" : "password"}
-                      size="lg"
-                      name="password"
-                      onChange={handleInputChange}
-                      value={formData.password}
-                      style={{ color: "black" }}
-                      onPaste={(e) => {
-                        e.preventDefault();
-                        toast.error("Pasting is disabled.");
-                      }}
-                    />
-                    <FontAwesomeIcon
-                      icon={formData.showPassword ? faEye : faEyeSlash}
-                      onClick={togglePasswordVisibility}
-                      className="position-absolute end-0 top-50 translate-middle-y me-3"
-                      style={{ cursor: "pointer" }}
-                    />
-                  </div>
+        <MDBCol md='4'>
+          <MDBInput
+            type="text"
+            label="Customer Address"
+            value={cusAddress}
+            onChange={(e) => setCusAddress(e.target.value)}
+            style={{ width: '100%' }}
+          /><br></br>
+        </MDBCol>
 
-                  <div
-                    style={{
-                      display: "flex",
-                      flexDirection: "column",
-                      alignItems: "center",
-                    }}
-                  >
-                    <div style={{ display: "flex", alignItems: "center" }}>
-                      <div
-                        style={{
-                          position: "relative",
-                          display: "inline-block",
-                        }}
-                      >
-                        <input
-                          disabled
-                          value={captchaCode}
-                          style={{
-                            backgroundColor: "white",
-                            color: "grey",
-                            width: "80px",
-                            border: "none",
-                            fontSize: "24px",
-                            letterSpacing: "5px",
-                            textShadow: "0px 2px 4px rgba(0, 0, 0, 0.5)",
-                            position: "relative",
-                            zIndex: "1",
-                          }}
-                          onCopy={(e) => e.preventDefault()}
-                        />
-                        <span
-                          style={{
-                            position: "absolute",
-                            left: 0,
-                            top: "50%",
-                            width: "100%",
-                            height: "3px",
-                            backgroundColor: "green",
-                            transform: "rotate(-155deg)",
-                            zIndex: "4",
-                          }}
-                        ></span>
-                        <span
-                          style={{
-                            position: "absolute",
-                            left: 0,
-                            top: "50%",
-                            width: "100%",
-                            height: "5px",
-                            backgroundColor: "red",
-                            transform: "rotate(-0deg)",
-                            zIndex: "4",
-                          }}
-                        ></span>
-                        <span
-                          style={{
-                            position: "absolute",
-                            left: 0,
-                            top: "50%",
-                            width: "100%",
-                            height: "3px",
-                            backgroundColor: "blue",
-                            transform: "rotate(-25deg)",
-                            zIndex: "4",
-                          }}
-                        ></span>
-                      </div>
+      </MDBRow>
+  
+      {/* Item Section */}
+      <MDBRow className="mb-2">
+        {/* Item Dropdown and Input Fields */}
+        <MDBCol md='2'>
+          <MDBDropdown style={{ width: '6rem' }}>
+            <MDBDropdownToggle style={{ width: '8rem' }}>
+              {selectedItem ? selectedItem : 'Select Item'}
+            </MDBDropdownToggle >
+            <MDBDropdownMenu>
+              <MDBInput type="text" label="Search" onChange={(e) => handleSearch(e.target.value)} />
+              {filteredItems.map((item, index) => (
+                <MDBDropdownItem key={index} onClick={() => handleItemSelected(item)}>
+                  {item.item_cd} - {item.name}
+                </MDBDropdownItem>
+              ))}
+            </MDBDropdownMenu>
+          </MDBDropdown><br></br>
+        </MDBCol>
+        {/* Other Input Fields */}
+        <MDBCol md='2'>
+          <MDBInput
+            type="number"
+            label="Quantity"
+            value={quantity}
+            onChange={(e) => setQuantity(e.target.value)}
+            style={{ width: '100%' }}
+          /><br></br>
+        </MDBCol>
 
-                      <button
-                        type="button"
-                        onClick={regenerateCaptcha}
-                        style={{
-                          backgroundColor: "transparent",
-                          border: "none",
-                          cursor: "pointer",
-                        }}
-                      >
-                        <FontAwesomeIcon
-                          icon={faRotate}
-                          size="2x"
-                          style={{ color: "green", marginLeft: "8px" }}
-                        />
-                      </button>
-                      <form style={{ marginTop: "5px" }}>
-                        <MDBInput
-                          wrapperClass="mb-2"
-                          label="Enter Captcha"
-                          id="captcha"
-                          type="text"
-                          size="lg"
-                          
-                          onChange={handleCaptchaSubmit}
-                          style={{ color: "black", fontWeight: "bolder" }}
-                          onPaste={(e) => {
-                            e.preventDefault();
-                            toast.error("Pasting is disabled.");
-                          }}
-                        />
-                      </form>
-                    </div>
-                  </div>
-                  <div>
-                    <div style={{ display: "flex", alignItems: "center" }}>
-                      <span>
-                      <MDBBtn
-              className="mb-1 px-5"
-              color="success"
-              size="lg"
-              type="submit"
-              disabled={!isFormValid || isLoading} // Disable button when loading
-              style={{ marginRight: "5rem", marginTop: "1rem" }}
-            >
-              {isLoading ? <div className="spinner-border" role="status"><span className="visually-hidden">Loading...</span></div> : "Login"}
+        <MDBCol md='2'>
+
+          <MDBInput
+            type="number"
+            label="Item Rate"
+            value={itemRate}
+            onChange={(e) => setItemRate(e.target.value)}
+            style={{ width: '100%' }}
+          /><br></br>
+
+        </MDBCol>
+        <MDBCol>
+          <MDBBtn onClick={handleAddItem} color='warning' style={{ color: 'black' }}><FontAwesomeIcon icon={faPlus} /> Add</MDBBtn>
+        </MDBCol>
+        {isPaid ? null : (
+          <MDBCol md="4">
+            <div className="d-flex align-items-center">
+              <span className="me-4" style={{ minWidth: 'fit-content' }}>Due Date</span>
+              <input
+                type="date"
+                className="form-control"
+                value={dueDate}
+                onChange={(e) => setDueDate(e.target.value)}
+              />
+            </div>
+          </MDBCol>
+        )}
+      </MDBRow>
+  
+      {/* Table Section */}
+      <MDBRow>
+        <MDBCol style={{ minWidth: 'fit-content' }}>
+          {/* Existing JSX code */}
+        </MDBCol>
+      </MDBRow>
+  
+      {/* GST Rate Section */}
+      <MDBRow className="justify-content-end">
+        <MDBCol md="2">
+          <label htmlFor="gstRate" className="form-label">
+            GST Rate (%):
+          </label>
+        </MDBCol>
+        <MDBCol md="2">
+          {/* New JSX for GST Rate input */}
+        </MDBCol>
+      </MDBRow>
+  
+      {/* IGST Checkbox */}
+      <MDBRow className="mb-3">
+        <MDBCol>
+          {/* New JSX for IGST Checkbox */}
+        </MDBCol>
+      </MDBRow>
+  
+      {/* Amount Sections */}
+      <MDBRow className="justify-content-end">
+        <MDBCol md="2">
+          <label htmlFor="cgst" className="form-label">
+            CGST (%):
+          </label>
+        </MDBCol>
+        <MDBCol md="1">
+          <input
+            type="number"
+            id="cgst"
+            className="form-control"
+            value={cgst}
+            disabled
+          />
+        </MDBCol>
+        <MDBCol md="2">
+          <input
+            type="text"
+            id="cgstAmount"
+            className="form-control"
+            value={cgstAmount}
+            disabled
+          />
+        </MDBCol>
+      </MDBRow>
+  
+      {!isIgstChecked && (
+        <MDBRow className="justify-content-end">
+          <MDBCol md="2">
+            <label htmlFor="sgst" className="form-label">
+              SGST (%):
+            </label>
+          </MDBCol>
+          <MDBCol md="1">
+            <input
+              type="number"
+              id="sgst"
+              className="form-control"
+              value={sgst}
+              disabled
+            />
+          </MDBCol>
+          <MDBCol md="2">
+            <input
+              type="text"
+              id="sgstAmount"
+              className="form-control"
+              value={sgstAmount}
+              disabled
+            />
+          </MDBCol>
+        </MDBRow>
+      )}
+      
+      <MDBRow className="justify-content-end">
+        <MDBCol md="2">
+          <label htmlFor="igst" className="form-label">
+            IGST (%):
+          </label>
+        </MDBCol>
+        <MDBCol md="1">
+          <input
+            type="number"
+            id="igst"
+            className="form-control"
+            value={igst}
+            onChange={(e) => {
+              setIgst(parseFloat(e.target.value));
+            }}
+          />
+        </MDBCol>
+        <MDBCol md="2">
+          <input
+            type="text"
+            id="igstAmount"
+            className="form-control"
+            value={igstAmount}
+            disabled
+          />
+        </MDBCol>
+      </MDBRow>
+  
+      <MDBRow className="justify-content-end">
+        <MDBCol md="2">
+          <label htmlFor="grossamount" className="form-label">
+            Gross Amount:
+          </label>
+        </MDBCol>
+        <MDBCol md="3">
+          {/* Gross amount input */}
+          <input
+            type="text"
+            id="grossamount"
+            className="form-control"
+            value={grossamount.toFixed(2)}
+            disabled
+          />
+        </MDBCol>
+      </MDBRow>
+  
+      {/* Checkbox Section */}
+      <MDBRow className="mb-3">
+        <MDBCol>
+          <MDBCheckbox
+            id="isPaid"
+            label="Paid"
+            checked={isPaid}
+            onChange={() => setIsPaid(!isPaid)}
+          />
+        </MDBCol>
+      </MDBRow>
+
+      <MDBRow className="justify-content-center">
+        <MDBCol md="6">
+          <div className="text-center">
+            <MDBBtn onClick={handleGenerateBill} style={{ marginRight: '1rem' }} color='success'>
+              {loading ? (
+                <>
+                  <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+
+                  Generating...
+                </>
+              ) : (
+                <>
+                  <FontAwesomeIcon icon={faFileArrowDown} />
+                  &nbsp;
+                  Generate
+                </>
+              )}
             </MDBBtn>
-                      </span>
-                      <span style={{ marginLeft: "1px", color: "white" }}>
-                        <Link
-                          className="small mb-1"
-                          to="/signup"
-                          style={{
-                            color: "red",
-                            fontWeight: "bold",
-                            marginTop: "2px",
-                          }}
-                        >
-                          Don't Have Account
-                          <br />
-                          SignUp Here
-                        </Link>
-                      </span>
-                    </div>
-                  </div>
-                </form>
 
-                <Link
-                  className="small "
-                  to="/reset"
-                  style={{
-                    color: "sandybrown",
-                    fontWeight: "bold",
-                    marginRight: "12rem"
-                  }}
-                >
-                  Forgot password?
-                </Link>
-              </MDBCardBody>
-            </MDBCol>
-          </MDBRow>
-        </MDBCard>
-      </MDBContainer>
-    </Layout>
+            <MDBBtn onClick={clearForm} color='danger'><FontAwesomeIcon icon={faRecycle} /> Clear</MDBBtn>
+          </div>
+        </MDBCol>
+      </MDBRow>
+    </MDBContainer>
   );
-}
+  
+};
 
-export default UserLogin;
+export default BillForm;
