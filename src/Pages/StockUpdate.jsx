@@ -15,10 +15,11 @@ import { useNavigate } from "react-router-dom";
 import toast, { Toaster } from 'react-hot-toast';
 
 function StockUpdate() {
-    let item=Cookies.get('item')
+    let item=Cookies.get('uitem')
     item=JSON.parse(item)
-  console.log("item: ", item._id);
+  console.log("item:: ", item._id);
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
   const [user, setUser] = useState({
     item_cd: item.item_cd,
     name: item.name,
@@ -55,6 +56,8 @@ function StockUpdate() {
   }
 
   const updateData = () => {
+    console.log("item:: ", item._id);
+    setLoading(true);
     if (user.item_cd === "" || user.name === "" || user.qty === "" ) {
       toast.error("Item Code, Name, and Quantity are needed !");
     } else {
@@ -66,11 +69,12 @@ function StockUpdate() {
       }).then(res => {
         if (res.data.Success === true) {
           
-          Cookies.remove('item');
-         
+          
+          setLoading(false);
           toast.success(res.data.Message);
           setTimeout(() => {
             navigate('/dashboard/stock');
+            Cookies.remove('uitem');
           }, 1000);
         } else {
           if(res.data.Message==="Session Time Out, Login Again !"){
@@ -120,7 +124,14 @@ function StockUpdate() {
               </MDBCol>
               
             </MDBRow>
-            <MDBBtn className='mb-4' onClick={updateData} size='lg'>Submit</MDBBtn>
+            <MDBBtn className='mb-4' onClick={updateData} size='lg'>{loading ? (
+                    <>
+                      <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                      Updating...
+                    </>
+                  ) : (
+                    "Update Stock"
+                  )}</MDBBtn>
           </MDBCardBody>
         </MDBCard>
       </MDBRow>

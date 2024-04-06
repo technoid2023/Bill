@@ -14,6 +14,7 @@ const BillForm = () => {
   const [selectedItem, setSelectedItem] = useState();
   const [quantity, setQuantity] = useState();
   const [chkQty, setChkQty] = useState();
+  const [loading, setLoading] = useState(false);
   const [itemRate, setItemRate] = useState();
   const [token, setToken] = useState(null);
   const [cusName, setCusName] = useState();
@@ -68,6 +69,7 @@ const [sgst, setSgst] = useState(9);
   };
 
   const handleGenerateBill = () => {
+    setLoading(true);
     const formData = {
       cus_name: cusName,
       cus_email: cusEmail,
@@ -79,6 +81,11 @@ const [sgst, setSgst] = useState(9);
       tax_value: cgstAmount + sgstAmount
     };
     if (formData.cus_name && formData.cus_email && formData.cus_mobile && formData.cus_address && formData.items) {
+      if (!isPaid && !dueDate) {
+        toast.error("Due date is required if the bill is not paid.");
+        setLoading(false);
+        return;
+      }
       axios.post('https://edu-tech-bwe5.onrender.com/v1/bill', formData, {
         headers: {
           'token': token
@@ -87,6 +94,7 @@ const [sgst, setSgst] = useState(9);
       .then(response => {
         console.log(response);
         if (response.data.Success === true) {
+          setLoading(false);
           toast.success(`Bill generated, Bill No:${response.data.Bill_no}`);
 
           clearForm();
@@ -162,11 +170,7 @@ const [sgst, setSgst] = useState(9);
     setItemRate(item.SP);
     setChkQty(item.qty);
   };
-  const handleIsPaidChange = () => {
-    if (!isPaid) {
-      setDueDate(); // Reset dueDate to null if isPaid is unchecked
-    }
-  };
+  
   let totalamount=billItems.reduce((total, item) => total + parseFloat(item.amount), 0)
   let cgstAmount = (totalamount * cgst) / 100;
   let sgstAmount = (totalamount * sgst) / 100;
@@ -417,7 +421,22 @@ const [sgst, setSgst] = useState(9);
       <MDBRow className="justify-content-center">
   <MDBCol md="6">
     <div className="text-center">
-      <MDBBtn onClick={handleGenerateBill} style={{marginRight:'1rem'}} color='success'><FontAwesomeIcon icon={faFileArrowDown}/> Generate Bill</MDBBtn>
+    <MDBBtn onClick={handleGenerateBill} style={{marginRight:'1rem'}} color='success'>
+  {loading ? (
+    <>
+      <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+     
+      Generating...
+    </>
+  ) : (
+    <>
+      <FontAwesomeIcon icon={faFileArrowDown}/>
+        &nbsp;
+         Generate
+    </>
+  )}
+</MDBBtn>
+
       <MDBBtn onClick={clearForm} color='danger'><FontAwesomeIcon icon={faRecycle}/> Clear</MDBBtn>
     </div>
   </MDBCol>

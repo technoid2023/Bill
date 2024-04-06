@@ -5,8 +5,9 @@ import { decrypt } from '../Auth/PrivateRoute';
 import axios from 'axios';
 import Cookies from 'js-cookie';
 import toast from 'react-hot-toast';
+
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEdit, faTrash, faEye, faPlus } from '@fortawesome/free-solid-svg-icons';
+import { faEdit, faEye, faPlus } from '@fortawesome/free-solid-svg-icons';
 import { MDBInput, MDBBtn, MDBModal, MDBModalDialog, MDBModalContent, MDBModalHeader, MDBModalTitle, MDBModalBody, MDBModalFooter } from 'mdb-react-ui-kit';
 import Load from './Load';
 
@@ -55,7 +56,7 @@ const BillList = () => {
         <div>
           <FontAwesomeIcon icon={faEye} onClick={() => handleView(row)} style={{ cursor: 'pointer', marginRight: '10px' }} />
           <FontAwesomeIcon icon={faEdit} onClick={() => handleEdit(row)} style={{ cursor: 'pointer', marginRight: '10px' }} />
-          <FontAwesomeIcon icon={faTrash} onClick={() => handleDelete(row)} style={{ cursor: 'pointer' }} />
+         
         </div>
       ),
       ignoreRowClick: true,
@@ -63,7 +64,7 @@ const BillList = () => {
       button: true,
     }
   ];
-
+  const [loading, setLoading] = useState(false);
   const [data, setData] = useState([]);
   const [records, setRecords] = useState(data);
   const [openView, setOpenView] = useState(false);
@@ -127,9 +128,7 @@ const BillList = () => {
     setOpenEdit(true);
   }
 
-  function handleDelete(row) {
-    console.log('Delete row:', row);
-  }
+
 
   const handleView = (row) => {
     setItemDetails(row);
@@ -140,6 +139,7 @@ const BillList = () => {
     setOpenEdit(false);
   };
   const handleEditSubmit = async() => {
+    setLoading(true);
     console.log(itemDetails._id);
     const updatedData = {
       pay: itemDetails.pay,
@@ -160,7 +160,7 @@ const BillList = () => {
         }
       }).then(res => {
         if (res.data.Success === true) {
-
+          setLoading(false);
           toast.success(res.data.Message);
            
     setOpenEdit(false);
@@ -320,7 +320,14 @@ const BillList = () => {
       </MDBModalBody>
       <MDBModalFooter>
         <MDBBtn color='secondary' onClick={handleEditClose}>Close</MDBBtn>
-        <MDBBtn color='primary' onClick={handleEditSubmit}>Submit</MDBBtn> {/* handleEditSubmit function to be implemented */}
+        <MDBBtn color='primary' onClick={handleEditSubmit}>{loading ? (
+                    <>
+                      <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                      Updating...
+                    </>
+                  ) : (
+                    "Modify "
+                  )}</MDBBtn> {/* handleEditSubmit function to be implemented */}
       </MDBModalFooter>
     </MDBModalContent>
   </MDBModalDialog>

@@ -86,6 +86,7 @@ const ItemList = () => {
   const [openView, setOpenView] = useState(false);
   const [itemDetails, setItemDetails] = useState(null);
   const [openAdd, setOpenAdd] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [newItem, setNewItem] = useState({
     item_cd: "",
     title: "",
@@ -140,6 +141,7 @@ const ItemList = () => {
   }, []);
 
   const handleAddItem = () => {
+    setLoading(true);
     const encryptToken = Cookies.get("_TK");
     if (!encryptToken) {
       console.error("Token not found.");
@@ -171,6 +173,7 @@ const ItemList = () => {
     .then(response => {
       console.log(response);
       if (response.data.Success === true) {
+        setLoading(false);
         toast.success(`Item added successfully`);
         handleCloseAdd();
       } else {
@@ -407,7 +410,14 @@ const ItemList = () => {
                 Cancel
               </MDBBtn>
               <MDBBtn color="primary" onClick={handleAddItem}>
-                Add Item
+              {loading ? (
+                    <>
+                      <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                      Wait...
+                    </>
+                  ) : (
+                    "Add Item"
+                  )}
               </MDBBtn>
             </MDBModalFooter>
           </MDBModalContent>

@@ -112,7 +112,7 @@ const Stock = () => {
 
   function handleEdit(row) {
     console.log('Edit row:', row);
-    Cookies.set('item',JSON.stringify(row))
+    Cookies.set('uitem',JSON.stringify(row))
     navigate('/dashboard/update-stock')
   }
 
