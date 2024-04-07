@@ -1,16 +1,19 @@
 import React, { useEffect, useState } from 'react';
+import ReactDOM from 'react-dom'
 import { Link, useNavigate } from 'react-router-dom';
 import DataTable from 'react-data-table-component';
 import { decrypt } from '../Auth/PrivateRoute';
 import axios from 'axios';
 import Cookies from 'js-cookie';
 import toast from 'react-hot-toast';
-
+import {  PDFViewer, Document, Page, Text, View, StyleSheet, BlobProvider } from '@react-pdf/renderer';
+import { jsPDF } from 'jspdf';
+import 'jspdf-autotable';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEdit, faEye, faPlus } from '@fortawesome/free-solid-svg-icons';
+import { faEdit, faEye, faPlus,faFilePdf } from '@fortawesome/free-solid-svg-icons';
 import { MDBInput, MDBBtn, MDBModal, MDBModalDialog, MDBModalContent, MDBModalHeader, MDBModalTitle, MDBModalBody, MDBModalFooter } from 'mdb-react-ui-kit';
 import Load from './Load';
-
+import InvoiceTemplate from './InvoiceTemplate';
 const BillList = () => {
   const columns = [
     {
@@ -55,8 +58,8 @@ const BillList = () => {
       cell: row => (
         <div>
           <FontAwesomeIcon icon={faEye} onClick={() => handleView(row)} style={{ cursor: 'pointer', marginRight: '10px' }} />
-          <FontAwesomeIcon icon={faEdit} onClick={() => handleEdit(row)} style={{ cursor: 'pointer', marginRight: '10px' }} />
-         
+          <FontAwesomeIcon icon={faEdit} onClick={() => handleEdit(row)} style={{ cursor: 'pointer', marginRight: '10px' }} />      
+          <FontAwesomeIcon icon={faFilePdf} onClick={() => handlePDF(row)} style={{ cursor: 'pointer', marginRight: '10px' }}/>
         </div>
       ),
       ignoreRowClick: true,
@@ -68,7 +71,7 @@ const BillList = () => {
   const [data, setData] = useState([]);
   const [records, setRecords] = useState(data);
   const [openView, setOpenView] = useState(false);
-  const [openEdit, setOpenEdit] = useState(false); // New state for edit modal
+  const [openEdit, setOpenEdit] = useState(false); 
   const [itemDetails, setItemDetails] = useState(null);
   const navigate = useNavigate();
 
@@ -133,7 +136,7 @@ const BillList = () => {
   const handleView = (row) => {
     setItemDetails(row);
     setOpenView(true);
-  };
+  };  
 
   const handleEditClose = () => {
     setOpenEdit(false);
@@ -178,6 +181,26 @@ const BillList = () => {
     console.log("Updated Data:", updatedData);
   
    
+  };
+  
+  const handlePDF = (invoiceData) => {
+    // Create a div element to render the component into
+    const div = document.createElement('div');
+    console.log("log",invoiceData);
+    // Render the invoice template component into the div
+    ReactDOM.render(<InvoiceTemplate invoiceData={invoiceData} />, div);
+  
+    // Generate the PDF
+    const pdf = new jsPDF('p', 'pt', 'a4');
+    pdf.html(div, {
+      callback: function (pdf) {
+        // Save the PDF as a file
+        pdf.save('invoice.pdf');
+  
+        // Remove the div element
+        document.body.removeChild(div);
+      }
+    });
   };
   
   return (

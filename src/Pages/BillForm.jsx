@@ -8,6 +8,7 @@ import { MDBContainer, MDBRow, MDBCol, MDBInput, MDBBtn, MDBTable, MDBTableBody,
 import { Link, useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {faTrash,faFileArrowDown,faPlus,faRecycle} from '@fortawesome/free-solid-svg-icons';
+
 const BillForm = () => {
   const navigate=useNavigate();
   const [itemList, setItemList] = useState();
@@ -28,7 +29,7 @@ const [dueDate, setDueDate] = useState();
 const [itemName, setItemName] = useState();
 
 const [cgst, setCgst] = useState(9); // State to hold CGST percentage value
-const [sgst, setSgst] = useState(9); 
+const [sgst, setSgst] = useState(9);
   useEffect(() => {
     const encryptToken = Cookies.get('_TK');
 
@@ -95,7 +96,7 @@ const [sgst, setSgst] = useState(9);
         console.log(response);
         if (response.data.Success === true) {
           setLoading(false);
-          toast.success(`Bill generated, Bill No:${response.data.Bill_no}`);
+          toast.success(`Bill generated, Bill No:${response.data.Bill_no}`);         
 
           clearForm();
           navigate('/dashboard/bill')
@@ -112,7 +113,8 @@ const [sgst, setSgst] = useState(9);
       toast.error("Fill the form")
     }
   };
-
+  
+  
   const clearForm = () => {
     setSelectedItem('');
     setQuantity('');
@@ -258,7 +260,6 @@ const [sgst, setSgst] = useState(9);
             style={{ width: '100%' }}
           /><br></br>
         </MDBCol>
-       
         <MDBCol md='2'>
           
           <MDBInput
@@ -422,31 +423,28 @@ const [sgst, setSgst] = useState(9);
       </MDBRow>
 
       <MDBRow className="justify-content-center">
-  <MDBCol md="6">
-    <div className="text-center">
-    <MDBBtn onClick={handleGenerateBill} style={{marginRight:'1rem'}} color='success'>
-  {loading ? (
-    <>
-      <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
-     
-      Generating...
-    </>
-  ) : (
-    <>
-      <FontAwesomeIcon icon={faFileArrowDown}/>
-        &nbsp;
-         Generate
-    </>
-  )}
-</MDBBtn>
+        <MDBCol md="6">
+          <div className="text-center">
+            <MDBBtn onClick={handleGenerateBill} style={{ marginRight: '1rem' }} color='success'>
+              {loading ? (
+                <>
+                  <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
 
-      <MDBBtn onClick={clearForm} color='danger'><FontAwesomeIcon icon={faRecycle}/> Clear</MDBBtn>
-    </div>
-  </MDBCol>
-</MDBRow>
+                  Generating...
+                </>
+              ) : (
+                <>
+                  <FontAwesomeIcon icon={faFileArrowDown} />
+                  &nbsp;
+                  Generate
+                </>
+              )}
+            </MDBBtn>
 
-
-
+            <MDBBtn onClick={clearForm} color='danger'><FontAwesomeIcon icon={faRecycle} /> Clear</MDBBtn>
+          </div>
+        </MDBCol>
+      </MDBRow>
     </MDBContainer>
   );
 };
