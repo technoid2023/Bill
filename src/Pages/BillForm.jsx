@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from 'react';
 import toast from "react-hot-toast";
 import Cookies from 'js-cookie';
@@ -7,7 +6,7 @@ import axios from 'axios';
 import { MDBContainer, MDBRow, MDBCol, MDBInput, MDBBtn, MDBTable, MDBTableBody, MDBTableHead, MDBDropdown, MDBDropdownToggle, MDBDropdownMenu, MDBDropdownItem, MDBCheckbox } from 'mdb-react-ui-kit';
 import { Link, useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {faTrash,faFileArrowDown,faPlus,faRecycle} from '@fortawesome/free-solid-svg-icons';
+import { faTrash, faFileArrowDown, faPlus, faRecycle } from '@fortawesome/free-solid-svg-icons';
 const BillForm = () => {
   const navigate = useNavigate();
   const [itemList, setItemList] = useState();
@@ -24,11 +23,11 @@ const BillForm = () => {
   const [isPaid, setIsPaid] = useState(false);
   const [billItems, setBillItems] = useState([]);
   const [filteredItems, setFilteredItems] = useState([]);
-const [dueDate, setDueDate] = useState(); 
-const [itemName, setItemName] = useState();
-
-const [cgst, setCgst] = useState(9); // State to hold CGST percentage value
-const [sgst, setSgst] = useState(9); 
+  const [dueDate, setDueDate] = useState();
+  const [itemName, setItemName] = useState();
+  const [igst, setIgst] = useState(0);
+  const [cgst, setCgst] = useState(9); // State to hold CGST percentage value
+  const [sgst, setSgst] = useState(9);
   useEffect(() => {
     const encryptToken = Cookies.get('_TK');
 
@@ -97,11 +96,11 @@ const [sgst, setSgst] = useState(9);
           'token': token
         }
       })
-      .then(response => {
-        console.log(response);
-        if (response.data.Success === true) {
-          setLoading(false);
-          toast.success(`Bill generated, Bill No:${response.data.Bill_no}`);
+        .then(response => {
+          console.log(response);
+          if (response.data.Success === true) {
+            setLoading(false);
+            toast.success(`Bill generated, Bill No:${response.data.Bill_no}`);
 
             clearForm();
             navigate('/dashboard/bill')
@@ -118,8 +117,7 @@ const [sgst, setSgst] = useState(9);
       toast.error("Fill the form")
     }
   };
-  
-  
+
   const clearForm = () => {
     setSelectedItem('');
     setQuantity('');
@@ -266,7 +264,7 @@ const [sgst, setSgst] = useState(9);
             style={{ width: '100%' }}
           /><br></br>
         </MDBCol>
-       
+
         <MDBCol md='2'>
 
           <MDBInput
@@ -476,10 +474,10 @@ const [sgst, setSgst] = useState(9);
               )}
             </MDBBtn>
 
-      <MDBBtn onClick={clearForm} color='danger'><FontAwesomeIcon icon={faRecycle}/> Clear</MDBBtn>
-    </div>
-  </MDBCol>
-</MDBRow>
+            <MDBBtn onClick={clearForm} color='danger'><FontAwesomeIcon icon={faRecycle} /> Clear</MDBBtn>
+          </div>
+        </MDBCol>
+      </MDBRow>
 
 
 
