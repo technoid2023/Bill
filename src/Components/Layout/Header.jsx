@@ -4,7 +4,7 @@ import toast from 'react-hot-toast';
 import Cookies from 'js-cookie';
 import { faBars } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-
+import Swal from 'sweetalert2';
 
 const Header = () => {
   const navigate = useNavigate();
@@ -29,8 +29,7 @@ const Header = () => {
     navigate('/login')
   };
   const handleLogout = () => {
-    const confirmLogout = window.confirm('Are you sure you want to log out?');
-    if (confirmLogout) {
+    
         Cookies.remove('_UR');
         toast.success('Logged Out !');
         Cookies.remove('_TK')
@@ -38,8 +37,24 @@ const Header = () => {
         setTimeout(() => {
             navigate('/login');
         }, 500);
-    }
+    
 };
+function logOut() {
+  Swal.fire({
+    title: 'Are you sure?',
+    text: 'You will be Logged Out from BillBuddy',
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#3085d6',
+    cancelButtonColor: '#d33',
+    confirmButtonText: 'Yes'
+  }).then((result) => {
+    if (result.isConfirmed) {
+      // If user confirms the deletion, proceed with the deletion logic
+      handleLogout();
+    }
+  });
+}
   return (
     <div>
       <nav className="navbar navbar-expand-lg bg-body-tertiary shadow navbar-dark bg-dark">
@@ -68,7 +83,7 @@ const Header = () => {
                 {logincheck === 'Login' ? (
                   <button className="nav-link active" onClick={handleLogin}>{logincheck}</button>
                 ) : (
-                  <button className="nav-link active" onClick={handleLogout}>{logincheck}</button>
+                  <button className="nav-link active" onClick={logOut}>{logincheck}</button>
                 )}
               </li>
             </ul>
