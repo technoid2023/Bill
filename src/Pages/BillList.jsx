@@ -6,8 +6,9 @@ import { decrypt } from '../Auth/PrivateRoute';
 import axios from 'axios';
 import Cookies from 'js-cookie';
 import toast from 'react-hot-toast';
-import {  PDFViewer, Document, Page, Text, View, StyleSheet, BlobProvider } from '@react-pdf/renderer';
+import {  PDFViewer, Document, Page, Text, View, StyleSheet, BlobProvider, pdf,renderToStream } from '@react-pdf/renderer';
 import { jsPDF } from 'jspdf';
+import { saveAs } from 'file-saver';
 import 'jspdf-autotable';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEdit, faEye, faPlus,faFilePdf } from '@fortawesome/free-solid-svg-icons';
@@ -182,26 +183,19 @@ const BillList = () => {
   
    
   };
-  
-  const handlePDF = (invoiceData) => {
-    // Create a div element to render the component into
-    const div = document.createElement('div');
-    console.log("log",invoiceData);
-    // Render the invoice template component into the div
-    ReactDOM.render(<InvoiceTemplate invoiceData={invoiceData} />, div);
-  
-    // Generate the PDF
-    const pdf = new jsPDF('p', 'pt', 'a4');
-    pdf.html(div, {
-      callback: function (pdf) {
+
+  const handlePDF = async (invoiceData) => {
+    try {
+        // Generate the PDF blob
+        const pdfBlob = await pdf(<InvoiceTemplate invoiceData={invoiceData} />).toBlob();
+
         // Save the PDF as a file
-        pdf.save('invoice.pdf');
-  
-        // Remove the div element
-        document.body.removeChild(div);
-      }
-    });
-  };
+        saveAs(pdfBlob, `${invoiceData.bill_number}.pdf`);
+    } catch (error) {
+        console.error('Error generating PDF:', error);
+    }
+};
+
   
   return (
     <div className='container mt-2'>
