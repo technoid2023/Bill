@@ -24,6 +24,7 @@ import {
 } from "mdb-react-ui-kit";
 import Load from "../../Pages/Load";
 import { useNavigate } from "react-router-dom";
+import Swal from 'sweetalert2';
 
 const ItemList = () => {
   const navigate = useNavigate();
@@ -70,7 +71,7 @@ const ItemList = () => {
           />
           <FontAwesomeIcon
             icon={faTrash}
-            onClick={() => handleDelete(row)}
+            onClick={() => deleteItem(row)}
             style={{ cursor: "pointer" }}
           />
         </div>
@@ -207,6 +208,22 @@ const ItemList = () => {
     // Set the selected row when edit button is clicked
   }
 
+  function deleteItem(row) {
+    Swal.fire({
+      title: 'Are you sure?',
+      text: 'You will not be able to recover this item!',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, delete it!'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        // If user confirms the deletion, proceed with the deletion logic
+        handleDelete(row);
+      }
+    });
+  }
   function handleDelete(row) {
     console.log("Delete row:", row._id);
     const encryptToken = Cookies.get("_TK");
