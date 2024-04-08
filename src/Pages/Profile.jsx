@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import Swal from 'sweetalert2';
 import {
   MDBCol,
   MDBContainer,
@@ -71,6 +72,22 @@ export default function Profile() {
                 }
             })
         }
+    }
+    function logOut() {
+      Swal.fire({
+        title: 'Are you sure?',
+        text: 'You will be Logged Out from BillBuddy',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          // If user confirms the deletion, proceed with the deletion logic
+          logout();
+        }
+      });
     }
     const handleStore=async()=>{ 
       console.log(Token);
@@ -153,7 +170,7 @@ export default function Profile() {
                 <p className="text-muted mb-4">{User.email}</p>
                 <div className="d-flex justify-content-center mb-2">
                   <Link to='/dashboard/update-user'>{<MDBBtn>Edit</MDBBtn>}</Link>
-                  <MDBBtn outline className="ms-1" onClick={logout}>Logout</MDBBtn>
+                  <MDBBtn outline className="ms-1" onClick={logOut}>Logout</MDBBtn>
                 </div>
               </MDBCardBody>
             </MDBCard>

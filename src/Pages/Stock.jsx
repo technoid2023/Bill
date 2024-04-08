@@ -422,7 +422,7 @@ const Stock = () => {
         toast.success("File uploaded successfully");
         fetchData();
       } else {
-        toast.error("Failed to upload file");
+        toast.error(response.data.Message);
       }
     } catch (error) {
       console.error("Error uploading file:", error);
