@@ -62,7 +62,7 @@ function StockUpdate() {
       toast.error("Item Code, Name, and Quantity are needed !");
     } else {
         console.log(token);
-      axios.put('https://edu-tech-bwe5.onrender.com/v1/item' + item._id, user, {
+      axios.put('https://edu-tech-bwe5.onrender.com/v1/item/' + item._id, user, {
         headers: {
           'token': token
         }
