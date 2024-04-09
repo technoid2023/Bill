@@ -262,6 +262,9 @@ import { MDBInput, MDBBtn } from "mdb-react-ui-kit";
 import Load from "./Load";
 import { useNavigate } from "react-router-dom";
 import { CSVLink } from "react-csv";
+import Tooltip from "@material-ui/core/Tooltip";
+
+
 
 const Stock = () => {
   const navigate = useNavigate();
@@ -311,6 +314,15 @@ const Stock = () => {
       ignoreRowClick: true,
       allowOverflow: true,
       button: true,
+    },
+  ];
+  const conditionalRowStyles = [
+    {
+      when: row => row.qty <=5,
+      style: {
+        backgroundColor: 'white',
+        color: 'red',
+      },
     },
   ];
 
@@ -391,21 +403,21 @@ const Stock = () => {
       console.error("No file selected");
       return;
     }
-  
+
     setUploading(true);
     const encryptToken = Cookies.get("_TK");
     if (!encryptToken) {
       console.error("Token not found");
       return;
     }
-  
+
     try {
       const Token = JSON.parse(decrypt(encryptToken));
       console.log("Token:", Token);
-  
+
       const formData = new FormData();
-      formData.append("file", file); 
-  
+      formData.append("file", file);
+
       const response = await axios.post(
         "https://edu-tech-bwe5.onrender.com/v1/item/add/csv",
         formData,
@@ -416,7 +428,7 @@ const Stock = () => {
           },
         }
       );
-  
+
       if (response.data.Success) {
         console.log(response.data.Message);
         toast.success("File uploaded successfully");
@@ -430,8 +442,9 @@ const Stock = () => {
     } finally {
       setUploading(false);
     }
-  }; 
-
+  };
+  const longText="data columns name should be Code, Name, Category, Subcategory, Sale, Cost, Source, Description, Quantity";
+ 
   return (
     <div className="container mt-2">
       <h3
@@ -454,7 +467,13 @@ const Stock = () => {
           />
         </div>
         <div className="col-md-6 d-flex justify-content-end ">
-          <label htmlFor="file-upload" className="btn btn-success">
+        <Tooltip title={longText} placement="top" arrow>
+          <label
+            htmlFor="file-upload"
+            className="btn btn-success"
+            title="data columns name should be Code, Name, Category, Subcategory, Sale, Cost, Source, Description, Quantity"
+          >
+          
             {uploading ? "Importing..." : "Import"}
             <input
               type="file"
@@ -462,11 +481,13 @@ const Stock = () => {
               style={{ display: "none" }}
               onChange={handleFileUpload}
               disabled={uploading}
-              key={uploading ? "uploading" : "not-uploading"} 
-            />{" "}
+              key={uploading ? "uploading" : "not-uploading"}
+            />
+            {" "}
             &nbsp;
             <FontAwesomeIcon icon={faDownload} />
           </label>
+          </Tooltip>
           &nbsp;
           <CSVLink
             data={data}
@@ -489,6 +510,7 @@ const Stock = () => {
           data={records}
           pagination
           highlightOnHover
+          conditionalRowStyles={conditionalRowStyles}
           customStyles={{
             headRow: {
               style: {
