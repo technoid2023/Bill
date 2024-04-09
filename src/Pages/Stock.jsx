@@ -262,7 +262,7 @@ import { MDBInput, MDBBtn } from "mdb-react-ui-kit";
 import Load from "./Load";
 import { useNavigate } from "react-router-dom";
 import { CSVLink } from "react-csv";
-import Tooltip from "@material-ui/core/Tooltip";
+
 
 
 
@@ -467,7 +467,7 @@ const Stock = () => {
           />
         </div>
         <div className="col-md-6 d-flex justify-content-end ">
-        <Tooltip title={longText} placement="top" arrow>
+        
           <label
             htmlFor="file-upload"
             className="btn btn-success"
@@ -487,7 +487,7 @@ const Stock = () => {
             &nbsp;
             <FontAwesomeIcon icon={faDownload} />
           </label>
-          </Tooltip>
+        
           &nbsp;
           <CSVLink
             data={data}
