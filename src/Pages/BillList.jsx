@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import ReactDOM from 'react-dom'
 import { Link, useNavigate } from 'react-router-dom';
 import DataTable from 'react-data-table-component';
 import { decrypt } from '../Auth/PrivateRoute';
 import axios from 'axios';
 import Cookies from 'js-cookie';
 import toast from 'react-hot-toast';
-import {  PDFViewer, Document, Page, Text, View, StyleSheet, BlobProvider, pdf,renderToStream } from '@react-pdf/renderer';
-import { jsPDF } from 'jspdf';
+import { pdf} from '@react-pdf/renderer';
+
 import { saveAs } from 'file-saver';
 import 'jspdf-autotable';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';

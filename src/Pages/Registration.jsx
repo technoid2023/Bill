@@ -10,7 +10,6 @@ import {
     
     MDBInput,
     MDBIcon,
-    MDBCheckbox,
     MDBModal,
     MDBModalDialog,
     MDBModalContent,
@@ -40,7 +39,11 @@ const Registration = () => {
         designation: "",
         city: "",
         pin_code: null,
-        password: ""
+        password: "",
+        company_address: "",
+        company_email: "",
+        company_mobile: "",
+        company_gstin: "" // Adding GSTIN field
     });
 
     const handleInput = (e) => {
@@ -61,10 +64,15 @@ const Registration = () => {
             city: user.city,
             pin_code: user.pin_code,
             password: user.password,
+            company_address: user.company_address,
+            company_email: user.company_email,
+            company_mobile: user.company_mobile,
+            company_gstin: user.company_gstin // Including GSTIN field in data object
         };
         const isAllDataFilled = Object.values(data).every(val => val !== "" && val !== null);
 
-
+//https://edu-tech-bwe5.onrender.com
+//http://127.0.0.1:8111
         if(isAllDataFilled){
           axios.post('https://edu-tech-bwe5.onrender.com/v1/registration', data).then(res => {
             console.log(res);
@@ -81,7 +89,7 @@ const Registration = () => {
         });
         }else{
           setLoadingR(false);
-toast.error('Fill All Details !!')
+          toast.error('Fill All Details !!')
         }
         
     };
@@ -158,16 +166,19 @@ toast.error('Fill All Details !!')
                     <MDBModalContent>
                         <MDBModalHeader>
                             <MDBModalTitle>ENTER OTP</MDBModalTitle>
+                            
                             <MDBBtn
                                 className="btn-close"
                                 color="none"
                                 onClick={() => setVaryingModal(!varyingModal)}
                             ></MDBBtn>
                         </MDBModalHeader>
+                        
                         <form onSubmit={handleSubmit}>
                             <MDBModalBody>
                                 <div className="container py-1">
                                     <div className="row justify-content-start">
+                                    <p>OTP has been sent to your Email</p>
                                         <div className="col-lg-10">
                                             <div
                                                 style={{
@@ -308,6 +319,50 @@ toast.error('Fill All Details !!')
                             </div>
                         </div>
 
+                        {/* Additional fields for company */}
+                        <div className="row mb-4">
+                            <div className="col-md-6">
+                                <MDBIcon fas icon="map-marked-alt me-3" size="lg" />
+                                <MDBInput
+                                    label="Company Address"
+                                    name="company_address"
+                                    type="text"
+                                    onChange={handleInput}
+                                    className="w-100"
+                                />
+                            </div>
+                            <div className="col-md-6">
+                                <MDBIcon fas icon="envelope me-3" size="lg" />
+                                <MDBInput
+                                    label="Company Email"
+                                    name="company_email"
+                                    onChange={handleInput}
+                                    type="email"
+                                />
+                            </div>
+                        </div>
+
+                        <div className="row mb-4">
+                            <div className="col-md-6">
+                                <MDBIcon fas icon="phone me-3" size="lg" />
+                                <MDBInput
+                                    label="Company Mobile"
+                                    name="company_mobile"
+                                    onChange={handleInput}
+                                    type="number"
+                                />
+                            </div>
+                            <div className="col-md-6">
+                                <MDBIcon fas icon="id-card me-3" size="lg" />
+                                <MDBInput
+                                    label="GSTIN"
+                                    name="company_gstin"
+                                    onChange={handleInput}
+                                    type="text"
+                                />
+                            </div>
+                        </div>
+
                         {/* Fourth row */}
                         <div className="row mb-4">
                             <div className="col-md-6">
@@ -353,15 +408,6 @@ toast.error('Fill All Details !!')
                                     type="password"
                                 />
                             </div>
-                        </div>
-
-                        <div className="mb-4">
-                            <MDBCheckbox
-                                name="flexCheck"
-                                value=""
-                                id="flexCheckDefault"
-                                label="Subscribe to our newsletter"
-                            />
                         </div>
 
                         <MDBBtn

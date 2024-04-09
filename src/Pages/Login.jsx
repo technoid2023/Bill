@@ -113,7 +113,7 @@ function UserLogin() {
             if (data.Success === true) {
               let rawToken = data.Token;
               let encryptToken = encrypt(JSON.stringify(rawToken));
-              Cookies.set("_TK", encryptToken);
+              Cookies.set("_TK", encryptToken, { expires: 1 });
               let userData = data.Data[0];
               let encryptUser = encrypt(JSON.stringify(userData));
               Cookies.set("_UR", encryptUser, { expires: 1 });
