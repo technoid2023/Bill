@@ -1,12 +1,31 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
-import Cookies from 'js-cookie';
-import { decrypt } from '../Auth/PrivateRoute';
-import axios from 'axios';
-import { MDBContainer, MDBRow, MDBCol, MDBInput, MDBBtn, MDBTable, MDBTableBody, MDBTableHead, MDBDropdown, MDBDropdownToggle, MDBDropdownMenu, MDBDropdownItem, MDBCheckbox } from 'mdb-react-ui-kit';
-import { Link, useNavigate } from 'react-router-dom';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTrash, faFileArrowDown, faPlus, faRecycle } from '@fortawesome/free-solid-svg-icons';
+import Cookies from "js-cookie";
+import { decrypt } from "../Auth/PrivateRoute";
+import axios from "axios";
+import {
+  MDBContainer,
+  MDBRow,
+  MDBCol,
+  MDBInput,
+  MDBBtn,
+  MDBTable,
+  MDBTableBody,
+  MDBTableHead,
+  MDBDropdown,
+  MDBDropdownToggle,
+  MDBDropdownMenu,
+  MDBDropdownItem,
+  MDBCheckbox,
+} from "mdb-react-ui-kit";
+import { Link, useNavigate } from "react-router-dom";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faTrash,
+  faFileArrowDown,
+  faPlus,
+  faRecycle,
+} from "@fortawesome/free-solid-svg-icons";
 const BillForm = () => {
   const navigate = useNavigate();
   const [itemList, setItemList] = useState();
@@ -21,15 +40,17 @@ const BillForm = () => {
   const [cusMobile, setCusMobile] = useState();
   const [cusAddress, setCusAddress] = useState();
   const [isPaid, setIsPaid] = useState(false);
+  const [isIgst, setIsIgst] = useState(false);
   const [billItems, setBillItems] = useState([]);
   const [filteredItems, setFilteredItems] = useState([]);
   const [dueDate, setDueDate] = useState();
   const [itemName, setItemName] = useState();
+  const [gstRate, setGstRate] = useState();
   const [igst, setIgst] = useState(0);
-  const [cgst, setCgst] = useState(9); // State to hold CGST percentage value
-  const [sgst, setSgst] = useState(9);
+  const [cgst, setCgst] = useState(0); // State to hold CGST percentage value
+  const [sgst, setSgst] = useState(0);
   useEffect(() => {
-    const encryptToken = Cookies.get('_TK');
+    const encryptToken = Cookies.get("_TK");
 
     if (encryptToken) {
       const decryptedToken = decrypt(encryptToken);
@@ -49,15 +70,14 @@ const BillForm = () => {
         item_name: itemName,
         item_qty: quantity,
         item_rate: itemRate,
-        amount: (itemRate * quantity),
-
+        amount: itemRate * quantity,
       };
       setBillItems([...billItems, newItem]);
-      setQuantity('');
-      setItemName('');
-      setSelectedItem('');
-      setItemRate('');
-      setDueDate('');
+      setQuantity("");
+      setItemName("");
+      setSelectedItem("");
+      setItemRate("");
+      setDueDate("");
     }
   };
 
@@ -85,7 +105,7 @@ const BillForm = () => {
       igst_amt: igstAmount,
       igst_per: igst,
     };
-  
+
     // Check if all required fields are filled
     if (
       formData.cus_name &&
@@ -111,7 +131,7 @@ const BillForm = () => {
           if (response.data.Success === true) {
             setLoading(false);
             toast.success(`Bill generated, Bill No:${response.data.Bill_no}`);
-  
+
             clearForm();
             navigate("/dashboard/bill");
           } else {
@@ -127,42 +147,42 @@ const BillForm = () => {
       toast.error("Fill all required fields and add items to the bill.");
     }
   };
-  
 
   const clearForm = () => {
-    setSelectedItem('');
-    setQuantity('');
-    setItemRate('');
-    setCusName('');
-    setCusEmail('');
-    setCusMobile('');
-    setCusAddress('');
+    setSelectedItem("");
+    setQuantity("");
+    setItemRate("");
+    setCusName("");
+    setCusEmail("");
+    setCusMobile("");
+    setCusAddress("");
     setIsPaid(false);
     setBillItems([]);
-    setDueDate('');
-    setItemName('');
-
-
+    setDueDate("");
+    setItemName("");
   };
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get('https://edu-tech-bwe5.onrender.com/v1/item', {
-          headers: {
-            'token': token
+        const response = await axios.get(
+          "https://edu-tech-bwe5.onrender.com/v1/item",
+          {
+            headers: {
+              token: token,
+            },
           }
-        });
+        );
         if (response.data.Success === true) {
           setItemList(response.data.Data);
           setFilteredItems(response.data.Data);
         } else if (response.data.Data === undefined) {
-          setItemList(['Loading']);
+          setItemList(["Loading"]);
         } else {
-          console.log('Data not found');
+          console.log("Data not found");
         }
       } catch (error) {
-        console.error('An error occurred:', error);
+        console.error("An error occurred:", error);
       }
     };
 
@@ -190,110 +210,168 @@ const BillForm = () => {
     setChkQty(item.qty);
   };
 
-  let totalamount = billItems.reduce((total, item) => total + parseFloat(item.amount), 0)
+  let totalamount = billItems.reduce(
+    (total, item) => total + parseFloat(item.amount),
+    0
+  );
   let cgstAmount = (totalamount * cgst) / 100;
   let sgstAmount = (totalamount * sgst) / 100;
-  let igstAmount = (totalamount * igst) / 100; // Calculate IGST amount
+  let igstAmount = (totalamount * igst) / 100; 
   let grossamount = totalamount + cgstAmount + sgstAmount + igstAmount;
+ 
+  useEffect(() => {
+    if (!isIgst) {
+      setCgst(gstRate / 2);
+      setSgst(gstRate / 2);
+      setIgst(0); 
+    } else {
+      setIgst(gstRate);
+      setCgst(0); 
+      setSgst(0); 
+    }
+  }, [isIgst, gstRate]);
+  
+
+
   return (
-    <MDBContainer style={{ backgroundColor: 'white', overflowX: 'auto' }}>
+    <MDBContainer style={{ backgroundColor: "white", overflowX: "auto" }}>
       <MDBRow>
         <MDBCol>
-          <h2 style={{ textAlign: 'center', fontFamily: 'sans-serif', color: 'blue', fontWeight: 'bolder' }}>Bill Entry Form</h2>
+          <h2
+            style={{
+              textAlign: "center",
+              fontFamily: "sans-serif",
+              color: "blue",
+              fontWeight: "bolder",
+            }}
+          >
+            Bill Entry Form
+          </h2>
         </MDBCol>
       </MDBRow>
 
       {/* Customer Section */}
       <MDBRow className="mb-3">
-        <MDBCol md='3'>
+        <MDBCol md="3">
           <MDBInput
             type="text"
             label="Customer Name"
             value={cusName}
             onChange={(e) => setCusName(e.target.value)}
-            style={{ width: '100%' }}
-          /><br></br>
+            style={{ width: "100%" }}
+          />
+          <br></br>
         </MDBCol>
 
-        <MDBCol md='3'>
+        <MDBCol md="3">
           <MDBInput
             type="email"
             label="Customer Email"
             value={cusEmail}
             onChange={(e) => setCusEmail(e.target.value)}
-            style={{ width: '100%' }}
-          /><br></br>
+            style={{ width: "100%" }}
+          />
+          <br></br>
         </MDBCol>
 
-        <MDBCol md='2'>
+        <MDBCol md="2">
           <MDBInput
             type="tel"
             label="Customer Mobile"
             value={cusMobile}
             onChange={(e) => setCusMobile(e.target.value)}
-            style={{ width: '100%' }}
-          /><br></br>
+            style={{ width: "100%" }}
+          />
+          <br></br>
         </MDBCol>
 
-        <MDBCol md='4'>
+        <MDBCol md="4">
           <MDBInput
             type="text"
             label="Customer Address"
             value={cusAddress}
             onChange={(e) => setCusAddress(e.target.value)}
-            style={{ width: '100%' }}
-          /><br></br>
+            style={{ width: "100%" }}
+          />
+          <br></br>
         </MDBCol>
-
       </MDBRow>
 
       {/* Item Section */}
       <MDBRow className="mb-2">
         {/* Item Dropdown and Input Fields */}
-        <MDBCol md='2'>
-          <MDBDropdown style={{ width: '6rem' }}>
-            <MDBDropdownToggle style={{ width: '8rem' }}>
-              {selectedItem ? selectedItem : 'Select Item'}
-            </MDBDropdownToggle >
+        <MDBCol md="2">
+          <MDBDropdown style={{ width: "6rem" }}>
+            <MDBDropdownToggle style={{ width: "8rem" }}>
+              {selectedItem ? selectedItem : "Select Item"}
+            </MDBDropdownToggle>
             <MDBDropdownMenu>
-              <MDBInput type="text" label="Search" onChange={(e) => handleSearch(e.target.value)} />
+              <MDBInput
+                type="text"
+                label="Search"
+                onChange={(e) => handleSearch(e.target.value)}
+              />
               {filteredItems.map((item, index) => (
-                <MDBDropdownItem key={index} onClick={() => handleItemSelected(item)}>
+                <MDBDropdownItem
+                  key={index}
+                  onClick={() => handleItemSelected(item)}
+                >
                   {item.item_cd} - {item.name}
                 </MDBDropdownItem>
               ))}
             </MDBDropdownMenu>
-          </MDBDropdown><br></br>
+          </MDBDropdown>
+          <br></br>
         </MDBCol>
         {/* Other Input Fields */}
-        <MDBCol md='2'>
+        <MDBCol md="2">
           <MDBInput
             type="number"
             label="Quantity"
             value={quantity}
             onChange={(e) => setQuantity(e.target.value)}
-            style={{ width: '100%' }}
-          /><br></br>
+            style={{ width: "100%" }}
+          />
+          <br></br>
         </MDBCol>
 
-        <MDBCol md='2'>
-
+        <MDBCol md="2">
           <MDBInput
             type="number"
             label="Item Rate"
             value={itemRate}
             onChange={(e) => setItemRate(e.target.value)}
-            style={{ width: '100%' }}
-          /><br></br>
-
+            style={{ width: "100%" }}
+          />
+          <br></br>
         </MDBCol>
         <MDBCol>
-          <MDBBtn onClick={handleAddItem} color='warning' style={{ color: 'black' }}><FontAwesomeIcon icon={faPlus} /> Add</MDBBtn>
+          <MDBBtn
+            onClick={handleAddItem}
+            color="warning"
+            style={{ color: "black" }}
+          >
+            <FontAwesomeIcon icon={faPlus} /> Add
+          </MDBBtn>
         </MDBCol>
+
+        <MDBCol md="2">
+          <MDBInput
+            type="number"
+            label="GST"
+            value={gstRate}
+            onChange={(e) => setGstRate(e.target.value)}
+            style={{ width: "100%" }}
+          />
+          <br></br>
+        </MDBCol>
+
         {isPaid ? null : (
           <MDBCol md="4">
             <div className="d-flex align-items-center">
-              <span className="me-4" style={{ minWidth: 'fit-content' }}>Due Date</span>
+              <span className="me-4" style={{ minWidth: "fit-content" }}>
+                Due Date
+              </span>
               <input
                 type="date"
                 className="form-control"
@@ -307,9 +385,11 @@ const BillForm = () => {
 
       {/* Table Section */}
       <MDBRow>
-        <MDBCol style={{ minWidth: 'fit-content' }}>
-          <MDBTable style={{ overflow: 'auto' }}>
-            <MDBTableHead style={{ backgroundColor: '#f8f9fa', fontSize: 'large' }}>
+        <MDBCol style={{ minWidth: "fit-content" }}>
+          <MDBTable style={{ overflow: "auto" }}>
+            <MDBTableHead
+              style={{ backgroundColor: "#f8f9fa", fontSize: "large" }}
+            >
               <tr>
                 <th>Item</th>
                 <th>Item Name</th>
@@ -328,7 +408,14 @@ const BillForm = () => {
                   <td>{i.item_rate}</td>
                   <td>{i.amount}</td>
                   <td>
-                    <Link><FontAwesomeIcon size='1x' style={{ color: 'red' }} icon={faTrash} onClick={() => handleDeleteItem(index)} /></Link>
+                    <Link>
+                      <FontAwesomeIcon
+                        size="1x"
+                        style={{ color: "red" }}
+                        icon={faTrash}
+                        onClick={() => handleDeleteItem(index)}
+                      />
+                    </Link>
                   </td>
                 </tr>
               ))}
@@ -353,87 +440,93 @@ const BillForm = () => {
           />
         </MDBCol>
       </MDBRow>
-      <MDBRow className="justify-content-end">
-        <MDBCol md="2">
-          <label htmlFor="cgst" className="form-label">
-            CGST (%):
-          </label>
-        </MDBCol>
-        <MDBCol md="1">
-          <input
-            type="number"
-            id="cgst"
-            className="form-control"
-            value={cgst}
-            onChange={(e) => {
-              setCgst(parseFloat(e.target.value));
-            }}
-          />
-        </MDBCol>
-        <MDBCol md="2">
-          <input
-            type="text"
-            id="cgstAmount"
-            className="form-control"
-            value={cgstAmount}
-            disabled
-          />
-        </MDBCol>
-      </MDBRow>
-      <MDBRow className="justify-content-end">
-        <MDBCol md="2">
-          <label htmlFor="sgst" className="form-label">
-            SGST (%):
-          </label>
-        </MDBCol>
-        <MDBCol md="1">
-          <input
-            type="number"
-            id="sgst"
-            className="form-control"
-            value={sgst}
-            onChange={(e) => {
-              setSgst(parseFloat(e.target.value));
-            }}
-          />
-        </MDBCol>
-        <MDBCol md="2">
-          <input
-            type="text"
-            id="sgstAmount"
-            className="form-control"
-            value={sgstAmount}
-            disabled
-          />
-        </MDBCol>
-      </MDBRow>
-      <MDBRow className="justify-content-end">
-        <MDBCol md="2">
-          <label htmlFor="igst" className="form-label">
-            IGST (%):
-          </label>
-        </MDBCol>
-        <MDBCol md="1">
-          <input
-            type="number"
-            id="igst"
-            className="form-control"
-            value={igst}
-            onChange={(e) => {
-              setIgst(parseFloat(e.target.value));
-            }}
-          />
-        </MDBCol>
-        <MDBCol md="2">
-          <input
-            type="text"
-            id="igstAmount"
-            className="form-control"
-            value={igstAmount}
-            disabled
-          />
-        </MDBCol>
-      </MDBRow>
+      {!isIgst && (
+        <>
+          <MDBRow className="justify-content-end">
+            <MDBCol md="2">
+              <label htmlFor="cgst" className="form-label">
+                CGST (%):
+              </label>
+            </MDBCol>
+            <MDBCol md="1">
+              <input
+                type="number"
+                id="cgst"
+                className="form-control"
+                value={cgst}
+                // onChange={() => {
+                //   setCgst(finalGst);
+                // }}
+                disabled
+              />
+            </MDBCol>
+            <MDBCol md="2">
+              <input
+                type="text"
+                id="cgstAmount"
+                className="form-control"
+                value={cgstAmount}
+                disabled
+              />
+            </MDBCol>
+          </MDBRow>
+          <MDBRow className="justify-content-end">
+            <MDBCol md="2">
+              <label htmlFor="sgst" className="form-label">
+                SGST (%):
+              </label>
+            </MDBCol>
+            <MDBCol md="1">
+              <input
+                type="number"
+                id="sgst"
+                className="form-control"
+                value={sgst}
+                // onChange={()=>{setSgst(finalGst)}}
+                disabled
+              />
+            </MDBCol>
+            <MDBCol md="2">
+              <input
+                type="text"
+                id="sgstAmount"
+                className="form-control"
+                value={sgstAmount}
+                disabled
+              />
+            </MDBCol>
+          </MDBRow>
+        </>
+      )}
+
+      {isIgst && (
+        <MDBRow className="justify-content-end">
+          <MDBCol md="2">
+            <label htmlFor="igst" className="form-label">
+              IGST (%):
+            </label>
+          </MDBCol>
+          <MDBCol md="1">
+            <input
+              type="number"
+              id="igst"
+              className="form-control"
+              value={igst}
+              // onChange={()=>{setIgst(finalGst)}}
+              disabled
+            />
+          </MDBCol>
+          <MDBCol md="2">
+            <input
+              type="text"
+              id="igstAmount"
+              className="form-control"
+              value={igstAmount}
+              disabled
+            />
+          </MDBCol>
+        </MDBRow>
+      )}
 
       <MDBRow className="justify-content-end">
         <MDBCol md="2">
@@ -452,10 +545,8 @@ const BillForm = () => {
         </MDBCol>
       </MDBRow>
 
-
-
       {/* Checkbox Section */}
-      <MDBRow className="mb-3">
+      <MDBRow>
         <MDBCol>
           <MDBCheckbox
             id="isPaid"
@@ -466,32 +557,48 @@ const BillForm = () => {
         </MDBCol>
       </MDBRow>
 
+      <MDBRow>
+        <MDBCol>
+          <MDBCheckbox
+            id="isIgst"
+            label="isIGST"
+            checked={isIgst}
+            onChange={() => setIsIgst(!isIgst)}
+          />
+        </MDBCol>
+      </MDBRow>
+
       <MDBRow className="justify-content-center">
         <MDBCol md="6">
           <div className="text-center">
-            <MDBBtn onClick={handleGenerateBill} style={{ marginRight: '1rem' }} color='success'>
+            <MDBBtn
+              onClick={handleGenerateBill}
+              style={{ marginRight: "1rem" }}
+              color="success"
+            >
               {loading ? (
                 <>
-                  <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
-
+                  <span
+                    className="spinner-border spinner-border-sm me-2"
+                    role="status"
+                    aria-hidden="true"
+                  ></span>
                   Generating...
                 </>
               ) : (
                 <>
                   <FontAwesomeIcon icon={faFileArrowDown} />
-                  &nbsp;
-                  Generate
+                  &nbsp; Generate
                 </>
               )}
             </MDBBtn>
 
-            <MDBBtn onClick={clearForm} color='danger'><FontAwesomeIcon icon={faRecycle} /> Clear</MDBBtn>
+            <MDBBtn onClick={clearForm} color="danger">
+              <FontAwesomeIcon icon={faRecycle} /> Clear
+            </MDBBtn>
           </div>
         </MDBCol>
       </MDBRow>
-
-
-
     </MDBContainer>
   );
 };
