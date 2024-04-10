@@ -582,13 +582,11 @@ function UserLogin() {
 
   return (
     <Layout>
-        <MDBContainer className="my-5 gradient-form">
+        <MDBContainer className="my-5 gradient-form" style={{padding:'40px'}}>
 
-<MDBRow>
-<MDBCol col='2'>
+<MDBRow className="justify-content-center">
 
-</MDBCol>
-  <MDBCol col='8' className="mb-2">
+  <MDBCol col='6' className="mb-2">
   <Toaster position="top-center" reverseOrder={false} />
   {showRegistrationModal && (
 <div className="modal" tabIndex="-1" role="dialog" style={{ display: "block", backgroundColor: "rgba(0, 0, 0, 0.5)" }}>
@@ -780,9 +778,7 @@ function UserLogin() {
     </div>
 
   </MDBCol>
-  <MDBCol col='2'>
-
-</MDBCol>
+  
 
 
 
