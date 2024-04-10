@@ -221,14 +221,49 @@ export default function Profile() {
                 <hr />
                 <MDBRow>
                   <MDBCol sm="3">
-                    <MDBCardText>Company</MDBCardText>
+                    <MDBCardText>Company Name</MDBCardText>
                   </MDBCol>
                   <MDBCol sm="9">
                     <MDBCardText className="text-muted">{User.company}</MDBCardText>
                   </MDBCol>
                 </MDBRow>
                 <hr />
-                
+                <MDBRow>
+                  <MDBCol sm="3">
+                    <MDBCardText>Company Address</MDBCardText>
+                  </MDBCol>
+                  <MDBCol sm="9">
+                    <MDBCardText className="text-muted">{User.company_address}</MDBCardText>
+                  </MDBCol>
+                </MDBRow>
+                <hr/>
+                <MDBRow>
+                  <MDBCol sm="3">
+                    <MDBCardText>Company Email</MDBCardText>
+                  </MDBCol>
+                  <MDBCol sm="9">
+                    <MDBCardText className="text-muted">{User.company_email}</MDBCardText>
+                  </MDBCol>
+                </MDBRow>
+                <hr/>
+                <MDBRow>
+                  <MDBCol sm="3">
+                    <MDBCardText>Company Mobile</MDBCardText>
+                  </MDBCol>
+                  <MDBCol sm="9">
+                    <MDBCardText className="text-muted">{User.designation}</MDBCardText>
+                  </MDBCol>
+                </MDBRow>
+                <hr/>
+                <MDBRow>
+                  <MDBCol sm="3">
+                    <MDBCardText>Company GSTIN</MDBCardText>
+                  </MDBCol>
+                  <MDBCol sm="9">
+                    <MDBCardText className="text-muted">{User.company_gstin}</MDBCardText>
+                  </MDBCol>
+                </MDBRow>
+                <hr/>
                 <MDBRow>
                   <MDBCol sm="3">
                     <MDBCardText>Designation</MDBCardText>
@@ -240,7 +275,7 @@ export default function Profile() {
                 <hr/>
                 <MDBRow>
                   <MDBCol sm="3">
-                    <MDBCardText>Address</MDBCardText>
+                    <MDBCardText> User Address</MDBCardText>
                   </MDBCol>
                   <MDBCol sm="9">
                     <MDBCardText className="text-muted">{User.city}, Pin {User.pin_code}</MDBCardText>

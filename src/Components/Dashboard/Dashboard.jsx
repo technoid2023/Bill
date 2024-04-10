@@ -23,9 +23,9 @@ function Dashboard(props) {
               <div class="card h-100 card-view view1" style={{ backgroundColor: "#A5F1E9" }}>
                 <div>
                   <p class="fs-6 text">GROSS SALES</p>
-                  <h5 class="card-title">₹{stats.gross_sale}.00</h5>
+                  <h5 class="card-title">₹{stats.gross_sale}</h5>
                   <p class="card-text">
-                    <small class="text-muted">₹{stats.gross_sale}.00 Charges</small>
+                    <small class="text-muted">₹{stats.gross_sale} Charges</small>
                   </p>
                 </div>
   
@@ -211,7 +211,7 @@ function Dashboard(props) {
               <div class="card h-100 card-view view5" style={{backgroundColor: '#AEE2FF'}}>
                 <div>
                   <h5 class="card-title text">TAXES</h5>
-                  <h5 class="card-title">₹{stats.tax_value}.00</h5>
+                  <h5 class="card-title">₹{stats.tax_value}</h5>
                 </div>
                 <div className="Icon-style">
                   <svg

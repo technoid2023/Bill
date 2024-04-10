@@ -4,7 +4,7 @@ import Layout from '../Components/Layout/Layout';
 
 
 import './SidebarMenu.css';
-import {faUserTie,faBell,faBoxOpen,faStore ,faSignOut,faBars,faWarehouse,faCashRegister} from '@fortawesome/free-solid-svg-icons';
+import {faUserTie,faBell,faBoxOpen ,faSignOut,faBars,faWarehouse,faCashRegister} from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import { Outlet, useNavigate } from 'react-router-dom';

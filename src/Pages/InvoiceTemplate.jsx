@@ -1,13 +1,16 @@
 import React from 'react';
 import { Document, Page, Text, View, Image, StyleSheet } from '@react-pdf/renderer';
 import logo from '../Assests/logo.png';
-
+import { decrypt } from '../Auth/PrivateRoute';
+import Cookies from "js-cookie";
 const InvoiceTemplate = ({ invoiceData }) => {
-  let companyData={
-    name:'BillBuddy',
-    address:'Kolkata, West Bengal, Kol-700145',
-    email:'technoid.kolkata@gmail.com',
-    mobile:'4569874565'
+  let encryptUser = Cookies.get('_UR');
+  let User;
+  if (encryptUser === undefined) {
+      return;
+  } else {
+      User = decrypt(encryptUser);
+      User = JSON.parse(User);
   }
   let customer = invoiceData.detail[0];
   console.log(invoiceData);
@@ -19,10 +22,11 @@ const InvoiceTemplate = ({ invoiceData }) => {
             <Text style={styles.title}>Invoice</Text>
           </View>
           <View style={styles.companyHeader}>
-            <Text style={styles.companyName}>{companyData.name}</Text>
-            <Text style={styles.companyDet}>{companyData.address}</Text>
-            <Text style={styles.companyDet}>{companyData.email}</Text>
-            <Text style={styles.companyDet}>{companyData.mobile}</Text>
+            <Text style={styles.companyName}>{User.company}</Text>
+            <Text style={styles.companyDet}>Address : {User.company_address}</Text>
+            <Text style={styles.companyDet}>Email : {User.company_email}</Text>
+            <Text style={styles.companyDet}>Mobile : +91{User.company_mobile}</Text>
+            <Text style={styles.companyDet}>GSTIN : {User.company_gstin}</Text>
           </View>
           <View style={styles.section}>
             <Text style={styles.billTo}>BILL TO</Text>
@@ -30,7 +34,7 @@ const InvoiceTemplate = ({ invoiceData }) => {
             <Text style={styles.customerText}> {customer.cus_name}</Text>
             <Text style={styles.customerText}> {customer.cus_address}</Text>
             <Text style={styles.customerText}> {customer.cus_email}</Text>
-            <Text style={styles.customerText}> {customer.cus_mobile}</Text>
+            <Text style={styles.customerText}> +91{customer.cus_mobile}</Text>
           </View>
           <View style={styles.logoContainer}>
             <Image src={logo} style={styles.logo} />

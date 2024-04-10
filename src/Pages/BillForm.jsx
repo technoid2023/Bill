@@ -77,7 +77,7 @@ const BillForm = () => {
       items: billItems,
       pay: isPaid,
       due_date: dueDate,
-      tax_value: cgstAmount + sgstAmount+ igstAmount,
+      tax_value: cgstAmount + sgstAmount + igstAmount,
       cgst_per: cgst,
       sgst_per: sgst,
       cgst_amt: cgstAmount,
@@ -85,38 +85,49 @@ const BillForm = () => {
       igst_amt: igstAmount,
       igst_per: igst,
     };
-    if (formData.cus_name && formData.cus_email && formData.cus_mobile && formData.cus_address && formData.items) {
+  
+    // Check if all required fields are filled
+    if (
+      formData.cus_name &&
+      formData.cus_email &&
+      formData.cus_mobile &&
+      formData.cus_address &&
+      formData.items.length > 0 && // Check if items are added
+      totalamount > 0 // Check if total amount is greater than zero
+    ) {
       if (!isPaid && !dueDate) {
         toast.error("Due date is required if the bill is not paid.");
         setLoading(false);
         return;
       }
-      axios.post('https://edu-tech-bwe5.onrender.com/v1/bill', formData, {
-        headers: {
-          'token': token
-        }
-      })
-        .then(response => {
+      axios
+        .post("https://edu-tech-bwe5.onrender.com/v1/bill", formData, {
+          headers: {
+            token: token,
+          },
+        })
+        .then((response) => {
           console.log(response);
           if (response.data.Success === true) {
             setLoading(false);
             toast.success(`Bill generated, Bill No:${response.data.Bill_no}`);
-
+  
             clearForm();
-            navigate('/dashboard/bill')
+            navigate("/dashboard/bill");
           } else {
-            toast.error('Failed to generate bill.');
+            toast.error("Failed to generate bill.");
           }
         })
-        .catch(error => {
+        .catch((error) => {
           setLoading(false);
-          console.error('An error occurred while generating the bill:', error);
+          console.error("An error occurred while generating the bill:", error);
         });
     } else {
       setLoading(false);
-      toast.error("Fill the form")
+      toast.error("Fill all required fields and add items to the bill.");
     }
   };
+  
 
   const clearForm = () => {
     setSelectedItem('');

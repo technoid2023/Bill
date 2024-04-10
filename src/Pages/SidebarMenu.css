@@ -1,7 +1,6 @@
 .sidebar-menu-container {
     display: flex;
     height: 100%;
-    
 }
 
 .sidebar {
@@ -11,12 +10,15 @@
     position: relative;
     min-height: 45rem;
     max-height: calc(80vh - 62px);
-  
 }
 
 .main {
     flex: 1;
     overflow-y: auto;
+}
+
+.sidebar-menu-container .sidebar-menu .menu-item.active {
+    background-color: #b11414; /* Change this to the desired active tab background color */
 }
 
 @media screen and (max-width: 768px) {
@@ -25,28 +27,7 @@
         /* Adjust as needed for smaller screens */
     }
 }
-.sidebar-menu-container {
-    display: flex;
-    height: 100%;
-}
-/* 
-.sidebar-container {
-    display: flex;
-    flex-direction: column;
-    position: relative;
-} */
 
-
-/* .sidebar-toggler {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    z-index: 999;
-} */
-
-.collapsed .sidebar-toggler {
-    display: none;
-}
 .sidebar-container {
     display: flex;
     position: relative;
@@ -54,6 +35,6 @@
 
 .sidebar-toggler {
     position: absolute;
-     /* Adjust as needed */
+    /* Adjust as needed */
     z-index: 999;
 }
