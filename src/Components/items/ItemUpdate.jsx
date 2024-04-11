@@ -27,9 +27,10 @@ function ItemUpdate() {
     subcategory: item.subcategory,
     source: item.source,
     item_des: item.item_des,
-    
+    gst_rate:item.gst_rate,
     CP: item.CP,
-    SP: item.SP
+    SP: item.SP,
+    gst:item.gst
   });
  
   const [token, setToken] = useState(null);
@@ -68,12 +69,13 @@ function ItemUpdate() {
       }).then(res => {
         if (res.data.Success === true) {
           
-          Cookies.remove('item');
+          
           setLoading(false);
           toast.success(res.data.Message);
           setTimeout(() => {
             navigate('/dashboard/item');
           }, 1000);
+        
         } else {
           if(res.data.Message==="Session Time Out, Login Again !"){
             navigate("/");
@@ -112,7 +114,39 @@ function ItemUpdate() {
               <MDBCol md='3'>
                 <MDBInput wrapperClass='mb-4' label='Sub Category' size='lg' value={user.subcategory} onChange={handleInput} name='subcategory' type='text' />
               </MDBCol>
-              
+              <MDBCol md='6'>
+              <div className="mb-3">
+    <strong>Choose GST Type:</strong>
+    <div className="form-check">
+      <input
+        className="form-check-input"
+        type="radio"
+        name="gst"
+        id="gst"
+        value="gst"
+        checked={user.gst === true}
+        onChange={handleInput}
+      />
+      <label className="form-check-label" htmlFor="gst">
+        GST
+      </label>
+    </div>
+    <div className="form-check">
+      <input
+        className="form-check-input"
+        type="radio"
+        name="gst"
+        id="igst"
+        value="igst"
+        checked={user.gst === false}
+        onChange={handleInput}
+      />
+      <label className="form-check-label" htmlFor="igst">
+        IGST
+      </label>
+    </div>
+  </div>
+              </MDBCol>
             </MDBRow>
             
             <MDBRow>
@@ -123,8 +157,11 @@ function ItemUpdate() {
               <MDBCol md='2'>
                 <MDBInput wrapperClass='mb-4' label='Sale Price' size='lg' value={user.SP} onChange={handleInput} name='SP' type='number' />
               </MDBCol>
-              <MDBCol md='8'>
+              <MDBCol md='6'>
                 <MDBInput wrapperClass='mb-4' label='Item Description' size='lg' value={user.item_des} onChange={handleInput} name='item_des' type='text' />
+              </MDBCol>
+              <MDBCol md='2'>
+                <MDBInput wrapperClass='mb-4' label='GST Rate' size='lg' value={user.gst_rate} onChange={handleInput} name='gst_rate' type='number' />
               </MDBCol>
             </MDBRow>
             <MDBBtn className='mb-4' onClick={updateData} size='lg'>{loading ? (

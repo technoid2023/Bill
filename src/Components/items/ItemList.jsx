@@ -97,6 +97,8 @@ const ItemList = () => {
     SP: "",
     source: "",
     item_des: "",
+    gst: "gst", // Default to "gst" if you want
+    gst_rate: ""
   });
 
   const fetchData = async () => {
@@ -159,7 +161,10 @@ const ItemList = () => {
       SP: newItem.SP,
       source: newItem.source,
       item_cd: newItem.item_cd,
-      item_des: newItem.item_des 
+      item_des: newItem.item_des,
+      gst: newItem.gst === "gst", // Convert to boolean
+      gst_rate: newItem.gst_rate
+
     };
     if (!Object.values(formData).every(value => value)) {
       console.error("Some fields are empty.");
@@ -393,6 +398,52 @@ const ItemList = () => {
                   placeholder="Selling Price"
                 />
               </div>
+
+              <div className="mb-3">
+    <strong>Choose GST Type:</strong>
+    <div className="form-check">
+      <input
+        className="form-check-input"
+        type="radio"
+        name="gst"
+        id="gst"
+        value="gst"
+        checked={newItem.gst === "gst"}
+        onChange={handleInputChange}
+      />
+      <label className="form-check-label" htmlFor="gst">
+        GST
+      </label>
+    </div>
+    <div className="form-check">
+      <input
+        className="form-check-input"
+        type="radio"
+        name="gst"
+        id="igst"
+        value="igst"
+        checked={newItem.gst === "igst"}
+        onChange={handleInputChange}
+      />
+      <label className="form-check-label" htmlFor="igst">
+        IGST
+      </label>
+    </div>
+  </div>
+  <div className="mb-3">
+    <strong htmlFor="gst_rate" className="form-label">
+      GST Rate
+    </strong>
+    <input
+      type="number"
+      className="form-control"
+      id="gst_rate"
+      name="gst_rate"
+      value={newItem.gst_rate}
+      onChange={handleInputChange}
+      placeholder="GST Rate"
+    />
+  </div>
               <div className="mb-3">
                 <strong htmlFor="source" className="form-label">
                   Source
@@ -491,6 +542,18 @@ const ItemList = () => {
                         <strong>Selling Price:</strong>
                       </td>
                       <td>{itemDetails.SP}</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <strong>GST Type:</strong>
+                      </td>
+                      <td>{itemDetails.gst===true?'GST':'IGST'}</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <strong>GST Rate:</strong>
+                      </td>
+                      <td>{itemDetails.gst_rate}%</td>
                     </tr>
                     <tr>
                       <td>

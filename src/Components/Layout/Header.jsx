@@ -29,7 +29,7 @@ const Header = () => {
     navigate('/login')
   };
   const handleLogout = () => {
-    
+    Cookies.remove('item');
         Cookies.remove('_UR');
         toast.success('Logged Out !');
         Cookies.remove('_TK')
